@@ -6,8 +6,7 @@
             xmlns:custom="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            tools:context="com.qualcomm.qti.gaiacontrol.activities.UpgradeActivity">
+            android:layout_height="fill_parent">
 
     <!-- the container of all the options -->
     <LinearLayout
@@ -171,7 +170,7 @@
             android:textSize="@dimen/material_text_size_subhead"
             android:textStyle="bold"/>
 
-        <com.qualcomm.qti.gaiacontrol.ui.ParameterView
+        <com.gaia.button.view.ParameterView
             android:id="@+id/parameter_mtu_size"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -191,7 +190,7 @@
             android:textSize="@dimen/material_text_size_subhead"
             android:textStyle="bold"/>
 
-        <com.qualcomm.qti.gaiacontrol.ui.ParameterView
+        <com.gaia.button.view.ParameterView
             android:id="@+id/parameter_rwcp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -199,7 +198,7 @@
             custom:subtitle="@string/parameter_rwcp_message"
             custom:type="switch_button"/>
 
-        <com.qualcomm.qti.gaiacontrol.ui.ParameterView
+        <com.gaia.button.view.ParameterView
             android:id="@+id/parameter_initial_window"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -207,7 +206,7 @@
             custom:title="@string/parameter_rwcp_initial_window_title"
             custom:subtitle="@string/parameter_rwcp_initial_window_message" />
 
-        <com.qualcomm.qti.gaiacontrol.ui.ParameterView
+        <com.gaia.button.view.ParameterView
             android:id="@+id/parameter_maximum_window"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -227,7 +226,7 @@
             android:textSize="@dimen/material_text_size_subhead"
             android:textStyle="bold"/>
 
-        <com.qualcomm.qti.gaiacontrol.ui.ParameterView
+        <com.gaia.button.view.ParameterView
             android:id="@+id/parameter_debug_logs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

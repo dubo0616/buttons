@@ -1,4 +1,4 @@
-package com.jindan.p2p.user;
+package com.gaia.button.net.user;
 
 public interface IUserListener {
 

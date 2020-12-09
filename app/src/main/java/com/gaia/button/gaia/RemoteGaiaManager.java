@@ -3,12 +3,13 @@
  **************************************************************************************************/
 
 
-package com.qualcomm.qti.gaiacontrol.gaia;
+package com.gaia.button.gaia;
 
 import android.annotation.SuppressLint;
-import android.support.annotation.IntDef;
 
-import com.qualcomm.qti.gaiacontrol.Consts;
+import androidx.annotation.IntDef;
+
+import com.gaia.button.utils.Consts;
 import com.qualcomm.qti.libraries.gaia.GAIA;
 import com.qualcomm.qti.libraries.gaia.packets.GaiaPacket;
 

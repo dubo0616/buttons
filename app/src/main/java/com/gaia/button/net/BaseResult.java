@@ -1,6 +1,7 @@
-package com.jindan.p2p.net;
+package com.gaia.button.net;
 
-import com.jindan.p2p.utils.DcError;
+
+import com.gaia.button.utils.DcError;
 
 public class BaseResult {
 	protected int mErrorCode = DcError.DC_Error;

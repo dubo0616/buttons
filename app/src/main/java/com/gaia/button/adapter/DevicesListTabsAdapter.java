@@ -6,13 +6,15 @@ package com.gaia.button.adapter;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
 
-import com.qualcomm.qti.gaiacontrol.R;
-import com.qualcomm.qti.gaiacontrol.ui.fragments.DevicesListFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+
+import com.gaia.button.R;
+import com.gaia.button.fargment.DevicesListFragment;
+
 
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -31,7 +33,7 @@ public class DevicesListTabsAdapter extends FragmentPagerAdapter {
     /**
      * <p>The number of tabs. There are two: one for the scanned devices, one for the bonded devices.</p>
      */
-    private final static int COUNT = 2;
+    private final static int COUNT = 1;
     /**
      * For debug mode, the tag to display for logs.
      */

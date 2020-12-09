@@ -2,13 +2,19 @@ package com.gaia.button;
 
 import android.app.Application;
 
-import com.gaia.button.net.RetrofitHelper;
-import com.xcheng.retrofit.RetrofitFactory;
 
 public class GaiaApplication extends Application {
+    static GaiaApplication s_ins;
     @Override
     public void onCreate() {
         super.onCreate();
-        RetrofitFactory.DEFAULT = RetrofitHelper.getInstance().getRetrofit();
+//        NoHttp.initialize(this);
+    }
+    public static GaiaApplication getInstance() {
+        return s_ins;
+    }
+
+    public GaiaApplication() {
+        s_ins = this;
     }
 }

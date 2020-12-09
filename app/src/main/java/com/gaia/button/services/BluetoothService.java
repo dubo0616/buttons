@@ -7,11 +7,12 @@ package com.gaia.button.services;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 import android.os.Handler;
-import android.support.annotation.IntDef;
-import android.support.annotation.IntRange;
 
-import com.qualcomm.qti.gaiacontrol.models.gatt.GATT;
-import com.qualcomm.qti.gaiacontrol.models.gatt.GATTServices;
+import androidx.annotation.IntDef;
+import androidx.annotation.IntRange;
+
+import com.gaia.button.models.gatt.GATT;
+import com.gaia.button.models.gatt.GATTServices;
 import com.qualcomm.qti.libraries.vmupgrade.UpgradeError;
 import com.qualcomm.qti.libraries.vmupgrade.UpgradeManager;
 import com.qualcomm.qti.libraries.vmupgrade.codes.ResumePoints;
@@ -19,6 +20,7 @@ import com.qualcomm.qti.libraries.vmupgrade.codes.ResumePoints;
 import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
 
 /**
  * <p>Defines a generic interface for all Bluetooth Service in order for the activities to only have to interact
@@ -238,11 +240,6 @@ public interface BluetoothService {
     void removeHandler(Handler handler);
 
     /**
-     * To get the type of transport used by the service which implements this interface.
-     *
-     * @return The corresponding type of transport as one of the following:
-     *          {@link com.qualcomm.qti.gaiacontrol.services.BluetoothService.Transport#BLE BLE} or
-     *          {@link com.qualcomm.qti.gaiacontrol.services.BluetoothService.Transport#BR_EDR BR/EDR}.
      */
     @SuppressWarnings("unused")
     @Transport int getTransport();

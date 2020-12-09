@@ -15,19 +15,21 @@ import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.annotation.IntDef;
-import android.support.annotation.IntRange;
+
 import android.util.Log;
 
-import com.qualcomm.qti.gaiacontrol.Consts;
-import com.qualcomm.qti.gaiacontrol.Utils;
-import com.qualcomm.qti.gaiacontrol.gaia.UpgradeGaiaManager;
-import com.qualcomm.qti.gaiacontrol.models.gatt.GATT;
-import com.qualcomm.qti.gaiacontrol.models.gatt.GATTServices;
-import com.qualcomm.qti.gaiacontrol.models.gatt.GattServiceBattery;
-import com.qualcomm.qti.gaiacontrol.models.gatt.GattServiceHeartRate;
-import com.qualcomm.qti.gaiacontrol.receivers.BondStateReceiver;
-import com.qualcomm.qti.gaiacontrol.rwcp.RWCPClient;
+import androidx.annotation.IntDef;
+import androidx.annotation.IntRange;
+
+import com.gaia.button.gaia.UpgradeGaiaManager;
+import com.gaia.button.models.gatt.GATT;
+import com.gaia.button.models.gatt.GATTServices;
+import com.gaia.button.models.gatt.GattServiceBattery;
+import com.gaia.button.models.gatt.GattServiceHeartRate;
+import com.gaia.button.receivers.BondStateReceiver;
+import com.gaia.button.rwcp.RWCPClient;
+import com.gaia.button.utils.Consts;
+import com.gaia.button.utils.Utils;
 import com.qualcomm.qti.libraries.ble.BLEService;
 import com.qualcomm.qti.libraries.ble.BLEUtils;
 import com.qualcomm.qti.libraries.ble.Characteristics;

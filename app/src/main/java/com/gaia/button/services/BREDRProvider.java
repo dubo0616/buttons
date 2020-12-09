@@ -14,12 +14,15 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Handler;
 import android.os.ParcelUuid;
-import android.support.annotation.IntDef;
-import android.support.annotation.NonNull;
+
 import android.util.Log;
 
-import com.qualcomm.qti.gaiacontrol.Utils;
-import com.qualcomm.qti.gaiacontrol.receivers.UUIDReceiver;
+
+import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
+
+import com.gaia.button.receivers.UUIDReceiver;
+import com.gaia.button.utils.Utils;
 
 import java.io.IOException;
 import java.io.InputStream;

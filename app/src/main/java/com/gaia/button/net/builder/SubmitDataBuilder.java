@@ -1,9 +1,12 @@
-package com.jindan.p2p.http.builder;
+package com.gaia.button.net.builder;
+
+
+
+import com.gaia.button.net.JsonManager;
+import com.gaia.button.net.NetConfig;
+import com.gaia.button.utils.ConstantUtil;
 
 import java.util.HashMap;
-import com.jindan.p2p.json.JsonManager;
-import com.jindan.p2p.net.NetConfig;
-import com.jindan.p2p.utils.ConstantUtil;
 
 
 public class SubmitDataBuilder implements HttpSubmitDataBuilderInterface {

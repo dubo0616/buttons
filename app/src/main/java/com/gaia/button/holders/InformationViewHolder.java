@@ -4,11 +4,12 @@
 
 package com.gaia.button.holders;
 
-import android.support.v7.widget.RecyclerView;
+
 import android.view.View;
 import android.widget.TextView;
 
-import com.qualcomm.qti.gaiacontrol.R;
+import androidx.recyclerview.widget.RecyclerView;
+
 
 /**
  * This class allows definition of the view for an item on a RecyclerView.
@@ -17,7 +18,7 @@ public class InformationViewHolder extends RecyclerView.ViewHolder {
     /**
      * The text views to display information from a device.
      */
-    private final TextView mTVInformationName, mTVInformationValue;
+//    private final TextView mTVInformationName, mTVInformationValue;
 
     /**
      * The constructor of this class to build this view.
@@ -26,8 +27,8 @@ public class InformationViewHolder extends RecyclerView.ViewHolder {
      */
     public InformationViewHolder(View v) {
         super(v);
-        mTVInformationName = (TextView) v.findViewById(R.id.tv_information_name);
-        mTVInformationValue = (TextView) v.findViewById(R.id.tv_information_value);
+//        mTVInformationName = (TextView) v.findViewById(R.id.tv_information_name);
+//        mTVInformationValue = (TextView) v.findViewById(R.id.tv_information_value);
     }
 
     /**
@@ -40,7 +41,7 @@ public class InformationViewHolder extends RecyclerView.ViewHolder {
      *          The value of the information to display
      */
     public void refreshValues(String name, String value) {
-        mTVInformationName.setText(name);
-        mTVInformationValue.setText(value);
+//        mTVInformationName.setText(name);
+//        mTVInformationValue.setText(value);
     }
 }

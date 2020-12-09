@@ -2,10 +2,11 @@
  * Copyright 2017 Qualcomm Technologies International, Ltd.                                       *
  **************************************************************************************************/
 
-package com.qualcomm.qti.gaiacontrol.models.equalizer;
+package com.gaia.button.models.equalizer;
 
-import com.qualcomm.qti.gaiacontrol.models.equalizer.parameters.MasterGain;
-import com.qualcomm.qti.gaiacontrol.models.equalizer.parameters.Parameter;
+
+import com.gaia.button.models.equalizer.parameters.MasterGain;
+import com.gaia.button.models.equalizer.parameters.Parameter;
 
 /**
  * <p>This class represents a customizable Bank for the equalizer. A Bank is defined by the following properties:

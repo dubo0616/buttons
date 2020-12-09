@@ -7,23 +7,23 @@ package com.gaia.button.fargment;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.qualcomm.qti.gaiacontrol.R;
-import com.qualcomm.qti.gaiacontrol.ui.adapters.DevicesListAdapter;
-import com.qualcomm.qti.gaiacontrol.ui.adapters.DevicesListTabsAdapter;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.gaia.button.R;
+import com.gaia.button.adapter.DevicesListAdapter;
+import com.gaia.button.adapter.DevicesListTabsAdapter;
 
 /**
  * A fragment to mange the display of a list of Bluetooth devices.
  */
-public class DevicesListFragment extends Fragment implements DevicesListAdapter.IDevicesListAdapterListener {
+public class DevicesListFragment extends BaseFragment implements DevicesListAdapter.IDevicesListAdapterListener {
     /**
      * The fragment argument representing the section number for this fragment.
      */

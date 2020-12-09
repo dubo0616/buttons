@@ -2,26 +2,22 @@
  * @author huzexin@duoku.com
  * @version CreateData锛?012-5-10 3:46:54 PM
  */
-package com.jindan.p2p.net;
+package com.gaia.button.net;
 
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 
-import com.jindan.p2p.json.JsonHelper;
-import com.jindan.p2p.net.INetListener.DownLoadStatus;
-import com.jindan.p2p.net.NetMessage.NetMessageType;
-import com.jindan.p2p.utils.ContextHolder;
-import com.jindan.p2p.utils.DcError;
-import com.jindan.p2p.utils.LogUtil;
-import com.jindan.p2p.utils.SharePreferenceUtil;
+
+import com.gaia.button.utils.ContextHolder;
+import com.gaia.button.utils.DcError;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.jindan.p2p.utils.SharePreferenceUtil.SPTOOL;
 
 public class HttpImpl implements IHttpInterface {
 
@@ -39,8 +35,8 @@ public class HttpImpl implements IHttpInterface {
     	OkHttpRequest request = new OkHttpRequest();
         request.setUrl(url);
 
-        LogUtil.d("上行地址=====" + url);
-        LogUtil.d("上行数据=====" + bodydata);
+        Log.d("TAG","上行地址=====" + url);
+        Log.d("TAG","上行数据=====" + bodydata);
 
         // 加密
         request.setRequestData(bodydata);
@@ -57,7 +53,7 @@ public class HttpImpl implements IHttpInterface {
             return;
         }
         //读取网络缓存
-        String cacheData = SPTOOL.getString(SharePreferenceUtil.SP_FILE_NETCACHE, requestTag + "", "");
+        String cacheData = "";
         if (!TextUtils.isEmpty(cacheData)) {
             try {
                 BaseResult result = new JsonHelper().parserWithTag(requestTag, cacheData);
@@ -129,7 +125,7 @@ public class HttpImpl implements IHttpInterface {
      */
     private void addTaskToQuene(OkHttpRequest request, INetListener listener) {
     	if (mRequestQuene.containsKey(request)) {
-    		LogUtil.e("zsz", "addTaskToQuene---same-request-----return");
+    		Log.e("zsz", "addTaskToQuene---same-request-----return");
     		return;
     	}
         mRequestQuene.put(request, listener);
@@ -193,7 +189,7 @@ public class HttpImpl implements IHttpInterface {
             boolean res = msg.obj.getClass().equals(NetMessage.class);
             if (res) {
                 NetMessage netmsg = (NetMessage) msg.obj;
-                NetMessageType netmsgtype = netmsg.getMessageType();
+                NetMessage.NetMessageType netmsgtype = netmsg.getMessageType();
 
                 switch (netmsgtype) {
                     case NetSuccess: {
@@ -296,7 +292,7 @@ public class HttpImpl implements IHttpInterface {
 
             if (entry != null) {
                 INetListener _listener = entry.getValue();
-                _listener.onDownLoadStatus(DownLoadStatus.EDlsDownLoadErr,
+                _listener.onDownLoadStatus(INetListener.DownLoadStatus.EDlsDownLoadErr,
                         requestid);
                 removeTask(entry.getKey());
             }
@@ -322,7 +318,7 @@ public class HttpImpl implements IHttpInterface {
 
             if (entry != null) {
                 INetListener _listener = entry.getValue();
-                _listener.onDownLoadStatus(DownLoadStatus.EDlsDownLoadComplete,
+                _listener.onDownLoadStatus(INetListener.DownLoadStatus.EDlsDownLoadComplete,
                         requestid);
                 removeTask(entry.getKey());
             }
@@ -348,9 +344,9 @@ public class HttpImpl implements IHttpInterface {
         OkHttpRequest request = new OkHttpRequest();
         request.setUrl(url);
 
-        LogUtil.d("上行地址=====" + url);
-        LogUtil.d("上行数据=====" + bodydata);
-        LogUtil.e("zsz", "sendRequestNetCache---offset==" + offset);
+//        LogUtil.d("上行地址=====" + url);
+//        LogUtil.d("上行数据=====" + bodydata);
+//        LogUtil.e("zsz", "sendRequestNetCache---offset==" + offset);
 
         // 加密
 //        AES myaes = new AES();

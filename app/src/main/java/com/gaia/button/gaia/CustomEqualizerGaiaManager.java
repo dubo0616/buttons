@@ -3,14 +3,14 @@
  **************************************************************************************************/
 
 
-package com.qualcomm.qti.gaiacontrol.gaia;
+package com.gaia.button.gaia;
 
 import android.util.Log;
 
-import com.qualcomm.qti.gaiacontrol.Consts;
-import com.qualcomm.qti.gaiacontrol.Utils;
-import com.qualcomm.qti.gaiacontrol.models.equalizer.parameters.Filter;
-import com.qualcomm.qti.gaiacontrol.models.equalizer.parameters.ParameterType;
+import com.gaia.button.models.equalizer.parameters.Filter;
+import com.gaia.button.models.equalizer.parameters.ParameterType;
+import com.gaia.button.utils.Consts;
+import com.gaia.button.utils.Utils;
 import com.qualcomm.qti.libraries.gaia.GAIA;
 import com.qualcomm.qti.libraries.gaia.packets.GaiaPacket;
 

@@ -6,7 +6,7 @@ package com.gaia.button.rwcp;
 
 import android.util.Log;
 
-import com.qualcomm.qti.gaiacontrol.Utils;
+import com.gaia.button.utils.Utils;
 import com.qualcomm.qti.libraries.vmupgrade.VMUUtils;
 
 /**
@@ -92,14 +92,6 @@ class Segment {
     }
 
     /**
-     * <p>To build a segment from a byte array.</p>
-     * <p>If a segment couldn't be identified, this segment will have the following values:</p>
-     * <ul>
-     *     <li>operation code: {@link com.qualcomm.qti.gaiacontrol.rwcp.RWCP.OpCode#NONE RWCP.OpCode.NONE},</li>
-     *     <li>sequence number: <code>-1</code>,</li>
-     *     <li>header: <code>-1</code>,</li>
-     *     <li>payload: the given bytes.</li>
-     * </ul>
      *
      * @param bytes
      *          The byte array which corresponds to a segment.

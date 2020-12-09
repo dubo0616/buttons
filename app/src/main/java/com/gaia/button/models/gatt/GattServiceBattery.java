@@ -8,7 +8,7 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 
-import com.qualcomm.qti.gaiacontrol.Utils;
+import com.gaia.button.utils.Utils;
 
 import java.util.List;
 import java.util.UUID;

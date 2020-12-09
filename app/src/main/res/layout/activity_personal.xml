@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_marginTop="59dp"
         android:layout_marginStart="18dp"
-        android:background="@drawable/icon_back"
+        android:background="@drawable/icon_back_white"
         android:layout_height="wrap_content"/>
 
     <ImageView
@@ -31,7 +31,7 @@
         android:layout_width="67dp"
         android:layout_marginTop="53dp"
         android:layout_marginStart="18dp"
-        android:background="#CCCCCC"
+        android:background="@drawable/icon_head"
         android:layout_height="67dp"/>
     <TextView
         android:layout_marginTop="63dp"
@@ -67,8 +67,8 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_name"
         app:layout_constraintStart_toEndOf="@+id/tv_sgin"
         android:layout_width="11dp"
+        android:src="@drawable/icon_sgin"
         android:layout_marginStart="16dp"
-        android:background="@android:color/white"
         android:layout_height="11dp"/>
 
     <com.google.android.material.tabs.TabLayout

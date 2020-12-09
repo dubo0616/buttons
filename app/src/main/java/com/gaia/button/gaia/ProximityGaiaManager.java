@@ -7,7 +7,7 @@ package com.gaia.button.gaia;
 
 import android.os.Handler;
 
-import com.qualcomm.qti.gaiacontrol.Consts;
+import com.gaia.button.utils.Consts;
 import com.qualcomm.qti.libraries.gaia.GAIA;
 import com.qualcomm.qti.libraries.gaia.packets.GaiaPacket;
 

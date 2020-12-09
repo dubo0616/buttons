@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginStart="45dp"
     android:layout_marginEnd="45dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
         <ImageView
-            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintVertical_chainStyle="packed"
             android:id="@+id/iv_icon"
-            app:layout_constraintEnd_toStartOf="@+id/tv_text"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:src="@drawable/icon_wechat_login"
-            android:layout_width="26dp"
-            android:layout_height="26dp"/>
+            android:layout_width="54dp"
+            android:layout_height="54dp"/>
 
         <TextView
-            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
             android:id="@+id/tv_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/login_wechat"
             android:textColor="@android:color/black"
             android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/iv_icon"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/iv_icon" />
 
 
 

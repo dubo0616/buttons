@@ -6,10 +6,6 @@ package com.gaia.button.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.annotation.AttrRes;
-import android.support.annotation.IntDef;
-import android.support.annotation.Nullable;
-import android.support.annotation.StyleRes;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -22,17 +18,16 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.qualcomm.qti.gaiacontrol.R;
+import androidx.annotation.AttrRes;
+import androidx.annotation.IntDef;
+import androidx.annotation.Nullable;
+import androidx.annotation.StyleRes;
+
+import com.gaia.button.R;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-/**
- * <p>This view component describes the view of a parameter which is composed of a title, a subtitle and a control.</p>
- * <p>To set up the right control, a ParameterView requires a {@link Type Type}.</p>
- * <p>The title, the subtitle and the type must be defined when creating the view through the attributes set, see
- * {@link R.styleable#ParameterView ParameterView}.</p>
- */
 public class ParameterView extends FrameLayout {
 
     // ====== PRIVATE FIELDS ========================================================================

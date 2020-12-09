@@ -25,23 +25,15 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.gaia.button.R;
-import com.gaia.button.net.ResponeListener;
-import com.gaia.button.net.RetrofitHelper;
-import com.gaia.button.net.service.GaiaRequest;
-import com.gaia.button.net.service.GaiaResponse;
-import com.gaia.button.net.service.LoginService;
+import com.gaia.button.net.user.IUserListener;
+import com.gaia.button.net.user.UserManager;
 import com.gaia.button.utils.PhoneCheckUtil;
-import com.xcheng.retrofit.Call;
-import com.xcheng.retrofit.DefaultCallback;
-import com.xcheng.retrofit.HttpError;
-import com.xcheng.retrofit.RetrofitFactory;
+
 
 import java.util.HashMap;
 
-import retrofit2.Callback;
-import retrofit2.Response;
 
-public class PhoneLoginActivity extends BaseActivity implements View.OnClickListener {
+public class PhoneLoginActivity extends BaseActivity implements View.OnClickListener, IUserListener {
     private ImageView mBack;
     private TextView mTvLogin;
     private EditText mPhoneNumber;
@@ -100,7 +92,9 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
             }
         });
 
-
+        Intent intent = new Intent(PhoneLoginActivity.this, MainActivity.class);
+        intent.putExtra("Tab",1);
+        startActivity(intent);
     }
     private void init(TextView textView){
         ForegroundColorSpan defaultTextColorSpan = new ForegroundColorSpan(Color.parseColor("#949494")); // 默认文本颜色
@@ -169,43 +163,35 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
 
     }
     private void doLogin(){
-//        if(!PhoneCheckUtil.checkPhoneNum(mPhoneNumber.getText().toString())){
-//            Toast.makeText(this,"请检查手机号码",Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//        if(!PhoneCheckUtil.checkPhoneCode(mPhoneCode.getText().toString())){
-//            Toast.makeText(this,"请检查验证码",Toast.LENGTH_SHORT).show();
-//            return;
-//
-//        }
-//        if(!mBox.isChecked()){
-//            Toast.makeText(this,"请选择协议",Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-        HashMap<String,String> map = new HashMap<>();
-        RetrofitFactory.create(LoginService.class).getRequest().enqueue(new DefaultCallback<GaiaResponse>() {
-            @Override
-            public void onStart(Call<GaiaResponse> call) {
+        if(!PhoneCheckUtil.checkPhoneNum(mPhoneNumber.getText().toString())){
+            Toast.makeText(this,"请检查手机号码",Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(!PhoneCheckUtil.checkPhoneCode(mPhoneCode.getText().toString())){
+            Toast.makeText(this,"请检查验证码",Toast.LENGTH_SHORT).show();
+            return;
 
-            }
-
-            @Override
-            public void onError(Call<GaiaResponse> call, HttpError error) {
-
-            }
-
-            @Override
-            public void onSuccess(Call<GaiaResponse> call, GaiaResponse gaiaResponse) {
-                Log.e("YYYY","======"+gaiaResponse.getMsg());
-                Log.e("YYYY","======"+call.toString());
-            }
-        });
-        Intent intent = new Intent(this,MainActivity.class);
-        startActivity(intent);
+        }
+        if(!mBox.isChecked()){
+            Toast.makeText(this,"请选择协议",Toast.LENGTH_SHORT).show();
+            return;
+        }
+        UserManager.getRequestHandler().requestLoginBySms(PhoneLoginActivity.this,mPhoneNumber.getText().toString().trim(),mPhoneCode.getText().toString().trim());
     }
 
+    private boolean doSmsCode(){
+        if(!PhoneCheckUtil.checkPhoneNum(mPhoneNumber.getText().toString())){
+            Toast.makeText(this,"请检查手机号码",Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        UserManager.getRequestHandler().requestGetCode(PhoneLoginActivity.this,mPhoneNumber.getText().toString().trim());
+        return true;
+    }
 
     private void startResendCountDown() {
+        if(!doSmsCode()){
+            return;
+        }
         mSmsHandler.removeMessages(RESEND_COUNT_DOWN);
         mCountDown = 60;
         mSmsHandler.sendEmptyMessageDelayed(RESEND_COUNT_DOWN, 1000L);
@@ -213,6 +199,7 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
     private void resendCountDown() {
         mCountDown--;
         if (mCountDown <= 0) {
+            doSmsCode();
             mTvGetcode.setEnabled(true);
             mTvGetcode.setText(getString(R.string.login_get_phone_code));
         } else {
@@ -240,4 +227,24 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
             }
         }
     };
+
+    @Override
+    public void onRequestSuccess(int requestTag, Object data) {
+
+    }
+
+    @Override
+    public void onRequestError(int requestTag, int errorCode, String errorMsg, Object data) {
+
+    }
+
+    @Override
+    public void startProgressDialog(int requestTag) {
+
+    }
+
+    @Override
+    public void endProgressDialog(int requestTag) {
+
+    }
 }

@@ -8,17 +8,18 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.qualcomm.qti.gaiacontrol.R;
-import com.qualcomm.qti.gaiacontrol.Utils;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
+
+import com.gaia.button.R;
+import com.gaia.button.utils.Utils;
 import com.qualcomm.qti.libraries.vmupgrade.codes.ResumePoints;
 
 import java.text.DecimalFormat;

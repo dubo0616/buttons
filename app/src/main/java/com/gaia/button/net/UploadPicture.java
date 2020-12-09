@@ -1,4 +1,4 @@
-package com.jindan.p2p.utils;
+package com.gaia.button.net;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -7,11 +7,15 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.jindan.p2p.json.model.UserBankCardModel;
-import com.jindan.p2p.json.model.UserModel.UserInfo;
-import com.jindan.p2p.net.BaseResult;
-import com.jindan.p2p.net.INetListener;
-import com.jindan.p2p.user.UserManager;
+
+import com.gaia.button.data.PreferenceManager;
+import com.gaia.button.model.AccountInfo;
+import com.gaia.button.utils.BitmapTool;
+import com.gaia.button.utils.Config;
+import com.gaia.button.utils.ConstantUtil;
+import com.gaia.button.utils.FileHelper;
+import com.gaia.button.utils.LogUtil;
+import com.gaia.button.utils.StringConstant;
 
 import org.apache.http.HttpStatus;
 import org.json.JSONObject;
@@ -67,83 +71,6 @@ public class UploadPicture implements INetListener {
         // request.post(listener);
     }
 
-    /**
-     * 上传绑卡照片
-     */
-    public static void uploadUserBindcardPhoto(final Context context,
-                                               final String filePath, final Handler handler) {
-
-        formDataName = "card";
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Map<String, String> params = new HashMap<String, String>();
-                handleBindCardPostParams(params);
-                String[] imagePaths = {filePath};
-
-                LogUtil.e("userdata--url=" + ConstantUtil.SERVER_URL_TAG_42);
-                String result = doMultipartPost(ConstantUtil.SERVER_URL_TAG_42,
-                        params, imagePaths, true);
-
-                try {
-                    JSONObject jResult = new JSONObject(result);
-                    int error_code = jResult.optInt(StringConstant.JSON_ERROR_CODE, -1);
-                    String message = jResult.optString(StringConstant.JSON_ERROR_MESSAGE);
-                    Message msg = new Message();
-                    if (error_code == 0) {// success
-                        JSONObject obj = jResult.optJSONObject("data");
-                        String url = obj.optString("card_image");
-                        UserBankCardModel bankCard = new UserBankCardModel();
-                        try {
-                            JSONObject bankcard = obj.optJSONObject("bank_card");
-                            bankCard.setInfo(url);
-                            bankCard.setBind_card_note(bankcard.optString("bind_card_note"));
-                            bankCard.setBind_card_note_short(bankcard.optString("bind_card_note_short"));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                        if (TextUtils.isEmpty(url)) {
-                            // 服务器异常情况
-                            LogUtil.d("upload bindcard pic success but url is null go wangdong");
-                            msg.what = 1;
-                            msg.obj = "服务器异常，请稍后重试";
-                            handler.sendMessage(msg);
-                        } else {
-                            msg.what = 0;
-                            msg.obj = bankCard;
-                            handler.sendMessage(msg);
-
-                            // copy file to avatar folder
-                            String avatarName = UploadPicture.getUserAvatarName(url);
-                            String avatarPath = UploadPicture
-                                    .getUserAvatarDir(UserManager.getUserDataHandler().getCurrentUserInfo().getUser_id());
-                            String newPath = avatarPath + "/" + avatarName;
-                            FileHelper.copyFile(filePath, newPath);
-
-                        }
-
-                    } else {// fail
-                        // ToastFactory.showToast(context, message,
-                        // Toast.LENGTH_LONG);
-                        msg.what = 2;
-                        msg.obj = message;
-                        handler.sendMessage(msg);
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    LogUtil.d("upload avatar fail  go wangdong--exception is:"
-                            + e.getMessage());
-                    Message msg = new Message();
-                    msg.what = 1;
-                    msg.obj = "服务器异常，请稍后重试";
-                    handler.sendMessage(msg);
-                }
-            }
-        }).start();
-    }
 
     /**
      * 上传照片
@@ -182,9 +109,7 @@ public class UploadPicture implements INetListener {
                             // copy file to avatar folder
                             String avatarName = UploadPicture.getUserAvatarName(url);
                             String avatarPath = UploadPicture
-                                    .getUserAvatarDir(UserManager
-                                            .getUserDataHandler()
-                                            .getCurrentUserInfo().getUser_id());
+                                    .getUserAvatarDir(PreferenceManager.getInstance().getAccountInfo().getUserID());
                             String newPath = avatarPath + "/" + avatarName;
                             FileHelper.copyFile(filePath, newPath);
 
@@ -214,30 +139,12 @@ public class UploadPicture implements INetListener {
         }).start();
     }
 
-    protected static void handleBindCardPostParams(Map<String, String> params) {
-        // TODO Auto-generated method stub
 
-        UserInfo user = UserManager.getUserDataHandler().getCurrentUserInfo();
-        String _uid = "";
-        String _token = "";
-        if (user != null) {
-            // _uid = user.getUserId() == null ? "" : user.getUserId();
-            _token = user.getToken() == null ? "" : user.getToken();
-        }
-
-        // get user id from user interface
-        // params.put(StringConstant.JSON_USER_ID, _uid);
-
-        // get user token from user interface
-        params.put(StringConstant.JSON_TOKEN, _token);
-        // params.put(StringConstant.JSON_TOKEN, _token);
-
-    }
 
     protected static void handlePostParams(Map<String, String> params) {
         // TODO Auto-generated method stub
 
-        UserInfo user = UserManager.getUserDataHandler().getCurrentUserInfo();
+        AccountInfo user = PreferenceManager.getInstance().getAccountInfo();
         // String _uid = "";
         String _token = "";
         if (user != null) {
@@ -270,7 +177,7 @@ public class UploadPicture implements INetListener {
             conn.setRequestProperty("Content-type", MULTIPART_FORM_DATA
                     + "; boundary=" + BOUNDARY);
             String token = "";
-            UserInfo user = UserManager.getUserDataHandler().getCurrentUserInfo();
+            AccountInfo user = PreferenceManager.getInstance().getAccountInfo();
             if (user != null) {
                 token = user.getToken();
             }

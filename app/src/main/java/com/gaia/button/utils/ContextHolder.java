@@ -1,4 +1,4 @@
-package com.jindan.p2p.utils;
+package com.gaia.button.utils;
 
 import android.app.Application;
 import android.content.Context;

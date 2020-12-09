@@ -1,36 +1,20 @@
-package com.jindan.p2p.json;
+package com.gaia.button.net;
 
 import android.os.Build;
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.jindan.p2p.json.model.UserModel.UserInfo;
-import com.jindan.p2p.user.UserManager;
-import com.jindan.p2p.utils.AppUtils;
-import com.jindan.p2p.utils.ConstantUtil;
-import com.jindan.p2p.utils.LogUtil;
-import com.jindan.p2p.utils.Md5Tools;
-import com.jindan.p2p.utils.PhoneHelper;
-import com.jindan.p2p.utils.StringConstant;
-import com.jindan.p2p.utils.Utils;
+import com.gaia.button.utils.ConstantUtil;
+import com.gaia.button.utils.StringConstant;
+import com.gaia.button.utils.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
-
-import static com.jindan.p2p.utils.SharePreferenceUtil.SPTOOL;
 
 public class JSONBuilder implements JsonBuilderInterface {
 	/** 版本名称 */
@@ -56,113 +40,15 @@ public class JSONBuilder implements JsonBuilderInterface {
 	private static String localSalt = "762b21fc8da871dada41f58ebd0ab172";
 
 	public JSONBuilder() {
-		versionName = AppUtils.getAppVersionName();
-		if (versionName.matches("(\\d+\\.){3}(\\d+)")) {
-			versionName = versionName.substring(0, versionName.lastIndexOf('.'));
-		}
-		osString = Build.VERSION.RELEASE;
-		uaString = Build.MODEL;
-		//初始化设备信息
-		initDeviceInfo();
 	}
 
-	/**
-	 *  初始化设备信息
-	 *  说明: android6.0开始权限动态获取可能读不到设备信息，因此重新初始化
-	 */
-	private void initDeviceInfo() {
-		if(TextUtils.isEmpty(imeiString)) {
-			imeiString = PhoneHelper.getIMEI();
-		}
-		if(TextUtils.isEmpty(udid)) {
-			udid = PhoneHelper.getUDID();
-		}
-	}
+
 
 	private TreeMap<String, String> baseSignMap = new TreeMap<>();
 	private TreeMap<String, String> signMap = new TreeMap<>();
 
 	private JSONObject createJsonObject(JSONObject funBody) throws JSONException {
-		//再次初始化设备信息
-		initDeviceInfo();
 		JSONObject mJsonObject = new JSONObject();
-
-		JSONObject mJsonHeaderStatic = new JSONObject();
-		mJsonHeaderStatic.put(StringConstant.JSON_VERSION, Utils.GetStringNoNil(versionName));
-		mJsonHeaderStatic.put(StringConstant.JSON_UA, Utils.GetStringNoNil(uaString));
-		mJsonHeaderStatic.put(StringConstant.JSON_OS, "android" + osString);
-		mJsonHeaderStatic.put("system_version", osString);
-		mJsonHeaderStatic.put(StringConstant.JSON_CONNECT_TYPE, "");
-		mJsonHeaderStatic.put(StringConstant.JSON_IMEI, Utils.GetStringNoNil(imeiString));
-//		mJsonHeaderStatic.put(StringConstant.JSON_USER_PHONE, Utils.GetStringNoNil(phonenumber));
-		mJsonHeaderStatic.put(StringConstant.JSON_CHANNEL, ConstantUtil.APP_CHANNEL_NAME);
-
-//		mJsonHeaderStatic.put(StringConstant.JSON_SIMNUMBER, Utils.GetStringNoNil(simnumber));
-		mJsonHeaderStatic.put(StringConstant.JSON_IMSI, Utils.GetStringNoNil(imsiString));
-		mJsonHeaderStatic.put(StringConstant.JSON_UDID, Utils.GetStringNoNil(udid));
-
-		UserInfo user = UserManager.getUserDataHandler().getCurrentUserInfo();
-		String _uid = "";
-		String _token = "";
-//		String _o7 = "";
-		String _userKey = "";
-		if (user != null) {
-			_uid = Utils.GetStringNoNil(user.getUser_id());
-			_token = Utils.GetStringNoNil(user.getToken());
-//			_o7 = Utils.GetStringNoNil(user.getO7());
-			_userKey = Utils.GetStringNoNil(user.getUserKey());
-		}
-
-		mJsonHeaderStatic.put(StringConstant.JSON_PUSH_CHANNELID,
-				SPTOOL.getString(ConstantUtil.SP_PUSH_INFO_MSG_CHANNELID));
-		mJsonHeaderStatic.put(StringConstant.JSON_PUSH_USERID,
-				SPTOOL.getString(ConstantUtil.SP_PUSH_INFO_MSG_USERID));
-		mJsonHeaderStatic.put(StringConstant.JSON_PUSH_APP_ID,
-				SPTOOL.getString(ConstantUtil.SP_PUSH_INFO_MSG_APPID));
-
-		// get user id from user interface
-		mJsonHeaderStatic.put(StringConstant.JSON_USER_ID, _uid);
-
-		mJsonHeaderStatic.put(StringConstant.JSON_USER_KEY, _userKey);
-
-		// get user token from user interface
-		mJsonHeaderStatic.put(StringConstant.JSON_TOKEN, _token);
-
-		mJsonHeaderStatic.put(StringConstant.JSON_TIMESTAMP, System.currentTimeMillis()/1000 + "");
-		mJsonHeaderStatic.put(StringConstant.JSON_SALT, SPTOOL.getString(StringConstant.JSON_SALT, ""));
-
-		try {
-			signMap.clear();
-			StringBuilder jsonString = new StringBuilder();
-//			if (baseSignMap.size() <= 0) {
-//				baseSignMap = toTreeMap(mJsonHeaderStatic);
-//			}
-			baseSignMap = toTreeMap(mJsonHeaderStatic);
-			signMap = baseSignMap;
-			if (funBody != null) {
-				signMap.put(StringConstant.JSON_STRUCTNAME_FUNCTION, funBody.toString());
-			}
-			Iterator<Map.Entry<String, String>> iter = signMap.entrySet().iterator();
-
-			while (iter.hasNext()) {
-				String key = iter.next().getKey();
-				jsonString.append(key)
-						.append("=").append(signMap.get(key)).append("&");
-			}
-			jsonString.append("key=")
-					.append(localSalt + SPTOOL.getString(StringConstant.JSON_SALT));
-			LogUtil.e("zsz", "----------->" + jsonString.toString());
-			mJsonHeaderStatic.put("sign", Md5Tools.md5(jsonString.toString()));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		// get user token from user interface
-//		mJsonHeaderStatic.put(StringConstant.JSON_O7, _o7);
-
-		mJsonObject.put(StringConstant.JSON_STRUCTNAME_API_VERSION, ConstantUtil.APP_API_VERSION);
-
-		mJsonObject.put(StringConstant.JSON_STRUCTNAME_STAT, mJsonHeaderStatic);
 		return mJsonObject;
 	}
 
@@ -173,8 +59,6 @@ public class JSONBuilder implements JsonBuilderInterface {
 
 		try {
 
-
-
 			JSONObject jsonBody = new JSONObject();
 
 			JSONObject funBody = new JSONObject();
@@ -183,13 +67,11 @@ public class JSONBuilder implements JsonBuilderInterface {
 
 			JSONObject jsonObj = createJsonObject(funBody);
 
-			jsonObj.put(StringConstant.JSON_STRUCTNAME_FUNCTION, funBody);
 
 			res = jsonObj.toString();
 
 		} catch (Exception e) {
 
-			LogUtil.e(e.toString());
 
 		}
 
@@ -224,13 +106,11 @@ public class JSONBuilder implements JsonBuilderInterface {
 
 			JSONObject jsonObj = createJsonObject(funBody);
 
-			jsonObj.put(StringConstant.JSON_STRUCTNAME_FUNCTION, funBody);
 
 			res = jsonObj.toString();
 
 		} catch (Exception e) {
 
-			LogUtil.e(e.toString());
 
 		}
 
@@ -246,7 +126,6 @@ public class JSONBuilder implements JsonBuilderInterface {
 			jsonObj.put(StringConstant.JSON_STRUCTNAME_FUNCTION, new JSONObject(funJsonString));
 			res = jsonObj.toString();
 		} catch (Exception e) {
-			LogUtil.e(e.toString());
 		}
 		return res;
 	}
@@ -259,7 +138,6 @@ public class JSONBuilder implements JsonBuilderInterface {
 			jsonObj.put(StringConstant.JSON_STRUCTNAME_FUNCTION, new JSONObject(funJsonString));
 			res = jsonObj.toString();
 		} catch (Exception e) {
-			LogUtil.e(e.toString());
 		}
 		return res;
 	}
@@ -270,18 +148,18 @@ public class JSONBuilder implements JsonBuilderInterface {
 
         try {
 
-            JSONObject jsonBody = new JSONObject();
-            JSONArray array = new JSONArray(content);
-            jsonBody.put("data", array);
-            JSONObject funBody = new JSONObject();
-            funBody.put(ConstantUtil.SERVER_URL_NAME_USER_BEHAVIOR_LOG,
-                    jsonBody);
-			JSONObject jsonObj = createJsonObject(funBody);
-            jsonObj.put(StringConstant.JSON_STRUCTNAME_FUNCTION, funBody);
-            res = jsonObj.toString();
+//            JSONObject jsonBody = new JSONObject();
+//            JSONArray array = new JSONArray(content);
+//            jsonBody.put("data", array);
+//            JSONObject funBody = new JSONObject();
+//            funBody.put(ConstantUtil.SERVER_URL_NAME_USER_BEHAVIOR_LOG,
+//                    jsonBody);
+//			JSONObject jsonObj = createJsonObject(funBody);
+//            jsonObj.put(StringConstant.JSON_STRUCTNAME_FUNCTION, funBody);
+//            res = jsonObj.toString();
 
         } catch (Exception e) {
-            LogUtil.e(e.toString());
+
         }
         return res;
     }

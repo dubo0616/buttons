@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">www.baidu.com</domain>
+        <domain includeSubdomains="true">img.lovetoshare168.com</domain>
     </domain-config>
 </network-security-config>

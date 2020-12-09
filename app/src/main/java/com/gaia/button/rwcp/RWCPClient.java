@@ -7,24 +7,11 @@ package com.gaia.button.rwcp;
 import android.os.Handler;
 import android.util.Log;
 
-import com.qualcomm.qti.gaiacontrol.Utils;
+
+import com.gaia.button.utils.Utils;
 
 import java.util.LinkedList;
 
-/**
- * <p>This class implements the Reliable Write Command Protocol - RWCP. It manages RWCP segments and the
- * encapsulation of data into a RWCP segment.</p>
- * <p>For any byte array known as a potential RWCP segment, it is passed to this client using
- * {@link #onReceiveRWCPSegment(byte[]) onReceiveRWCPSegment}. This method will then analyze the array in order to
- * get a {@link Segment Segment}. Then depending on the {@link com.qualcomm.qti.gaiacontrol.rwcp.RWCP.OpCode opration code}
- * and the current {@link com.qualcomm.qti.gaiacontrol.rwcp.RWCP.State state} it handles the received segment.</p>
- * <p>This client provides a {@link #sendData(byte[]) sendData} method in order to send a byte array to a connected
- * RWCP Server using RWCP. If a session is already running, this method queues up the messages.</p>
- * <p>The transfer should be cancelled using {@link #cancelTransfer() cancelTransfer} when the Server is
- * disconnected.</p>
- *
- * @since 3.3.0
- */
 public class RWCPClient {
 
     // ====== FIELDS ====================================================================
@@ -362,24 +349,6 @@ public class RWCPClient {
         reset(true);
     }
 
-    /**
-     * <p>This method is called by {@link #onReceiveRWCPSegment(byte[]) onReceiveRWCPSegment} when it has received a
-     * {@link com.qualcomm.qti.gaiacontrol.rwcp.RWCP.OpCode.Server#SYN_ACK SYN_ACK} segment.</p>
-     * <p>A SYN_ACK segment can be expected on the following cases:
-     * <ul>
-     *     <li>state {@link com.qualcomm.qti.gaiacontrol.rwcp.RWCP.State#SYN_SENT SYN_SENT}: default behaviour, the
-     *     Client can start the data transfer.</li>
-     *     <li>state {@link com.qualcomm.qti.gaiacontrol.rwcp.RWCP.State#ESTABLISHED ESTABLISHED}: the Server has not
-     *     received any data yet and is expecting some. This client resent any unacknowledged data and the
-     *     following segments if there is any credit.</li>
-     * </ul></p>
-     *
-     * @param segment
-     *          The received segment with the operation code
-     *          {@link com.qualcomm.qti.gaiacontrol.rwcp.RWCP.OpCode.Server#SYN_ACK SYN_ACK}.
-     *
-     * @return True if the segment has successfully been handled.
-     */
     private boolean receiveSynAck(Segment segment) {
         if (mShowDebugLogs) {
             Log.d(TAG, "Receive SYN_ACK for sequence " + segment.getSequenceNumber());
@@ -422,25 +391,6 @@ public class RWCPClient {
         }
     }
 
-    /**
-     * <p>This method is called by {@link #onReceiveRWCPSegment(byte[]) onReceiveRWCPSegment} when it has received a
-     * {@link com.qualcomm.qti.gaiacontrol.rwcp.RWCP.OpCode.Server#DATA_ACK DATA_ACK} segment.</p>
-     * <p>A DATA_ACK segment can be expected on the following cases:
-     * <ul>
-     *     <li>state {@link com.qualcomm.qti.gaiacontrol.rwcp.RWCP.State#ESTABLISHED ESTABLISHED}: the Server acknowledges
-     *     the data it has received. This client then validates the acknowledged data and send more if it has free
-     *     credits.</li>
-     *     <li>state {@link com.qualcomm.qti.gaiacontrol.rwcp.RWCP.State#CLOSING CLOSING}: when this client has sent a
-     *     {@link com.qualcomm.qti.gaiacontrol.rwcp.RWCP.OpCode.Client#RST RST} segment but it has not been fetched yet by the
-     *     Server.</li>
-     * </ul></p>
-     *
-     * @param segment
-     *          The received segment with the operation code
-     *          {@link com.qualcomm.qti.gaiacontrol.rwcp.RWCP.OpCode.Server#DATA_ACK DATA_ACK}.
-     *
-     * @return True if the segment has successfully been handled.
-     */
     private boolean receiveDataAck(Segment segment) {
         if (mShowDebugLogs) {
             Log.d(TAG, "Receive DATA_ACK for sequence " + segment.getSequenceNumber());
@@ -486,30 +436,6 @@ public class RWCPClient {
         }
     }
 
-    /**
-     * <p>This method is called by {@link #onReceiveRWCPSegment(byte[]) onReceiveRWCPSegment} when it has received a
-     * {@link com.qualcomm.qti.gaiacontrol.rwcp.RWCP.OpCode.Server#RST RST} or a
-     * {@link com.qualcomm.qti.gaiacontrol.rwcp.RWCP.OpCode.Server#RST_ACK RST_ACK} segment.</p>
-     * <p>A RST segment can be expected on the following cases:
-     * <ul>
-     *     <li>state {@link com.qualcomm.qti.gaiacontrol.rwcp.RWCP.State#ESTABLISHED ESTABLISHED}: the Server requests a
-     *     reset of the session, this cancels the transfer.</li>
-     *     <li>state {@link com.qualcomm.qti.gaiacontrol.rwcp.RWCP.State#CLOSING CLOSING}: This might be a
-     *     {@link com.qualcomm.qti.gaiacontrol.rwcp.RWCP.OpCode.Server#RST_ACK RST_ACK} - the
-     *     Server acknowledges a RST sent by this client. The session is ended.</li>
-     *     <li>state {@link com.qualcomm.qti.gaiacontrol.rwcp.RWCP.State#SYN_SENT SYN_SENT}: This might be a
-     *     {@link com.qualcomm.qti.gaiacontrol.rwcp.RWCP.OpCode.Server#RST_ACK RST_ACK} - the
-     *     Server acknowledges a RST sent by this client. A RST message is always sent before a SYN message. There
-     *     is nothing to do here.</li>
-     * </ul></p>
-     *
-     * @param segment
-     *          The received segment with the operation code
-     *          {@link com.qualcomm.qti.gaiacontrol.rwcp.RWCP.OpCode.Server#RST RST} or
-     *          {@link com.qualcomm.qti.gaiacontrol.rwcp.RWCP.OpCode.Server#RST_ACK RST_ACK}.
-     *
-     * @return True if the segment has successfully been handled.
-     */
     private boolean receiveRST(Segment segment) {
         if (mShowDebugLogs) {
             Log.d(TAG, "Receive RST or RST_ACK for sequence " + segment.getSequenceNumber());
@@ -557,25 +483,6 @@ public class RWCPClient {
         }
     }
 
-    /**
-     * <p>This method is called by {@link #onReceiveRWCPSegment(byte[]) onReceiveRWCPSegment} when it has received a
-     * {@link com.qualcomm.qti.gaiacontrol.rwcp.RWCP.OpCode.Server#GAP GAP} segment.</p>
-     * <p>A DATA_ACK segment can be expected on the following cases:
-     * <ul>
-     *     <li>state {@link com.qualcomm.qti.gaiacontrol.rwcp.RWCP.State#ESTABLISHED ESTABLISHED}: the Server acknowledges
-     *     the data it has received and that it misses segments after. This client then validates the acknowledged
-     *     data and resends the next ones.</li>
-     *     <li>state {@link com.qualcomm.qti.gaiacontrol.rwcp.RWCP.State#CLOSING CLOSING}: when this client has sent a
-     *     {@link com.qualcomm.qti.gaiacontrol.rwcp.RWCP.OpCode.Client#RST RST} segment but it has not been fetched yet by the
-     *     Server.</li>
-     * </ul></p>
-     *
-     * @param segment
-     *          The received segment with the operation code
-     *          {@link com.qualcomm.qti.gaiacontrol.rwcp.RWCP.OpCode.Server#GAP GAP}.
-     *
-     * @return True if the segment has successfully been handled.
-     */
     private boolean receiveGAP(Segment segment) {
         if (mShowDebugLogs) {
             Log.d(TAG, "Receive GAP for sequence " + segment.getSequenceNumber());
@@ -1081,11 +988,7 @@ public class RWCPClient {
         boolean sendRWCPSegment(byte[] bytes);
 
         /**
-         * <p>Called when the transfer with RWCP has failed. The transfer fails in the following cases:
-         * <ul>
-         *     <li>The sending of a segment fails at the transport layer.</li>
-         *     <li>The Server sent a {@link com.qualcomm.qti.gaiacontrol.rwcp.RWCP.OpCode.Client#RST RST} segment.</li>
-         * </ul></p>
+
          */
         void onTransferFailed();
 

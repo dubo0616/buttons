@@ -8,12 +8,14 @@ import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.os.Handler;
-import android.support.annotation.IntDef;
-import android.support.annotation.NonNull;
+
 import android.util.Log;
 
-import com.qualcomm.qti.gaiacontrol.Utils;
-import com.qualcomm.qti.gaiacontrol.gaia.UpgradeGaiaManager;
+import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
+
+import com.gaia.button.gaia.UpgradeGaiaManager;
+import com.gaia.button.utils.Utils;
 import com.qualcomm.qti.libraries.gaia.GAIA;
 import com.qualcomm.qti.libraries.gaia.packets.GaiaPacketBREDR;
 import com.qualcomm.qti.libraries.vmupgrade.UpgradeError;

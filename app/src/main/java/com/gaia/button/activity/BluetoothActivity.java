@@ -13,17 +13,11 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.qualcomm.qti.gaiacontrol.Consts;
-import com.qualcomm.qti.gaiacontrol.receivers.BluetoothStateReceiver;
+import com.gaia.button.receivers.BluetoothStateReceiver;
+import com.gaia.button.utils.Consts;
 
-/**
- * <p>This class is the abstract activity to extend for each activity in this application which needs to use
- * Bluetooth. This class will initialise the {@link BluetoothAdapter BluetoothAdapter} and will check that Bluetooth
- * is enabled.</p>
- * <p>This class extends the {@link PermissionsActivity PermissionsActivity} and manages.</p>
- */
 
-public abstract class BluetoothActivity extends PermissionsActivity
+public abstract class BluetoothActivity extends BaseActivity
         implements BluetoothStateReceiver.BroadcastReceiverListener {
 
     /**

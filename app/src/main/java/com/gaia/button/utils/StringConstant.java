@@ -1,4 +1,4 @@
-package com.jindan.p2p.utils;
+package com.gaia.button.utils;
 
 public final class StringConstant {
 
@@ -60,9 +60,9 @@ public final class StringConstant {
 
 	public static final String JSON_CHANNEL = "channel";
 
-	public static final String JSON_ERROR_CODE = "error_code";
+	public static final String JSON_ERROR_CODE = "code";
 
-	public static final String JSON_ERROR_MESSAGE = "message";
+	public static final String JSON_ERROR_MESSAGE = "msg";
 
 	public static final String JSON_PAY_AMOUNT = "amount";
 

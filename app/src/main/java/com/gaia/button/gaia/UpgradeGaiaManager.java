@@ -3,12 +3,12 @@
  **************************************************************************************************/
 
 
-package com.qualcomm.qti.gaiacontrol.gaia;
+package com.gaia.button.gaia;
 
 import android.util.Log;
 
-import com.qualcomm.qti.gaiacontrol.Consts;
-import com.qualcomm.qti.gaiacontrol.rwcp.RWCP;
+import com.gaia.button.rwcp.RWCP;
+import com.gaia.button.utils.Consts;
 import com.qualcomm.qti.libraries.gaia.GAIA;
 import com.qualcomm.qti.libraries.gaia.GaiaException;
 import com.qualcomm.qti.libraries.gaia.packets.GaiaPacket;

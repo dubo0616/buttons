@@ -1,4 +1,12 @@
-package com.jindan.p2p.utils;
+package com.gaia.button.utils;
+
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -18,16 +26,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
-
-import com.jindan.p2p.P2PApplication;
 
 public final class FileHelper {
 
@@ -457,7 +455,7 @@ public final class FileHelper {
 	 *            方法参数
 	 */
 	public static void sendMessage(Handler handler, String funcName,
-			String... params) {
+                                   String... params) {
 		if (handler == null) {
 			return;
 		}
@@ -485,13 +483,13 @@ public final class FileHelper {
 	 */
 	@SuppressWarnings("rawtypes")
 	public static Handler getHandler(final Class className,
-			final Object instance) {
+                                     final Object instance) {
 		return new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
 				// 反射调用消息的方法
 				@SuppressWarnings("unchecked")
-				ArrayList<Object> args = (ArrayList<Object>) msg.obj;
+                ArrayList<Object> args = (ArrayList<Object>) msg.obj;
 				String funcName = args.remove(0).toString();
 
 				Class[] cs = new Class[msg.what];
@@ -512,7 +510,7 @@ public final class FileHelper {
 	}
 
 	public static boolean getImageFromNetAndSave(String url, String savePath,
-			String fileName) {
+                                                 String fileName) {
 		try {
 			byte[] bytes = getImage(url);
 //			Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);

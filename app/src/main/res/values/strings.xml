@@ -1,7 +1,7 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">gaiabutton</string>
-    <string name="login_wechat">微信登录</string>
-    <string name="login_phone">手机账号登录</string>
+    <string name="login_wechat">微信</string>
+    <string name="login_phone">手机</string>
     <string name="login_phone_top_title">解锁试听盛宴</string>
     <string name="login_server">登录注册代表同意用户协议和隐私政策</string>
     <string name="login_server_one">用户协议</string>
@@ -11,4 +11,160 @@
     <string name="personal_collect">&#8195;收藏夹&#8195;</string>
     <string name="personal_device">&#8195;我的设备&#8195;</string>
     <string name="personal_setting">&#8195;&#8195;设置&#8195;&#8195;</string>
+
+    <string name="alert_permissions_title">Permissions required</string>
+    <string name="alert_permissions_message">Please enable Location permission which is required to scan for
+        LE devices.</string>
+    <string name="button_ok">OK</string>
+    <string name="scanned_devices">SCANNED</string>
+    <string name="bonded_devices">BONDED</string>
+
+    <string name="toast_not_implemented">Not implemented yet</string>
+    <string name="toast_gaia_not_supported">Gaia service not supported</string>
+    <string name="toast_not_connected">Device not connected</string>
+    <string name="toast_connection_error_failed">Connection has failed</string>
+    <string name="toast_connection_error_lost">Connection with device is lost</string>
+    <string name="toast_connection_error_unknown">Connection unknown error</string>
+
+
+    <string name="alert_no_file_selected_title">No available file</string>
+    <string name="alert_no_file_selected_message">There is no file selected or the selected file cannot be retrieved.
+        <br/>Please choose another file.</string>
+    <string name="alert_not_a_bin_file_title">Not a bin file</string>
+    <string name="alert_not_a_bin_file_message">The selected file is not a bin file. This application only supports</string>
+
+
+    <string name="button_connect">CONNECT</string>
+    <string name="button_connect_ble">CONNECT BLE</string>
+    <string name="button_connect_br_edr">CONNECT BR/EDR</string>
+    <string name="button_disconnect">DISCONNECT</string>
+    <string name="button_start_upgrade">START UPGRADE</string>
+    <string name="button_previous">PREVIOUS</string>
+    <string name="button_abort">ABORT</string>
+    <string name="button_continue">CONTINUE</string>
+    <string name="button_reset">RESET</string>
+    <string name="button_choose">CHOOSE</string>
+    <string name="button_cancel" tools:ignore="ButtonCase">CANCEL</string>
+    <string name="button_confirm">CONFIRM</string>
+
+
+    <string name="activity_information_name">Device information</string>
+    <string name="toast_device_information">Device is&#160;</string>
+    <string name="info_name">Device name</string>
+    <string name="info_bluetooth_address">Bluetooth address</string>
+    <string name="info_rssi_signal">RSSI signal</string>
+    <string name="info_battery_level">Battery level</string>
+    <string name="info_battery_status">Battery status</string>
+    <string name="info_battery_status_in_charge">Charging</string>
+    <string name="info_battery_status_no_charge">Not charging</string>
+    <string name="info_api_version">API version</string>
+    <string name="info_no_title" />
+    <string name="info_not_supported">not supported</string>
+
+    <!-- LAYOUT - FILE PICKER -->
+    <string name="title_pick_file">Upgrade file</string>
+    <string name="message_pick_file_default">Press CHOOSE to pick a file</string>
+    <string name="message_pick_file_change">Press CHOOSE to change the file</string>
+    <string name="message_no_upgrade_file_available">No file available. Please check the application permissions and
+        enable "Storage".</string>
+    <string name="dialog_upgrade_title">Upgrade in progress</string>
+    <string name="dialog_upgrade_error">An error has occurred during the upgrade, the upgrade is aborting.</string>
+    <string name="dialog_upgrade_error_from_board">An error occurred on the board. It sent the following return code
+        information:</string>
+    <string name="dialog_upgrade_error_board_not_ready">The board is not ready for an upgrade, please try again
+        later.</string>
+    <string name="dialog_upgrade_error_exception">An exception occurred during the upgrade. Please try again
+        later or contact your application provider.</string>
+    <string name="dialog_upgrade_error_protocol_exception">A protocol exception occurred during the upgrade. Please try
+        again later or contact your application provider.</string>
+    <string name="dialog_upgrade_transfer_failed">The transfer failed during the upgrade. Please try
+        again later or contact your application provider.</string>
+    <string name="dialog_initialisation">Initialisation</string>
+
+    <string name="empty_content_description" />
+
+    <string name="activity_upgrade_name">Upgrade</string>
+
+    <!-- LAYOUT - UPGRADE OPTIONS -->
+    <string name="warning_upgrade_not_supported">The upgrade feature is not supported by the device.</string>
+    <string name="block_file_title">File</string>
+    <string name="block_le_title">LE</string>
+    <string name="parameter_mtu_title">MTU size</string>
+    <string name="parameter_mtu_message">Only works with compatible devices</string>
+    <string name="block_rwcp_title">RWCP</string>
+    <string name="parameter_rwcp_title">Use RWCP</string>
+    <string name="parameter_rwcp_message">Increases the file upload speed.</string>
+    <string name="parameter_rwcp_initial_window_title">Initial window size</string>
+    <string name="parameter_rwcp_initial_window_message">Set up the initial window size when starting the
+        transfer.</string>
+    <string name="parameter_rwcp_maximum_window_title">Maximum window size</string>
+    <string name="parameter_rwcp_maximum_window_message">Set up the maximum window size during the transfer.</string>
+    <string name="block_logs_title">Logs</string>
+    <string name="parameter_logs_title">Add DEBUG logs</string>
+    <string name="parameter_logs_message">Adds some logs to the Android log system.<br/>This slows down the upgrade
+        .</string>
+
+    <!-- TOASTS - UPGRADE -->
+    <string name="toast_mtu_not_supported">MTU is not supported</string>
+    <string name="error_size_out_of_range" tools:ignore="PluralsCandidate">The size must be between %1$d and %2$d</string>
+    <string name="error_size_not_modifiable">The size cannot be changed, try again later</string>
+    <string name="toast_mtu_updated">MTU size updated to </string>
+    <string name="toast_mtu_failed">Failed to change the MTU size</string>
+    <string name="toast_rwcp_enabled">RWCP mode is enabled</string>
+    <string name="toast_rwcp_disabled">RWCP mode is disabled</string>
+    <string name="toast_rwcp_not_supported">RWCP mode is not supported</string>
+    <string name="toast_rwcp_failed_enabled">Failed to enable RWCP mode</string>
+    <string name="toast_rwcp_failed_disabled">Failed to disable RWCP mode</string>
+    <string name="toast_rwcp_initial_window_failed">Failed to change the initial window size for RWCP</string>
+    <!-- ALERTS - UPGRADE -->
+    <string name="alert_mtu_title">Are you sure the device supports MTU requests?</string>
+    <string name="alert_mtu_message">If the device does not support MTU requests, this action will fail. It can take
+        up to 30 seconds for the application to get the failure response.</string>
+
+    <!-- ALERT - FILE ERROR -->
+    <string name="alert_file_error_title">File error</string>
+    <string name="alert_file_error_message">Error when attempting to retrieve the selected file. Please try
+        again or select another one.</string>
+
+    <!-- ALERT - RECONNECTION -->
+    <string name="alert_reconnection_title">Device disconnected</string>
+    <string name="alert_reconnection_message">Waiting for reconnection</string>
+
+    <!-- ALERT - UPGRADE COMPLETE -->
+    <string name="alert_upgrade_complete_title">Upgrade complete</string>
+    <string name="alert_upgrade_complete_message">The upgrade has successfully completed.</string>
+
+    <!-- ALERT - UPGRADE ALERT LOW BATTERY -->
+    <string name="alert_upgrade_low_battery_message">The battery is low on your audio device. Please connect it to a charger.</string>
+    <string name="alert_upgrade_low_battery_title">Low battery</string>
+
+    <!-- ALERT - UPGRADE COMMIT -->
+    <string name="alert_upgrade_commit_message">The data has been uploaded on the board and the board is ready for
+        the commit process. Do you want to commit your upload?</string>
+    <string name="alert_upgrade_commit_title">Data commit</string>
+
+    <!-- ALERT - UPGRADE TRANSFER COMPLETE -->
+    <string name="alert_upgrade_transfer_complete_message">Would you like to proceed?</string>
+    <string name="alert_upgrade_transfer_complete_title">File transfer complete</string>
+
+    <!-- ALERT - UPGRADE SYNC ID DIFFERENT -->
+    <string name="alert_upgrade_sync_id_different_message">A previous unfinished upgrade has been processed with a
+        different file. By continuing the current upgrade the device will loose all information from that
+        previous upgrade.<br/>Do you want to continue?</string>
+    <string name="alert_upgrade_sync_id_different_title">File transfer complete</string>
+
+    <string name="connect_no_available_scanned_device">No devices discovered.<br/>
+        Please check that your device is advertising and available and that the Bluetooth is enabled on this
+        device.<br/>
+        If you are using Android 6 and above, please also check that the Location permission is enabled for this
+        application and that the service location is enabled.</string>
+    <string name="connect_no_available_paired_device">No paired devices available.</string>
+    <string name="device_type_dual">DUAL device</string>
+    <string name="device_type_le">Low Energy device</string>
+    <string name="device_type_classic">BR/EDR device</string>
+    <string name="device_type_unknown">Unknown device type</string>
+
+    <string name="net_error_title">网络异常，请稍后重试</string>
+    <string name="net_error_local_none">网络不可用，请检查您的网络设置</string>
+    <string name="server_error">服务器异常，请稍后重试</string>
 </resources>

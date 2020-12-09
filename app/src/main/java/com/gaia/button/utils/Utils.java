@@ -6,6 +6,7 @@ package com.gaia.button.utils;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 
 import java.text.DecimalFormat;
 
@@ -91,28 +92,6 @@ public class Utils {
      *
      * @return A drawable picture of a signal strength depending on the given rssi value.
      */
-    @SuppressWarnings("deprecation")
-    public static Drawable getSignalIconFromRssi(Context context, int rssi) {
-        if (-60 <= rssi && rssi <= 0) {
-            //noinspection deprecation
-            return context.getResources().getDrawable(R.drawable.ic_signal_level_4_24dp);
-        }
-        else if (-70 <= rssi && rssi < -60) {
-            return context.getResources().getDrawable(R.drawable.ic_signal_level_3_24dp);
-        }
-        else if (-80 <= rssi && rssi < -70) {
-            return context.getResources().getDrawable(R.drawable.ic_signal_level_2_24dp);
-        }
-        else if (-90 <= rssi && rssi < -80) {
-            return context.getResources().getDrawable(R.drawable.ic_signal_level_1_24dp);
-        }
-        else if (rssi < -90) {
-            return context.getResources().getDrawable(R.drawable.ic_signal_level_0_24dp);
-        }
-        else {
-            return context.getResources().getDrawable(R.drawable.ic_signal_unknown_24dp);
-        }
-    }
 
     /**
      * <p>This method allows to copy a int value into a byte array from the specified <code>offset</code> location to
@@ -234,5 +213,16 @@ public class Utils {
         }
 
         return DECIMAL_FORMAT.format(percentage) + " " + Consts.PERCENTAGE_CHARACTER;
+    }
+
+    /**
+     * 获取字符串值（空值转化为""）
+     */
+    public static String GetStringNoNil(String value) {
+        StringBuilder builder = new StringBuilder();
+        if(!TextUtils.isEmpty(value)) {
+            builder.append(value);
+        }
+        return builder.toString();
     }
 }

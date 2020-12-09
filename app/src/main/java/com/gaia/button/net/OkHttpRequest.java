@@ -1,22 +1,17 @@
-package com.jindan.p2p.net;
+package com.gaia.button.net;
 
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
-import com.jindan.p2p.R;
-import com.jindan.p2p.json.JsonHelper;
-import com.jindan.p2p.json.NetProtocolHeader;
-import com.jindan.p2p.json.model.UserModel.UserInfo;
-import com.jindan.p2p.net.NetMessage.NetMessageType;
-import com.jindan.p2p.user.UserManager;
-import com.jindan.p2p.utils.AppUtils;
-import com.jindan.p2p.utils.ConnectManager;
-import com.jindan.p2p.utils.ContextHolder;
-import com.jindan.p2p.utils.DcError;
-import com.jindan.p2p.utils.LogUtil;
-import com.jindan.p2p.utils.PhoneHelper;
-import com.jindan.p2p.utils.StringConstant;
+
+import com.gaia.button.R;
+import com.gaia.button.data.PreferenceManager;
+import com.gaia.button.model.AccountInfo;
+import com.gaia.button.utils.ConnectManager;
+import com.gaia.button.utils.ContextHolder;
+import com.gaia.button.utils.DcError;
+import com.gaia.button.utils.StringConstant;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -195,8 +190,8 @@ public class OkHttpRequest implements Runnable {
 //        Response getResponse = null;
         try {
             String token = "";
-            UserInfo user = UserManager.getUserDataHandler().getCurrentUserInfo();
-            if (user != null) {
+            AccountInfo user = PreferenceManager.getInstance().getAccountInfo();
+            if (user != null && !TextUtils.isEmpty(user.getToken())) {
                 token = user.getToken();
             }
 
@@ -205,14 +200,7 @@ public class OkHttpRequest implements Runnable {
             } else {
                 RequestBody body = RequestBody.create(JSON, (String) mRequestData);
                 Request request = new Request.Builder().url(mUrl).post(body)
-                        .addHeader("Cookie", "token=" + token)
-                        .addHeader("Cookie",
-                                StringConstant.JSON_IMEI + "="
-                                        + PhoneHelper.getIMEI())
-                        .addHeader("Cookie",
-                                StringConstant.JSON_UDID + "="
-                                        + PhoneHelper.getUDID())
-                        .addHeader("Cookie","User-Agent=" + "JinDanLiCai/" + AppUtils.getAppVersionName()).build();
+                        .addHeader("Cookie", "token=" + token).build();
                 //异步请求
 //                client.newCall(request).enqueue(mHttpCallback);
                 try {
@@ -237,7 +225,7 @@ public class OkHttpRequest implements Runnable {
                     handleErrorEvent(ContextHolder.getContext().getString(R.string.net_error_title), DcError.DC_NET_GENER_ERROR);
                 }
             }
-            LogUtil.d("得到响应");
+
             NetConfig.isGet = false;
         } catch (Exception e) {
             e.printStackTrace();
@@ -266,7 +254,7 @@ public class OkHttpRequest implements Runnable {
             File file = new File(mDownloadDstFilePath + ".temp");
             file.delete();
         } else {
-            msg.setMessageType(NetMessageType.NetFailure);
+            msg.setMessageType(NetMessage.NetMessageType.NetFailure);
             msg.setErrorCode(errorCode);
         }
         // 判断本地是否有网络
@@ -291,7 +279,7 @@ public class OkHttpRequest implements Runnable {
         if (this.mIsDownLoad) {
             msg.setMessageType(NetMessage.NetMessageType.NetDownloadSuccess);
         } else {
-            msg.setMessageType(NetMessageType.NetSuccess);
+            msg.setMessageType(NetMessage.NetMessageType.NetSuccess);
 
             String decryptData = null;
 
@@ -302,7 +290,7 @@ public class OkHttpRequest implements Runnable {
             // LogUtil.d("下行数据 === " + decryptData);
             // msg.setResponseString(decryptData.getBytes());
 
-            BaseResult res = new BaseResult();
+           BaseResult res = new BaseResult();
             try {
                 NetProtocolHeader header = new JsonHelper().parserHeaderForHttp(responseStr);
                 if (header != null && header.getErrorCode() == DcError.DC_NET_ERROR_DIALOG) {
@@ -351,7 +339,7 @@ public class OkHttpRequest implements Runnable {
     private void handleCancelEvent(String cancelStr) {
 
         NetMessage msg = new NetMessage();
-        msg.setMessageType(NetMessageType.NetCancel);
+        msg.setMessageType(NetMessage.NetMessageType.NetCancel);
         msg.setRequestId(getRequestId());
 
         // create system message instance

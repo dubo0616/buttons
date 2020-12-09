@@ -1,4 +1,31 @@
-package com.jindan.p2p.net;
+package com.gaia.button.net;
+
+import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+
+
+import com.gaia.button.data.PreferenceManager;
+import com.gaia.button.model.AccountInfo;
+import com.google.gson.Gson;
+import com.google.gson.internal.$Gson$Types;
+import com.squareup.okhttp.Call;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.FormEncodingBuilder;
+import com.squareup.okhttp.Headers;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.MultipartBuilder;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -30,32 +57,6 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
-import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.DisplayMetrics;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-
-import com.google.gson.Gson;
-import com.google.gson.internal.$Gson$Types;
-import com.jindan.p2p.json.model.UserModel.UserInfo;
-import com.jindan.p2p.user.UserManager;
-import com.jindan.p2p.utils.PhoneHelper;
-import com.jindan.p2p.utils.StringConstant;
-import com.squareup.okhttp.Call;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.Headers;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.MultipartBuilder;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
 
 public class OkHttpClientManager {
     private static final String TAG = "OkHttpClientManager";
@@ -517,16 +518,14 @@ public class OkHttpClientManager {
          */
         private Request buildPostRequest(String url, RequestBody body, Object tag) {
             String token = "";
-            UserInfo user = UserManager.getUserDataHandler().getCurrentUserInfo();
-            if (user != null) {
+            AccountInfo user = PreferenceManager.getInstance().getAccountInfo();
+            if (user != null && !TextUtils.isEmpty(user.getToken())) {
                 token = user.getToken();
             }
             Request.Builder builder = new Request.Builder()
                     .url(url)
                     .post(body)
-                    .addHeader("Cookie", "token=" + token)
-                    .addHeader("Cookie", StringConstant.JSON_IMEI + "=" + PhoneHelper.getIMEI())
-                    .addHeader("Cookie", StringConstant.JSON_UDID + "=" + PhoneHelper.getUDID());
+                    .addHeader("Cookie", "token=" + token);
             if (tag != null) {
                 builder.tag(tag);
             }

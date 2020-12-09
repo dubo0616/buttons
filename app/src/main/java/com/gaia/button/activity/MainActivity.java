@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Switch;
 
 import com.gaia.button.R;
 import com.gaia.button.fargment.MainContorlFragment;
@@ -40,11 +41,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private ConstraintLayout mSearchLayout;
     private EditText mEditText;
     private ImageView mPersonal;
+    private int mTab = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mTab = getIntent().getIntExtra("Tab",0);
         initView();
     }
 
@@ -55,7 +58,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mTabCenter.setOnClickListener(this);
         mTabRight = findViewById(R.id.iv_tab_right);
         mTabRight.setOnClickListener(this);
-        mTabLeft.setSelected(true);
         mSearchLayout = findViewById(R.id.layout_search);
         mEditText = findViewById(R.id.et_search);
         mPersonal = findViewById(R.id.iv_personal);
@@ -78,7 +80,24 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 }
             }
         });
-        switchToDiscovery();
+        switch (mTab){
+            case 0:
+                switchToDiscovery();
+                mSearchLayout.setVisibility(View.VISIBLE);
+                mTabLeft.setSelected(true);
+                break;
+            case 1:
+                switchToContorl();
+                mSearchLayout.setVisibility(View.GONE);
+                mTabCenter.setSelected(true);
+                break;
+            case 2:
+                switchToProduct();
+                mSearchLayout.setVisibility(View.VISIBLE);
+                mTabRight.setSelected(true);
+                break;
+        }
+
     }
 
     private void cleanAllSelect() {

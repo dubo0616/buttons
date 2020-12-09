@@ -22,4 +22,25 @@
         </attr>
         <attr name="arc_shadow_radius" format="dimension|reference" />
     </declare-styleable>
+
+    <declare-styleable name="SpeakerFragment">
+        <attr name="speakerTitle" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="ParameterView">
+        <attr name="type" format="enum">
+            <enum name="switch_button"     value="0"/>
+            <enum name="edit_text"  value="1"/>
+        </attr>
+        <attr name="title" format="string" />
+        <attr name="subtitle" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="circleProgressBar">
+        <attr name="circleWidth" format="dimension" />
+        <attr name="betaAngle" format="integer" />
+        <attr name="firstColor" format="color" />
+        <attr name="secondColor" format="color" />
+    </declare-styleable>
+
 </resources>

@@ -1,4 +1,4 @@
-package com.jindan.p2p.utils;
+package com.gaia.button.utils;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -21,8 +21,6 @@ import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.jindan.p2p.utils.cropper.cropwindow.edge.Edge;
-
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -33,7 +31,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 
 public class BitmapTool {
 
@@ -155,7 +152,7 @@ public class BitmapTool {
 	 * @return
 	 */
 	public static Bitmap loadResizedBitmap(String filename, int width,
-			int height, boolean exact) {
+                                           int height, boolean exact) {
 		Bitmap resizedBmp = null;
 		int minScale = Math.min(width, height);
 		int maxScale = Math.max(width, height);
@@ -218,11 +215,11 @@ public class BitmapTool {
 			options.inSampleSize = 1; // inSample:1 表示不做重采样，图片大小不改变 大于1按照压缩处理
 			if ((options.outHeight != 0
 					&& options.outWidth != 0
-					&& options.outHeight * options.outWidth < Edge.MIN_CROP_LENGTH_PX
-							* Edge.MIN_CROP_LENGTH_PX)
+					&& options.outHeight * options.outWidth < 200
+							* 200)
 					|| (options.outHeight == 0)
 					|| (options.outWidth == 0)) {
-				ToastFactory.showToast(ContextHolder.getContext(), "图片尺寸太小，请重新选择图片！", Toast.LENGTH_SHORT);
+				Toast.makeText(ContextHolder.getContext(), "图片尺寸太小，请重新选择图片！", Toast.LENGTH_SHORT).show();
 				return null;
 			}
 			double oriScale = options.outHeight * options.outWidth;
@@ -235,7 +232,7 @@ public class BitmapTool {
 			options.inSampleSize = Math.max(1, scale);
 			resizedBmp = BitmapFactory.decodeFile(filename, options);
 		} catch (OutOfMemoryError e) {
-			ToastFactory.showToast(ContextHolder.getContext(), "内存不足请重新选择图片！", Toast.LENGTH_SHORT);
+			Toast.makeText(ContextHolder.getContext(), "内存不足请重新选择图片！", Toast.LENGTH_SHORT).show();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -307,7 +304,7 @@ public class BitmapTool {
 		try {
 			bos = new FileOutputStream(avatarFile);
 			//将Bitmap压缩保存ss
-			bmp.compress(Bitmap.CompressFormat.JPEG, BitmapTool.QUALITY, bos);
+			bmp.compress(Bitmap.CompressFormat.JPEG,BitmapTool.QUALITY, bos);
 			bos.flush();
 			bos.close();
 			bos = null;
@@ -367,7 +364,7 @@ public class BitmapTool {
 	 *         requested width and height
 	 */
 	public static Bitmap decodeBitmapFromFile(String filename, int reqWidth,
-			int reqHeight) {
+                                              int reqHeight) {
 
 		// First decode with inJustDecodeBounds=true to check dimensions
 		final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -384,7 +381,7 @@ public class BitmapTool {
 	}
 
 	public static float calculateInSampleSize(BitmapFactory.Options options,
-			int w, int h) {
+                                              int w, int h) {
 		final float height = options.outHeight;
 		final float width = options.outWidth;
 		float reqWidth = w;
@@ -437,8 +434,8 @@ public class BitmapTool {
 		int width = drawable.getIntrinsicWidth();
 		int height = drawable.getIntrinsicHeight();
 		Bitmap bitmap = Bitmap.createBitmap(width, height, drawable
-				.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
-				: Bitmap.Config.RGB_565);
+				.getOpacity() != PixelFormat.OPAQUE ? Config.ARGB_8888
+				: Config.RGB_565);
 		Canvas canvas = new Canvas(bitmap);
 		drawable.setBounds(0, 0, width, height);
 		drawable.draw(canvas);
@@ -466,7 +463,7 @@ public class BitmapTool {
 	 * @return
 	 */
 	public static Bitmap getRoundedCornerBitmap(Bitmap bitmap,
-			final float roundPx) {
+                                                final float roundPx) {
 		if (bitmap == null) {
 			return null;
 		}
@@ -507,7 +504,7 @@ public class BitmapTool {
 	}
 
 	public static Bitmap decodeSampledBitmapFromResource(Resources res,
-			int resId, int reqWidth, int reqHeight) throws Exception {
+                                                         int resId, int reqWidth, int reqHeight) throws Exception {
 		// 第一次解析将inJustDecodeBounds设置为true，来获取图片大小
 		final BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inJustDecodeBounds = true;
@@ -553,7 +550,7 @@ public class BitmapTool {
 	}
 
 	public static Bitmap decodeSampledBitmapFromFile(Resources res,
-			String fileName, int reqWidth, int reqHeight) {
+                                                     String fileName, int reqWidth, int reqHeight) {
 		// 第一次解析将inJustDecodeBounds设置为true，来获取图片大小
 		final BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inJustDecodeBounds = true;
@@ -656,7 +653,7 @@ public class BitmapTool {
 	}
 
 	public static int computeSampleSize(BitmapFactory.Options options,
-			int minSideLength, int maxNumOfPixels) {
+                                        int minSideLength, int maxNumOfPixels) {
 		int initialSize = computeInitialSampleSize(options, minSideLength,
 				maxNumOfPixels);
 
@@ -674,7 +671,7 @@ public class BitmapTool {
 	}
 
 	private static int computeInitialSampleSize(BitmapFactory.Options options,
-			int minSideLength, int maxNumOfPixels) {
+                                                int minSideLength, int maxNumOfPixels) {
 		double w = options.outWidth;
 		double h = options.outHeight;
 
@@ -734,11 +731,11 @@ public class BitmapTool {
 	 * @param bitmap ： 需纠正方向的图片 
 	 * @return 纠向后的图片 
 	 */  
-	public static Bitmap rotateBitmap(int degree, Bitmap bitmap) {  
-	    Matrix matrix = new Matrix();  
+	public static Bitmap rotateBitmap(int degree, Bitmap bitmap) {
+	    Matrix matrix = new Matrix();
 	    matrix.postRotate(degree);  
 	  
-	    Bitmap bm = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),  
+	    Bitmap bm = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
 	            bitmap.getHeight(), matrix, true);  
 	    return bm;  
 	}

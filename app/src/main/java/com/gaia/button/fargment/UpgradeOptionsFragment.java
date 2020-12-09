@@ -7,9 +7,7 @@ package com.gaia.button.fargment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
+
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,11 +16,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.qualcomm.qti.gaiacontrol.Consts;
-import com.qualcomm.qti.gaiacontrol.R;
-import com.qualcomm.qti.gaiacontrol.rwcp.RWCP;
-import com.qualcomm.qti.gaiacontrol.services.GAIAGATTBLEService;
-import com.qualcomm.qti.gaiacontrol.ui.ParameterView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+
+import com.gaia.button.R;
+import com.gaia.button.rwcp.RWCP;
+import com.gaia.button.utils.Consts;
+import com.gaia.button.view.ParameterView;
 
 import java.io.File;
 import java.io.IOException;
@@ -166,30 +168,10 @@ public class UpgradeOptionsFragment extends Fragment implements ParameterView.Pa
 
     // ====== PUBLIC METHODS ====================================================================
 
-    /**
-     * <p>Called when this activity receives a
-     * {@link GAIAGATTBLEService.GattMessage#RWCP_SUPPORTED RWCP_SUPPORTED} message from
-     * the attached service.</p>
-     * <p>It manages the corresponding view components depending on the given support value.</p>
-     *
-     * @param supported
-     *          True if RWCP is supported, false otherwise.
-     */
     public void onRWCPSupported(boolean supported) {
         mRWCPParameter.setSupported(supported);
     }
 
-    /**
-     * <p>Called when this activity receives a
-     * {@link GAIAGATTBLEService.GattMessage#RWCP_ENABLED RWCP_ENABLED} message from
-     * the attached service.</p>
-     * <p>It manages the corresponding view components depending on the given support value.</p>
-     *
-     * @param enabled
-     *          True if RWCP had been enabled, false otherwise.
-     * @param fileSelected
-     *          True if a file is selected, false otherwise.
-     */
     public void onRWCPEnabled(boolean enabled, boolean fileSelected) {
         mRWCPParameter.showProgress(false);
         mButtonActionUpgrade.setEnabled(fileSelected);
@@ -198,17 +180,6 @@ public class UpgradeOptionsFragment extends Fragment implements ParameterView.Pa
         mMaximumWindowParameter.setEnabled(enabled);
     }
 
-    /**
-     * <p>Called when this activity receives a
-     * {@link GAIAGATTBLEService.GattMessage#MTU_SUPPORTED MTU_SUPPORTED} message from
-     * the attached service.</p>
-     * <p>It manages the corresponding view components depending on the given support value.</p>
-     *
-     * @param supported
-     *          True if the maximum MTU size is supported, false otherwise.
-     * @param fileSelected
-     *          True if a file is selected, false otherwise.
-     */
     public void onMtuSupported(boolean supported, boolean fileSelected) {
         mMtuParameter.setSupported(supported);
         if (!supported) {
@@ -217,17 +188,7 @@ public class UpgradeOptionsFragment extends Fragment implements ParameterView.Pa
         }
     }
 
-    /**
-     * <p>Called when this activity receives a
-     * {@link GAIAGATTBLEService.GattMessage#MTU_UPDATED MTU_UPDATED} message from
-     * the attached service.</p>
-     * <p>It manages the corresponding view components depending on the given value.</p>
-     *
-     * @param size
-     *          The size which is configured between the Android device and the connected device.
-     * @param fileSelected
-     *          True if a file is selected, false otherwise.
-     */
+
     public void onMtuUpdated(int size, boolean fileSelected) {
         mMtuParameter.showProgress(false);
         mButtonActionUpgrade.setEnabled(fileSelected);
@@ -332,13 +293,6 @@ public class UpgradeOptionsFragment extends Fragment implements ParameterView.Pa
         }
     }
 
-    /**
-     * <p>Called when the user checks the RWCP switch in order to enable or disable the RWCP mode.</p>
-     * <p>This method calls {@link GAIAGATTBLEService#enableRWCP(boolean) enableRWCP} and hide or show components
-     * while the request is executed.</p>
-     *
-     * @param checked True if the user has enabled the RWCP mode, false otherwise.
-     */
     private void onRWCPChecked(boolean checked) {
         if (mListener.enableRWCP(checked)) {
             mRWCPParameter.showProgress(true);
@@ -401,14 +355,6 @@ public class UpgradeOptionsFragment extends Fragment implements ParameterView.Pa
         }
     }
 
-    /**
-     * <p>Called when the user types a new value for the maximum window size.</p>
-     * <p>This method displays a warning if the given size is not within the expected bounds:
-     * 1 and {@link RWCP#WINDOW_MAX WINDOW_MAX}.</p>
-     *
-     * @param size
-     *          The size sets up by the user.
-     */
     private void onMaximumWindowChangedByUser(int size) {
         if (size <= 0 || size > RWCP.WINDOW_MAX) {
             mMaximumWindowParameter.displayError(getString(R.string.error_size_out_of_range, 1, RWCP.WINDOW_MAX));
@@ -421,15 +367,6 @@ public class UpgradeOptionsFragment extends Fragment implements ParameterView.Pa
             mMaximumWindowParameter.setValue(mListener.getRWCPMaximumWindow());
         }
     }
-
-    /**
-     * <p>Called when the user validates the set up of MTU size.</p>
-     * <p>This method calls {@link GAIAGATTBLEService#setMtuSize(int) setMtuSize} and hide or show
-     * components while the request is executed.</p>
-     *
-     * @param size
-     *          The MTU size sets up by the user.
-     */
     private void changeMTU(int size) {
         hadUserChangedMtu = true;
         if (mListener.setMTUSize(size)) {

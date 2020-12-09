@@ -1,4 +1,7 @@
-package com.jindan.p2p.user;
+package com.gaia.button.net.user;
+
+import com.gaia.button.data.PreferenceManager;
+import com.gaia.button.model.AccountInfo;
 
 /**
  * 请求用户数据
@@ -18,11 +21,11 @@ public final class UserManager {
     }
 
     private UserImpl mUserImpl = null;
-    private UserData mUserData = null;
+    private AccountInfo mUserData = null;
 
     private UserManager() {
         mUserImpl = new UserImpl();
-        mUserData = new UserData();
+        mUserData = PreferenceManager.getInstance().getAccountInfo();
     }
 
     /**
@@ -38,7 +41,7 @@ public final class UserManager {
      * 单个数据请求
      * @return
      */
-    public static UserData getUserDataHandler() {
+    public static AccountInfo getUserDataHandler() {
         return _getInstance()._getUserDataHandler();
     }
 
@@ -46,7 +49,7 @@ public final class UserManager {
         return mUserImpl.getUserRequestProxy();
     }
 
-    private UserData _getUserDataHandler() {
+    private AccountInfo _getUserDataHandler() {
         return mUserData;
     }
 

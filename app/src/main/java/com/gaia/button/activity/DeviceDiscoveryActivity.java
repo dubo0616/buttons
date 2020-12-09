@@ -6,28 +6,22 @@ package com.gaia.button.activity;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 
-import com.qualcomm.qti.gaiacontrol.BuildConfig;
-import com.qualcomm.qti.gaiacontrol.Consts;
-import com.qualcomm.qti.gaiacontrol.R;
-import com.qualcomm.qti.gaiacontrol.receivers.BREDRDiscoveryReceiver;
-import com.qualcomm.qti.gaiacontrol.services.BluetoothService;
-import com.qualcomm.qti.gaiacontrol.ui.adapters.DevicesListAdapter;
-import com.qualcomm.qti.gaiacontrol.ui.adapters.DevicesListTabsAdapter;
-import com.qualcomm.qti.gaiacontrol.ui.fragments.DevicesListFragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.gaia.button.R;
+import com.gaia.button.adapter.DevicesListAdapter;
+import com.gaia.button.adapter.DevicesListTabsAdapter;
+import com.gaia.button.fargment.DevicesListFragment;
+import com.gaia.button.receivers.BREDRDiscoveryReceiver;
+import com.gaia.button.services.BluetoothService;
+import com.gaia.button.utils.Consts;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,23 +40,6 @@ public class DeviceDiscoveryActivity extends BluetoothActivity implements
      * For debug mode, the tag to display for logs.
      */
     private final static String TAG = "DeviceDiscoveryActivity";
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every loaded fragment in memory. If this becomes too
-     * memory intensive, it may be best to switch to a {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
-    private DevicesListTabsAdapter mTabsAdapter;
-    /**
-     * The button the user uses to connect with a selected device over BLE.
-     */
-    private Button mBtConnectBLE;
-    /**
-     * The button the user uses to connect with a selected device over BR/EDR.
-     */
-    private Button mBtConnectBREDR;
-    /**
-     * The handler to use to postpone some actions.
-     */
     private final Handler mHandler = new Handler();
     /**
      * To know if the scan is running.
@@ -90,23 +67,8 @@ public class DeviceDiscoveryActivity extends BluetoothActivity implements
      * {@link BluetoothAdapter#startDiscovery() startDiscovery()}.
      */
     private final BREDRDiscoveryReceiver mDiscoveryReceiver = new BREDRDiscoveryReceiver(this);
-    /**
-     * The listener to be informed when the user changes the tab selection.
-     */
-    private final ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
-        @Override
-        public void onPageSelected(int newPosition) {
-            mTabsAdapter.onPageSelected(newPosition);
-        }
 
-        @Override
-        public void onPageScrolled(int arg0, float arg1, int arg2) {
-        }
-
-        public void onPageScrollStateChanged(int arg0) {
-        }
-    };
-
+    private DevicesListFragment mDevicesListFragment;
 
     // ------ OVERRIDE METHODS ----------------------------------------------------------------------------------------
 
@@ -125,7 +87,7 @@ public class DeviceDiscoveryActivity extends BluetoothActivity implements
 
     @Override // DevicesListFragmentListener
     public void onItemSelected(boolean selected) {
-        enableButtons(selected);
+//        enableButtons(selected);
     }
 
     @Override // DevicesListFragmentListener
@@ -148,7 +110,6 @@ public class DeviceDiscoveryActivity extends BluetoothActivity implements
             }
         }
         adapter.setListDevices(listBLEDevices);
-        mTabsAdapter.onScanFinished(DevicesListTabsAdapter.BONDED_LIST_TYPE);
     }
 
     @Override
@@ -156,7 +117,8 @@ public class DeviceDiscoveryActivity extends BluetoothActivity implements
 
         if (mDevicesAdapter != null && device != null
                 && device.getName() != null && device.getName().length() > 0) {
-            Log.e("TTTT","======"+Log.getStackTraceString(new Throwable())+device.getName());
+            Log.e("TTTT","======"+device.getName());
+            Log.e("TTTT","======"+device.getAddress());
             mDevicesAdapter.add(device, 0);
         }
     }
@@ -175,7 +137,6 @@ public class DeviceDiscoveryActivity extends BluetoothActivity implements
     protected void onResumeFragments() {
         registerReceiver();
         super.onResumeFragments();
-        enableButtons(mTabsAdapter.hasSelection());
     }
 
     @Override
@@ -188,33 +149,6 @@ public class DeviceDiscoveryActivity extends BluetoothActivity implements
     }
 
 
-    // ------ PRIVATE METHODS -----------------------------------------------------------------------------------------
-
-    /**
-     *
-     */
-    private void enableButtons(boolean enabled) {
-        if (!enabled || !mTabsAdapter.hasSelection()) {
-            mBtConnectBLE.setEnabled(false);
-            mBtConnectBREDR.setEnabled(false);
-        }
-        else {
-            int type = mTabsAdapter.getSelectedDevice().getType();
-            mBtConnectBREDR.setEnabled(type == BluetoothDevice.DEVICE_TYPE_CLASSIC
-                    || type == BluetoothDevice.DEVICE_TYPE_DUAL);
-            mBtConnectBLE.setEnabled(type == BluetoothDevice.DEVICE_TYPE_LE
-                    || type == BluetoothDevice.DEVICE_TYPE_DUAL);
-        }
-    }
-
-    /**
-     * <p>To start or stop the scan of available devices.</p>
-     * <p>Do not use this method directly, prefer the
-     * {@link DeviceDiscoveryActivity#startScan startScan} and {@link DeviceDiscoveryActivity#stopScan() stopScan} methods.</p>
-     *
-     * @param scan
-     *          True to start the scan, false to stop it.
-     */
     private void scanDevices(boolean scan) {
         assert mBtAdapter != null;
 
@@ -228,6 +162,7 @@ public class DeviceDiscoveryActivity extends BluetoothActivity implements
             if (DEBUG) Log.i(TAG, "Start scan of LE devices: " + isScanning + " - start discovery of BR/EDR devices: " +
                     isDiscovering);
         } else if (mIsScanning) {
+            mDevicesListFragment.stopRefreshing();
             mIsScanning = false;
             mHandler.removeCallbacks(mStopScanRunnable);
             //noinspection deprecation
@@ -243,71 +178,38 @@ public class DeviceDiscoveryActivity extends BluetoothActivity implements
      * {@link DeviceDiscoveryActivity#scanDevices(boolean) scanDevices} method with "false" as the argument.</p>
      */
     private void stopScan() {
-        mTabsAdapter.onScanFinished(DevicesListTabsAdapter.SCANNED_LIST_TYPE);
         scanDevices(false);
     }
-
-    /**
-     * To start the MainActivity.
-     */
-    private void startMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
-        this.startActivity(intent);
-    }
-
     /**
      * <p>This method is used to initialize all view components which will be used in this activity.</p>
      */
     private void init() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        setTitle(getString(R.string.app_name) + " " + BuildConfig.VERSION_NAME);
-        Log.i(TAG, "Application version is " + BuildConfig.VERSION_NAME);
-
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-        mTabsAdapter = new DevicesListTabsAdapter(getSupportFragmentManager(), this);
-        // Set up the ViewPager with the sections adapter.
-        ViewPager mViewPager = findViewById(R.id.view_pager);
-        mViewPager.setAdapter(mTabsAdapter);
-        mViewPager.addOnPageChangeListener(pageChangeListener);
-
-        // set up buttons
-        mBtConnectBLE = findViewById(R.id.bt_connect_ble);
-        mBtConnectBLE.setEnabled(false);
-        mBtConnectBLE.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.iv_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onConnectButtonClicked(BluetoothService.Transport.BLE);
+                finish();
             }
         });
-
-        mBtConnectBREDR = findViewById(R.id.bt_connect_br_edr);
-        mBtConnectBREDR.setEnabled(false);
-        mBtConnectBREDR.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onConnectButtonClicked(BluetoothService.Transport.BR_EDR);
-            }
-        });
-
-        TabLayout tabLayout = findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
+        mDevicesListFragment = DevicesListFragment.newInstance(DevicesListTabsAdapter.SCANNED_LIST_TYPE);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(R.id.layout_container, mDevicesListFragment);
+        transaction.commitAllowingStateLoss();
     }
 
     private void onConnectButtonClicked(@BluetoothService.Transport int transport) {
         stopScan();
 
-        BluetoothDevice device = mTabsAdapter.getSelectedDevice();
-
-        // keep information
-        SharedPreferences sharedPref = getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt(Consts.TRANSPORT_KEY, transport);
-        editor.putString(Consts.BLUETOOTH_ADDRESS_KEY, device.getAddress());
-        editor.apply();
-
-        startMainActivity();
+//        BluetoothDevice device;
+//
+//        // keep information
+//        SharedPreferences sharedPref = getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPref.edit();
+//        editor.putInt(Consts.TRANSPORT_KEY, transport);
+//        editor.putString(Consts.BLUETOOTH_ADDRESS_KEY, device.getAddress());
+//        editor.apply();
+//
+//        startMainActivity();
     }
 
     /**

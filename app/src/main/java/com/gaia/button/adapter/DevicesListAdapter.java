@@ -6,13 +6,15 @@ package com.gaia.button.adapter;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.qualcomm.qti.gaiacontrol.R;
-import com.qualcomm.qti.gaiacontrol.ui.holders.DeviceViewHolder;
+
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.gaia.button.R;
+import com.gaia.button.holders.DeviceViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,15 +1,13 @@
-package com.jindan.p2p.net;
+package com.gaia.button.net;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.concurrent.FutureTask;
-import java.util.zip.GZIPInputStream;
+import android.os.Handler;
+import android.os.Message;
+
+import com.gaia.button.data.PreferenceManager;
+import com.gaia.button.model.AccountInfo;
+import com.gaia.button.utils.ConstantUtil;
+import com.gaia.button.utils.DcError;
+import com.gaia.button.utils.FileHelper;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -23,19 +21,16 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONException;
 
-import android.os.Handler;
-import android.os.Message;
-
-import com.jindan.p2p.json.JsonHelper;
-import com.jindan.p2p.json.model.UserModel.UserInfo;
-import com.jindan.p2p.net.NetMessage.NetMessageType;
-import com.jindan.p2p.user.UserManager;
-import com.jindan.p2p.utils.ConstantUtil;
-import com.jindan.p2p.utils.DcError;
-import com.jindan.p2p.utils.FileHelper;
-import com.jindan.p2p.utils.LogUtil;
-import com.jindan.p2p.utils.PhoneHelper;
-import com.jindan.p2p.utils.StringConstant;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.concurrent.FutureTask;
+import java.util.zip.GZIPInputStream;
 
 public class ASIHttpRequest implements Runnable {
 	private FutureTask<Object> mTask = new FutureTask<Object>(this, null);
@@ -247,20 +242,11 @@ public class ASIHttpRequest implements Runnable {
 								false);
 
 						String token = "";
-						UserInfo user = UserManager.getUserDataHandler()
-								.getCurrentUserInfo();
+						AccountInfo user = PreferenceManager.getInstance().getAccountInfo();
 						if (user != null) {
 							token = user.getToken();
 						}
 						postRequest.setHeader("Cookie", "token=" + token);
-						postRequest.setHeader(
-								"Cookie",
-								StringConstant.JSON_IMEI + "="
-										+ PhoneHelper.getIMEI());
-						postRequest.setHeader(
-								"Cookie",
-								StringConstant.JSON_UDID + "="
-										+ PhoneHelper.getUDID());
 
 						if (ConstantUtil.HTTP_DATA_TYPE == NetConfig.SubmitDataType.JSON) {
 							StringEntity reqEntity = new StringEntity(
@@ -300,7 +286,6 @@ public class ASIHttpRequest implements Runnable {
 						} else {
 							response = client.execute(postRequest);
 						}
-						LogUtil.d("得到响应");
 					} catch (ConnectTimeoutException timeoutE0) { // add by
 						throw timeoutE0;
 					} catch (Exception e) {
@@ -458,8 +443,6 @@ public class ASIHttpRequest implements Runnable {
 						String msgstr = String.format("Net Error Msg: %s",
 								response.getStatusLine().getReasonPhrase());
 
-						LogUtil.v(codestr);
-						LogUtil.v(msgstr);
 
 						handleErrorEvent("net error",
 								DcError.DC_NET_GENER_ERROR);
@@ -481,17 +464,14 @@ public class ASIHttpRequest implements Runnable {
 
 		} catch (ConnectTimeoutException timeoutEx) {
 			timeoutEx.printStackTrace();
-			LogUtil.v(timeoutEx.toString());
 			handleErrorEvent("exception happen", DcError.DC_NET_TIME_OUT);
 		} catch (StopRequest stopEx) {
 			// TODO Auto-generated catch block
 			mTask.cancel(true);
 			stopEx.printStackTrace();
-			LogUtil.v(stopEx.toString());
 			handleCancelEvent("request canceled");
 		} catch (Exception e) {
 			e.printStackTrace();
-			LogUtil.v(e.toString());
 			handleErrorEvent("exception happen", DcError.DC_NET_GENER_ERROR);
 		} finally {
 
@@ -539,7 +519,7 @@ public class ASIHttpRequest implements Runnable {
 			File file = new File(mDownloadDstFilePath + ".temp");
 			file.delete();
 		} else {
-			msg.setMessageType(NetMessageType.NetFailure);
+			msg.setMessageType(NetMessage.NetMessageType.NetFailure);
 			msg.setErrorCode(errorCode);
 		}
 		msg.setErrorString(netError);
@@ -557,7 +537,7 @@ public class ASIHttpRequest implements Runnable {
 		if (this.mIsDownLoad) {
 			msg.setMessageType(NetMessage.NetMessageType.NetDownloadSuccess);
 		} else {
-			msg.setMessageType(NetMessageType.NetSuccess);
+			msg.setMessageType(NetMessage.NetMessageType.NetSuccess);
 
 			String decryptData = null;
 
@@ -609,7 +589,7 @@ public class ASIHttpRequest implements Runnable {
 	private void handleCancelEvent(String cancelStr) {
 
 		NetMessage msg = new NetMessage();
-		msg.setMessageType(NetMessageType.NetCancel);
+		msg.setMessageType(NetMessage.NetMessageType.NetCancel);
 		msg.setRequestId(this.hashCode());
 
 		// create system message instance

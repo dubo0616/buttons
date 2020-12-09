@@ -17,10 +17,11 @@ import android.os.Message;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.qualcomm.qti.gaiacontrol.Consts;
-import com.qualcomm.qti.gaiacontrol.services.BluetoothService;
-import com.qualcomm.qti.gaiacontrol.services.GAIABREDRService;
-import com.qualcomm.qti.gaiacontrol.services.GAIAGATTBLEService;
+
+import com.gaia.button.services.BluetoothService;
+import com.gaia.button.services.GAIABREDRService;
+import com.gaia.button.services.GAIAGATTBLEService;
+import com.gaia.button.utils.Consts;
 
 import java.lang.ref.WeakReference;
 
@@ -116,14 +117,7 @@ public abstract class ServiceActivity extends BluetoothActivity {
 
     // ====== PROTECTED METHODS ====================================================================
 
-    /**
-     * <p>To get the type of Bluetooth transport uses to communicate with a BluetoothDevice.</p>
-     *
-     * @return The transport, one of the followings:
-     * {@link com.qualcomm.qti.gaiacontrol.services.BluetoothService.Transport#BR_EDR BR_EDR},
-     * {@link com.qualcomm.qti.gaiacontrol.services.BluetoothService.Transport#BLE BLE} or
-     * {@link com.qualcomm.qti.gaiacontrol.services.BluetoothService.Transport#UNKNOWN UNKNOWN}.
-     */
+
     /*package*/ @BluetoothService.Transport int getTransport() {
         return mTransport;
     }
@@ -165,12 +159,7 @@ public abstract class ServiceActivity extends BluetoothActivity {
         mHandler = new ActivityHandler(this);
     }
 
-    /**
-     * <p>To start the Android Service which will allow this application to communicate with a BluetoothDevice.</p>
-     * <p>This method will start the {@link GAIABREDRService GAIABREDRService} or the
-     * {@link GAIAGATTBLEService GAIAGATTBLEService} depending on the content of the SharedPreferences file
-     * {@link Consts#PREFERENCES_FILE}.</p>
-     */
+
     @SuppressWarnings("UnusedReturnValue")
     private boolean startService() {
         // get the bluetooth information

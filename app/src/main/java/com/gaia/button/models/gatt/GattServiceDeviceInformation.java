@@ -2,7 +2,7 @@
  * Copyright 2017 Qualcomm Technologies International, Ltd.                                       *
  **************************************************************************************************/
 
-package com.qualcomm.qti.gaiacontrol.models.gatt;
+package com.gaia.button.models.gatt;
 
 import android.bluetooth.BluetoothGattService;
 

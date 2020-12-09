@@ -2,7 +2,7 @@
  * Copyright 2017 Qualcomm Technologies International, Ltd.                                       *
  **************************************************************************************************/
 
-package com.qualcomm.qti.gaiacontrol.models.equalizer.parameters;
+package com.gaia.button.models.equalizer.parameters;
 
 import java.text.DecimalFormat;
 

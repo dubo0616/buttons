@@ -101,7 +101,7 @@ public class ArcSeekBarOutter extends View {
     private float mThumbY;         // 拖动按钮 中心点 Y
 
     private Path mSeekPath;
-    private Path mBorderPath;
+    private Path mBorderPath,mBorderPathNew;
     private Paint mArcPaint;
     private Paint mThumbPaint;
     private Paint mBorderPaint;
@@ -112,9 +112,6 @@ public class ArcSeekBarOutter extends View {
     private PathMeasure mSeekPathMeasure;
 
     private float mProgressPresent = 0;         // 当前进度百分比
-    private boolean mCanDrag = false;           // 是否允许拖动
-    private boolean mAllowTouchSkip = false;    // 是否允许越过边界
-    private GestureDetector mDetector;
     private Matrix mInvertMatrix;               // 逆向 Matrix, 用于计算触摸坐标和绘制坐标的转换
     private Region mArcRegion;                  // ArcPath的实际区域大小,用于判定单击事件
 
@@ -194,11 +191,10 @@ public class ArcSeekBarOutter extends View {
     private void initData() {
         mSeekPath = new Path();
         mBorderPath = new Path();
+        mBorderPathNew = new Path();
         mSeekPathMeasure = new PathMeasure();
         mTempPos = new float[2];
         mTempTan = new float[2];
-
-        mDetector = new GestureDetector(getContext(), new OnClickListener());
         mInvertMatrix = new Matrix();
         mArcRegion = new Region();
     }
@@ -344,8 +340,11 @@ public class ArcSeekBarOutter extends View {
         mInvertMatrix.preRotate(-mRotateAngle, mCenterX, mCenterY);
 
         mArcPaint.getFillPath(mSeekPath, mBorderPath);
+        mArcPaint.getFillPath(mSeekPath, mBorderPathNew);
         mBorderPath.close();
+        mBorderPathNew.close();
         mArcRegion.setPath(mBorderPath, new Region(0, 0, w, h));
+        mArcRegion.setPath(mBorderPathNew, new Region(0, 00, w, h));
     }
 
     // 重置 shader 颜色
@@ -371,137 +370,9 @@ public class ArcSeekBarOutter extends View {
         canvas.rotate(mRotateAngle, mCenterX, mCenterY);
         mShadowPaint.setColor(Color.parseColor("#88e4e4e4"));
         canvas.drawPath(mBorderPath, mShadowPaint);
-//        canvas.drawPath(mSeekPath, mArcPaint);
-        if (mBorderWidth > 0) {
-//            canvas.drawPath(mBorderPath, mBorderPaint);
-        }
-//        if (mThumbShadowRadius > 0) {
-//            mThumbPaint.setShadowLayer(mThumbShadowRadius, 0, 0, mThumbShadowColor);
-//            canvas.drawCircle(mThumbX, mThumbY, mThumbRadius, mThumbPaint);
-//            mThumbPaint.clearShadowLayer();
-//        }
-//        canvas.drawCircle(mThumbX, mThumbY, mThumbRadius, mThumbPaint);
+        mShadowPaint.setColor(Color.parseColor("#00ff00"));
+        canvas.drawPath(mBorderPathNew, mShadowPaint);
         canvas.restore();
-    }
-
-    private boolean moved = false;
-    private int lastProgress = -1;
-
-    @SuppressLint("ClickableViewAccessibility")
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        super.onTouchEvent(event);
-        int action = event.getActionMasked();
-        switch (action) {
-            case ACTION_DOWN:
-                moved = false;
-                judgeCanDrag(event);
-//                mCanDrag = true;
-                if (null != mOnProgressChangeListener) {
-                    mOnProgressChangeListener.onStartTrackingTouch(this);
-                }
-                break;
-            case ACTION_MOVE:
-                if (!mCanDrag) {
-                    break;
-                }
-                float tempProgressPresent = getCurrentProgress(event.getX(), event.getY());
-                if (!mAllowTouchSkip) {
-                    // 不允许突变
-                    if (Math.abs(tempProgressPresent - mProgressPresent) > 0.5f) {
-                        break;
-                    }
-                }
-                // 允许突变 或者非突变
-                mProgressPresent = tempProgressPresent;
-                computeThumbPos(mProgressPresent);
-                // 事件回调
-                if (null != mOnProgressChangeListener && getProgress() != lastProgress) {
-                    mOnProgressChangeListener.onProgressChanged(this, getProgress(), true);
-                    lastProgress = getProgress();
-                }
-                moved = true;
-                break;
-            case ACTION_UP:
-            case ACTION_CANCEL:
-                if (null != mOnProgressChangeListener && moved) {
-                    mOnProgressChangeListener.onStopTrackingTouch(this);
-                }
-                break;
-        }
-        mDetector.onTouchEvent(event);
-        invalidate();
-        return true;
-    }
-
-    // 判断是否允许拖动
-    private void judgeCanDrag(MotionEvent event) {
-        float[] pos = {event.getX(), event.getY()};
-        mInvertMatrix.mapPoints(pos);
-        if (getDistance(pos[0], pos[1]) <= mThumbRadius * 1.5) {
-            mCanDrag = true;
-        } else {
-            mCanDrag = false;
-        }
-    }
-
-    private class OnClickListener extends GestureDetector.SimpleOnGestureListener {
-        @Override
-        public boolean onSingleTapUp(MotionEvent e) {
-            // 判断是否点击在了进度区域
-            if (!isInArcProgress(e.getX(), e.getY())) return false;
-            // 点击允许突变
-//            mProgressPresent = getCurrentProgress(e.getX(), e.getY());
-//            computeThumbPos(mProgressPresent);
-//            // 事件回调
-//            if (null != mOnProgressChangeListener) {
-//                mOnProgressChangeListener.onProgressChanged(ArcSeekBar.this, getProgress(), true);
-//                mOnProgressChangeListener.onStopTrackingTouch(ArcSeekBar.this);
-//            }
-            return true;
-        }
-    }
-
-    // 判断该点是否在进度条上面
-    private boolean isInArcProgress(float px, float py) {
-        float[] pos = {px, py};
-        mInvertMatrix.mapPoints(pos);
-        return mArcRegion.contains((int) pos[0], (int) pos[1]);
-    }
-
-    // 获取当前进度理论进度数值
-    private float getCurrentProgress(float px, float py) {
-        float diffAngle = getDiffAngle(px, py);
-        float progress = diffAngle / (CIRCLE_ANGLE - mOpenAngle);
-        if (progress < 0) progress = 0;
-        if (progress > 1) progress = 1;
-        return progress;
-    }
-
-    // 获得当前点击位置所成角度与开始角度之间的数值差
-    private float getDiffAngle(float px, float py) {
-        float angle = getAngle(px, py);
-        float diffAngle;
-        diffAngle = angle - mRotateAngle;
-        if (diffAngle < 0) {
-            diffAngle = (diffAngle + CIRCLE_ANGLE) % CIRCLE_ANGLE;
-        }
-        diffAngle = diffAngle - mOpenAngle / 2;
-        return diffAngle;
-    }
-
-    // 计算指定位置与内容区域中心点的夹角
-    private float getAngle(float px, float py) {
-        float angle = (float) ((Math.atan2(py - mCenterY, px - mCenterX)) * 180 / 3.14f);
-        if (angle < 0) {
-            angle += 360;
-        }
-        return angle;
-    }
-
-    // 计算指定位置与上次位置的距离
-    private float getDistance(float px, float py) {
-        return (float) Math.sqrt((px - mThumbX) * (px - mThumbX) + (py - mThumbY) * (py - mThumbY));
     }
 
     private int dp2px(int dp) {
@@ -619,7 +490,7 @@ public class ArcSeekBarOutter extends View {
      */
     public int getProgress() {
         return (int) (mProgressPresent * (mMaxValue - mMinValue)) + mMinValue;
-    }
+}
 
     /**
      * 设置颜色

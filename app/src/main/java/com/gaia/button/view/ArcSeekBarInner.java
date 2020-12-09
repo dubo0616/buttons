@@ -378,13 +378,14 @@ public class ArcSeekBarInner extends View {
             canvas.drawCircle(mThumbX, mThumbY, mThumbRadius, mThumbPaint);
             mThumbPaint.clearShadowLayer();
         }
+//        画拖动
         canvas.drawCircle(mThumbX, mThumbY, mThumbRadius, mThumbPaint);
         canvas.restore();
     }
 
     private boolean moved = false;
     private int lastProgress = -1;
-
+    private boolean isTouch = false;
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -392,11 +393,13 @@ public class ArcSeekBarInner extends View {
         int action = event.getActionMasked();
         switch (action) {
             case ACTION_DOWN:
+                getParent().requestDisallowInterceptTouchEvent(false);
                 moved = false;
                 judgeCanDrag(event);
                 if (null != mOnProgressChangeListener) {
                     mOnProgressChangeListener.onStartTrackingTouch(this);
                 }
+                isTouch = true;
                 break;
             case ACTION_MOVE:
                 if (!mCanDrag) {
@@ -421,6 +424,8 @@ public class ArcSeekBarInner extends View {
                 break;
             case ACTION_UP:
             case ACTION_CANCEL:
+                getParent().requestDisallowInterceptTouchEvent(true);
+//                isTouch= false;
                 if (null != mOnProgressChangeListener && moved) {
                     mOnProgressChangeListener.onStopTrackingTouch(this);
                 }
@@ -429,6 +434,9 @@ public class ArcSeekBarInner extends View {
         mDetector.onTouchEvent(event);
         invalidate();
         return true;
+    }
+    public boolean getIsTouch(){
+        return  isTouch;
     }
 
     // 判断是否允许拖动

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.jindan.p2p.http.builder;
+package com.gaia.button.net.builder;
 
 
 public final class HttpSubmitDataManager {

@@ -2,7 +2,7 @@
  * @author huzexin@duoku.com
  * @version CreateData�?012-5-10 3:46:54 PM
  */
-package com.jindan.p2p.net;
+package com.gaia.button.net;
 
 
 public class NetManager {

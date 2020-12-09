@@ -1,11 +1,11 @@
 /**
  * 
  */
-package com.jindan.p2p.json;
+package com.gaia.button.net;
 
 public class NetProtocolHeader {
-	private int			mErrorCode;
-	private String 	    mErrorDesc;
+	private int code;
+	private String msg;
 	private int			mTag;
 	
 	private String info;
@@ -21,20 +21,20 @@ public class NetProtocolHeader {
 
 	public NetProtocolHeader(){
 		mTag = -1;
-		mErrorCode = -1;
+		code = -1;
 	}
 	
 	public int getErrorCode() {
-		return mErrorCode;
+		return code;
 	}
 	public void setErrorCode(int errorCode) {
-		this.mErrorCode = errorCode;
+		this.code = errorCode;
 	}
 	public String getErrorDesc() {
-		return mErrorDesc;
+		return msg;
 	}
 	public void setErrorDesc(String errorDesc) {
-		this.mErrorDesc = errorDesc;
+		this.msg = errorDesc;
 	}
 	public int getTag() {
 		return mTag;
@@ -46,8 +46,8 @@ public class NetProtocolHeader {
 	@Override
 	public String toString() {
 		return "NetProtocolHeader{" +
-				"mErrorCode=" + mErrorCode +
-				", mErrorDesc='" + mErrorDesc + '\'' +
+				"mErrorCode=" + code +
+				", mErrorDesc='" + msg + '\'' +
 				", mTag=" + mTag +
 				", info='" + info + '\'' +
 				'}';

@@ -48,7 +48,7 @@ public class PersonnalActivity extends BaseActivity {
     }
 }
 
-class PersonalPagerAdapter extends FragmentPagerAdapter {
+ class PersonalPagerAdapter extends FragmentPagerAdapter {
     private Context context;
     private List<Fragment> fragmentList;
     private List<String> list_Title;

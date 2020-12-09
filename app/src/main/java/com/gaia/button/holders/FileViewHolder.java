@@ -4,13 +4,13 @@
 
 package com.gaia.button.holders;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.qualcomm.qti.gaiacontrol.R;
+import androidx.recyclerview.widget.RecyclerView;
+
 
 /**
  * <p>This view holder represents a file item display. It is used in a File list to display and update the
@@ -20,7 +20,7 @@ public class FileViewHolder extends RecyclerView.ViewHolder implements View.OnCl
     /**
      * The text views to display information for a file.
      */
-    private final TextView mTextViewFileName, mTextViewFileLastModification, mTextViewFileSize;
+//    private final TextView mTextViewFileName, mTextViewFileLastModification, mTextViewFileSize;
     /**
      * The instance of the parent to interact with it as a listener.
      */
@@ -28,11 +28,11 @@ public class FileViewHolder extends RecyclerView.ViewHolder implements View.OnCl
     /**
      * The image view when an user selects an item.
      */
-    private final CheckBox mCheckBoxSelected;
-    /**
-     * The image view to represent a directory
-     */
-    private final ImageView mIVDirectory;
+//    private final CheckBox mCheckBoxSelected;
+//    /**
+//     * The image view to represent a directory
+//     */
+//    private final ImageView mIVDirectory;
 
     /**
      * The constructor of this class to build this view.
@@ -43,13 +43,13 @@ public class FileViewHolder extends RecyclerView.ViewHolder implements View.OnCl
      */
     public FileViewHolder(View v, IFileViewHolder listener) {
         super(v);
-        mTextViewFileName = (TextView) v.findViewById(R.id.tv_file_name);
-        mTextViewFileLastModification = (TextView) v.findViewById(R.id.tv_file_last_modification);
-        mTextViewFileSize = (TextView) v.findViewById(R.id.tv_file_size);
-        mCheckBoxSelected = (CheckBox) v.findViewById(R.id.checkbox_item_selected);
-        mIVDirectory = (ImageView) v.findViewById(R.id.iv_directory);
+//        mTextViewFileName = (TextView) v.findViewById(R.id.tv_file_name);
+//        mTextViewFileLastModification = (TextView) v.findViewById(R.id.tv_file_last_modification);
+//        mTextViewFileSize = (TextView) v.findViewById(R.id.tv_file_size);
+//        mCheckBoxSelected = (CheckBox) v.findViewById(R.id.checkbox_item_selected);
+//        mIVDirectory = (ImageView) v.findViewById(R.id.iv_directory);
         mListener = listener;
-        mCheckBoxSelected.setOnClickListener(this);
+//        mCheckBoxSelected.setOnClickListener(this);
         itemView.setOnClickListener(this);
     }
 
@@ -75,20 +75,20 @@ public class FileViewHolder extends RecyclerView.ViewHolder implements View.OnCl
      *          not matter.
      */
     public void refreshValues(boolean isDirectory, String name, String lastModified, String size, boolean isSelected) {
-        if (isDirectory) {
-            mIVDirectory.setVisibility(View.VISIBLE);
-            mCheckBoxSelected.setVisibility(View.GONE);
-        }
-        else {
-            mIVDirectory.setVisibility(View.GONE);
-            mCheckBoxSelected.setVisibility(View.VISIBLE);
-            mCheckBoxSelected.setChecked(isSelected);
-            itemView.setActivated(isSelected);
-        }
-
-        mTextViewFileName.setText(name);
-        mTextViewFileLastModification.setText(lastModified);
-        mTextViewFileSize.setText(size);
+//        if (isDirectory) {
+//            mIVDirectory.setVisibility(View.VISIBLE);
+//            mCheckBoxSelected.setVisibility(View.GONE);
+//        }
+//        else {
+//            mIVDirectory.setVisibility(View.GONE);
+//            mCheckBoxSelected.setVisibility(View.VISIBLE);
+//            mCheckBoxSelected.setChecked(isSelected);
+//            itemView.setActivated(isSelected);
+//        }
+//
+//        mTextViewFileName.setText(name);
+//        mTextViewFileLastModification.setText(lastModified);
+//        mTextViewFileSize.setText(size);
     }
 
     /**

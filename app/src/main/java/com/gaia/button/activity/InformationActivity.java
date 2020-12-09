@@ -7,17 +7,18 @@ import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 import android.os.Message;
-import android.support.annotation.IntDef;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
-import com.qualcomm.qti.gaiacontrol.R;
-import com.qualcomm.qti.gaiacontrol.gaia.InformationGaiaManager;
-import com.qualcomm.qti.gaiacontrol.services.BluetoothService;
-import com.qualcomm.qti.gaiacontrol.ui.DividerItemDecoration;
-import com.qualcomm.qti.gaiacontrol.ui.adapters.InformationListAdapter;
+import androidx.annotation.IntDef;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.gaia.button.R;
+import com.gaia.button.adapter.InformationListAdapter;
+import com.gaia.button.gaia.InformationGaiaManager;
+import com.gaia.button.services.BluetoothService;
 import com.qualcomm.qti.libraries.gaia.GAIA;
 
 import java.lang.annotation.Retention;
@@ -282,7 +283,7 @@ public class InformationActivity extends ServiceActivity implements InformationL
         recyclerView.setHasFixedSize(true);
 
         // add a divider to the list
-        recyclerView.addItemDecoration(new DividerItemDecoration(this));
+        recyclerView.addItemDecoration(new DividerItemDecoration(this,LinearLayoutManager.VERTICAL));
 
         // specify an adapter for the recycler view
         mListAdapter = new InformationListAdapter(this);

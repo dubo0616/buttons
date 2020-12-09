@@ -1,6 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/bg_pop"
+        android:layout_width="70dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/tv_junheng"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="均衡"
+        android:layout_marginTop="16dp"
+        android:textColor="#ff1e1e1e"
+        android:textSize="12sp" />
+        <View
+            android:layout_marginTop="5dp"
+            android:background="#D8D8D8"
+            android:layout_width="27dp"
+            android:layout_height="1dp"/>
 
+        <TextView
+            android:id="@+id/tv_gudian"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="古典"
+            android:layout_marginTop="10dp"
+            android:textColor="#ff1e1e1e"
+            android:textSize="12sp" />
+        <View
+            android:layout_marginTop="5dp"
+            android:background="#D8D8D8"
+            android:layout_width="27dp"
+            android:layout_height="1dp"/>
+
+        <TextView
+            android:id="@+id/tv_liuxing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="流行"
+            android:layout_marginTop="10dp"
+            android:textColor="#ff1e1e1e"
+            android:textSize="12sp" />
+        <View
+            android:layout_marginTop="5dp"
+            android:background="#D8D8D8"
+            android:layout_width="27dp"
+            android:layout_height="1dp"/>
+        <TextView
+            android:id="@+id/tv_yaogun"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="摇滚"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:textColor="#ff1e1e1e"
+            android:textSize="12sp" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

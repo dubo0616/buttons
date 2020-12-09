@@ -1,4 +1,4 @@
-package com.jindan.p2p.utils;
+package com.gaia.button.utils;
 
 
 public final class DcError

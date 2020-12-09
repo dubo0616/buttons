@@ -7,11 +7,13 @@ package com.gaia.button.gaia;
 
 import android.annotation.SuppressLint;
 import android.os.Handler;
-import android.support.annotation.IntDef;
-import android.support.v4.util.ArrayMap;
+import android.util.ArrayMap;
 import android.util.Log;
 
-import com.qualcomm.qti.gaiacontrol.Consts;
+
+import androidx.annotation.IntDef;
+
+import com.gaia.button.utils.Consts;
 import com.qualcomm.qti.libraries.gaia.GAIA;
 import com.qualcomm.qti.libraries.gaia.GaiaException;
 import com.qualcomm.qti.libraries.gaia.GaiaUtils;

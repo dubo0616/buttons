@@ -1,4 +1,4 @@
-package com.jindan.p2p.net;
+package com.gaia.button.net;
 
 public interface IHttpInterface {
 	

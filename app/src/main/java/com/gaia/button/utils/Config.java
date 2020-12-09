@@ -1,9 +1,6 @@
-package com.jindan.p2p.utils;
+package com.gaia.button.utils;
 
 
-import android.webkit.WebSettings;
-
-import com.jindan.p2p.P2PApplication;
 
 public class Config {
 	public static String sdJindanRootDir = FileHelper.getRootDir() + "/jindan/";
@@ -37,15 +34,6 @@ public class Config {
 	/***************控制是否开启webview缓存*******************/
 	public static final  boolean WEBVIEW_CACHE_FALG = false;
 
-	/***
-	 * 根据网络判断webview缓存模式
-	 * @return
-     */
-	public static int getWebviewCacheMode(){
-
-		return  ConnectManager.isNetworkConnected(P2PApplication.getInstance())?
-				WebSettings.LOAD_DEFAULT :WebSettings.LOAD_CACHE_ELSE_NETWORK;
-	}
 
 	
 }

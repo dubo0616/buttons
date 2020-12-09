@@ -1,9 +1,4 @@
-package com.jindan.p2p.utils;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+package com.gaia.button.utils;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -12,6 +7,11 @@ import android.net.NetworkInfo;
 import android.net.NetworkInfo.State;
 import android.net.Uri;
 import android.telephony.TelephonyManager;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class ConnectManager
 {

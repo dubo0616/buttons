@@ -1,2 +1,5 @@
+include ':vmupgradelibrary'
+include ':gaialibrary'
+include ':blelibrary'
 include ':app'
 rootProject.name = "gaiabutton"

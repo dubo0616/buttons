@@ -16,10 +16,11 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.qualcomm.qti.gaiacontrol.Consts;
-import com.qualcomm.qti.gaiacontrol.R;
-import com.qualcomm.qti.gaiacontrol.models.gatt.GATTServices;
-import com.qualcomm.qti.gaiacontrol.receivers.BondStateReceiver;
+
+import com.gaia.button.R;
+import com.gaia.button.models.gatt.GATTServices;
+import com.gaia.button.receivers.BondStateReceiver;
+import com.gaia.button.utils.Consts;
 import com.qualcomm.qti.libraries.ble.BLEUtils;
 import com.qualcomm.qti.libraries.vmupgrade.UpgradeManager;
 import com.qualcomm.qti.libraries.vmupgrade.codes.ResumePoints;

@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.gaia.button">
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
     <application
         android:name=".GaiaApplication"
         android:allowBackup="true"
@@ -21,6 +32,7 @@
         <activity
             android:name="com.gaia.button.activity.MainActivity"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name="com.gaia.button.activity.PhoneLoginActivity"
@@ -31,6 +43,32 @@
         <activity
             android:name="com.gaia.button.activity.WebViewActivity"
             android:screenOrientation="portrait" />
+
+        <activity android:name="com.gaia.button.activity.InformationActivity"
+            android:label="@string/activity_information_name"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:parentActivityName="com.gaia.button.activity.MainActivity">
+        </activity>
+        <activity android:name="com.gaia.button.activity.UpgradeActivity"
+            android:label="@string/activity_information_name"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:parentActivityName="com.gaia.button.activity.MainActivity">
+        </activity>
+        <activity android:name="com.gaia.button.activity.DeviceDiscoveryActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:parentActivityName="com.gaia.button.activity.MainActivity">
+        </activity>
+
+        <service
+            android:name=".services.GAIAGATTBLEService"
+            android:exported="false" />
+
+        <service
+            android:name=".services.GAIABREDRService"
+            android:exported="false" />
 
     </application>
 

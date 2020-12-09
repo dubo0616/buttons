@@ -4,8 +4,10 @@
 
 package com.gaia.button.rwcp;
 
+
 import android.annotation.SuppressLint;
-import android.support.annotation.IntDef;
+
+import androidx.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -16,7 +18,6 @@ import java.lang.annotation.RetentionPolicy;
  * Notifications to transmit messages. It is designed to increase the transfer rate of messages. This method provides
  * in-sequence reception, retransmission of lost messages, and duplicate message detection from a GATT Client to a
  * GATT Server.</p>
- * <p>The messages send over RWCP are called {@link com.qualcomm.qti.gaiacontrol.rwcp.Segment Segment} and contains an
  * operation code, a sequence number and the data to transmit.</p>
  * <p>The number of segments which can be sent at once is called the window.</p>
  *

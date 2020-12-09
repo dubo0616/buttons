@@ -2,7 +2,7 @@
  * Copyright 2018 Qualcomm Technologies International, Ltd.                                       *
  **************************************************************************************************/
 
-package com.qualcomm.qti.gaiacontrol;
+package com.gaia.button.utils;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;

@@ -10,25 +10,26 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Message;
 import android.os.SystemClock;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.qualcomm.qti.gaiacontrol.Consts;
-import com.qualcomm.qti.gaiacontrol.R;
-import com.qualcomm.qti.gaiacontrol.Utils;
-import com.qualcomm.qti.gaiacontrol.services.BluetoothService;
-import com.qualcomm.qti.gaiacontrol.services.GAIAGATTBLEService;
-import com.qualcomm.qti.gaiacontrol.ui.VMUpgradeDialog;
-import com.qualcomm.qti.gaiacontrol.ui.fragments.FilePickerFragment;
-import com.qualcomm.qti.gaiacontrol.ui.fragments.UpgradeOptionsFragment;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.gaia.button.R;
+import com.gaia.button.fargment.FilePickerFragment;
+import com.gaia.button.fargment.UpgradeOptionsFragment;
+import com.gaia.button.services.BluetoothService;
+import com.gaia.button.services.GAIAGATTBLEService;
+import com.gaia.button.utils.Consts;
+import com.gaia.button.utils.Utils;
+import com.gaia.button.view.VMUpgradeDialog;
 import com.qualcomm.qti.libraries.ble.BLEService;
 import com.qualcomm.qti.libraries.vmupgrade.UpgradeError;
 import com.qualcomm.qti.libraries.vmupgrade.UpgradeManager;
@@ -37,12 +38,6 @@ import com.qualcomm.qti.libraries.vmupgrade.codes.ReturnCodes;
 
 import java.io.File;
 
-/**
- * <p>This Activity controls the upgrade UI information through the {@link VMUpgradeDialog VMUpgradeDialog}. It also
- * provides a file explorer by the use of the {@link FilePickerFragment FilePickerFragment} fragment in order to let
- * the user pick a file to upgrade the board.</p>
- * <p>The upgrade process is directly managed by the Service.</p>
- */
 public class UpgradeActivity extends ServiceActivity implements FilePickerFragment.FilePickerFragmentListener,
         VMUpgradeDialog.UpgradeDialogListener, UpgradeOptionsFragment.UpgradeOptionsFragmentListener {
 
@@ -470,16 +465,6 @@ public class UpgradeActivity extends ServiceActivity implements FilePickerFragme
         }
     }
 
-    /**
-     * <p>This method is called when this activity receives a
-     * {@link GAIAGATTBLEService.GattMessage GattMessage} from the Service.</p>
-     * <p>This method will act depending on the type of GATT message which had been broadcast to this activity.</p>
-     *
-     * @param gattMessage
-     *          The GATT Message type.
-     * @param data
-     *          Any complementary information provided with the GATT Message.
-     */
     @SuppressLint("SwitchIntDef")
     private void onReceiveGattMessage(@GAIAGATTBLEService.GattMessage int gattMessage, Object data) {
         switch (gattMessage) {

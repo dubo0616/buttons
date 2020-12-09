@@ -1,18 +1,18 @@
 /**
  * 
  */
-package com.jindan.p2p.json;
+package com.gaia.button.net;
 
 
 public final class JsonManager {
 
 	private static final Object mInstanceSync = new Object();
 
-	private static JsonManager  mInstance = null;
+	private static JsonManager mInstance = null;
 
-	private JSONBuilder 		mJsonBuilder = null;
+	private JSONBuilder mJsonBuilder = null;
 
-	private JSONParser	 		mJsonParser = null;
+	private JSONParser mJsonParser = null;
 	
 	public static JsonBuilderInterface getJsonBuilder(){
 		return _getInstance()._getJsonBuilder();
