@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="string_array">
+        <item>隐私设置</item>
+        <item>消息通知</item>
+        <item>意见反馈</item>
+        <item>法律声明</item>
+        <item>清除缓存</item>
+        <item>账户安全</item>
+        <item>第三方绑定</item>
+    </string-array>
+</resources>

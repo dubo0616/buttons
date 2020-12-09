@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">gaiabutton</string>
+    <string name="login_wechat">微信登录</string>
+    <string name="login_phone">手机账号登录</string>
+    <string name="login_phone_top_title">解锁试听盛宴</string>
+    <string name="login_server">登录注册代表同意用户协议和隐私政策</string>
+    <string name="login_server_one">用户协议</string>
+    <string name="login_server_two">隐私政策</string>
+    <string name="login_get_phone_code">获取验证码</string>
+    <string name="resent_phone_code">重新或取 (%1$d 秒)</string>
+    <string name="personal_collect">&#8195;收藏夹&#8195;</string>
+    <string name="personal_device">&#8195;我的设备&#8195;</string>
+    <string name="personal_setting">&#8195;&#8195;设置&#8195;&#8195;</string>
+</resources>

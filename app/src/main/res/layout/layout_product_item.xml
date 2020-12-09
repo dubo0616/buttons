@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/layout"
+    android:layout_marginBottom="20dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/iv_detail"
+        android:layout_marginLeft="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/product_bg"
+        android:layout_height="164dp" />
+
+    <TextView
+        android:id="@+id/tv_detail"
+        app:layout_constraintTop_toBottomOf="@+id/iv_detail"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:text="BUTTONS Black Ice黑眼豆无线蓝牙降噪耳机…"
+        android:textColor="#ff1e1e1e"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tv_price"
+        app:layout_constraintTop_toBottomOf="@+id/tv_detail"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="22dp"
+        android:text="￥1798.00"
+        app:layout_constraintStart_toEndOf="@+id/layout_sales"
+        android:textColor="#fffa4421"
+        android:textSize="16sp" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        app:layout_constraintStart_toEndOf="@+id/tv_price"
+        app:layout_constraintTop_toBottomOf="@+id/tv_detail"
+        android:id="@+id/layout_sales"
+        android:layout_marginLeft="9dp"
+        android:layout_marginTop="7dp"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/tv_sales"
+        android:maxLines="1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:ellipsize="end"
+        android:layout_width="wrap_content"
+        android:layout_height="22dp"
+        android:text="￥1798.00"
+        android:textColor="#ff949494"
+        android:textSize="12sp" />
+    <View
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="#949494"
+        android:layout_marginBottom="3dp"
+        android:layout_width="55dp"
+        android:layout_height="1dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

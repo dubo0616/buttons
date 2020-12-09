@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ImageView
+        android:id="@+id/iv_device_icon"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="31dp"
+        android:layout_marginBottom="4dp"
+        android:layout_width="44dp"
+        android:background="#00ff00"
+        android:layout_height="44dp" />
+
+    <TextView
+        android:id="@+id/tv_device_name"
+        android:layout_marginTop="15dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_device_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="BUTTONS AIR"
+        android:textColor="#ff1e1e1e"
+        android:textSize="16sp" />
+    <ImageView
+        android:padding="3dp"
+        android:id="@+id/iv_arrow"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="29dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/icon_personal_device"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    
+    <View
+        android:id="@+id/v_line"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="21dp"
+        android:layout_marginEnd="21dp"
+        app:layout_constraintTop_toBottomOf="@+id/iv_device_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="#E4E4E4"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:visibility="gone"
+        android:id="@+id/layout_control"
+        app:layout_constraintTop_toBottomOf="@+id/iv_device_icon"
+        android:layout_width="match_parent"
+        android:background="#F8F8F8"
+        android:paddingStart="30dp"
+        android:paddingEnd="30dp"
+        android:layout_height="90dp">
+        <LinearLayout
+            android:id="@+id/ll_link"
+            app:layout_constraintEnd_toStartOf="@+id/ll_device_info"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            android:layout_width="0dp"
+            android:gravity="center"
+            android:paddingTop="14dp"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+            <ImageView
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="#0affdd" />
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="链接"
+                android:textColor="#ff1e1e1e"
+                android:textSize="12sp" />
+        </LinearLayout>
+        <LinearLayout
+            app:layout_constraintEnd_toStartOf="@+id/ll_hard_upgrade"
+            app:layout_constraintStart_toEndOf="@+id/ll_link"
+            android:id="@+id/ll_device_info"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            android:layout_width="0dp"
+            android:gravity="center"
+            android:paddingTop="14dp"
+            android:paddingBottom="4dp"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+            <ImageView
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="#0affdd" />
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="设备信息"
+                android:textColor="#ff1e1e1e"
+                android:textSize="12sp" />
+        </LinearLayout>
+        <LinearLayout
+            app:layout_constraintEnd_toStartOf="@+id/ll_product_intro"
+            app:layout_constraintStart_toEndOf="@+id/ll_device_info"
+            android:id="@+id/ll_hard_upgrade"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            android:layout_width="0dp"
+            android:gravity="center"
+            android:paddingTop="14dp"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+            <ImageView
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="#0affdd" />
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="固件升级"
+                android:textColor="#ff1e1e1e"
+                android:textSize="12sp" />
+        </LinearLayout>
+        <LinearLayout
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ll_hard_upgrade"
+            android:id="@+id/ll_product_intro"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            android:layout_width="0dp"
+            android:gravity="center"
+            android:paddingTop="14dp"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+            <ImageView
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="#0affdd" />
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="产品说明"
+                android:textColor="#ff1e1e1e"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
