@@ -1,0 +1,53 @@
+-- Merging decision tree log ---
+manifest
+ADDED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml:5:1-17:12
+INJECTED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml:5:1-17:12
+INJECTED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml:5:1-17:12
+INJECTED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml:5:1-17:12
+INJECTED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml:5:1-17:12
+INJECTED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml:5:1-17:12
+INJECTED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml:5:1-17:12
+	package
+		ADDED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml:6:5-45
+		INJECTED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml
+		INJECTED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml
+	android:versionName
+		INJECTED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml
+		ADDED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml:5:1-17:12
+		INJECTED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml
+	android:versionCode
+		INJECTED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml
+		ADDED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml:5:1-17:12
+		INJECTED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml:5:11-69
+uses-permission#android.permission.BLUETOOTH
+ADDED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml:8:5-68
+	android:name
+		ADDED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml:8:22-65
+uses-permission#android.permission.BLUETOOTH_ADMIN
+ADDED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml:9:5-74
+	android:name
+		ADDED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml:9:22-71
+application
+ADDED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml:11:5-15:19
+	android:supportsRtl
+		ADDED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml:13:18-44
+	android:label
+		ADDED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml:12:18-50
+	android:allowBackup
+		ADDED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml:11:18-44
+uses-sdk
+INJECTED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml
+INJECTED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml
+INJECTED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml
+INJECTED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml
+		ADDED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml
+		INJECTED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml
+		ADDED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml
+		INJECTED from D:\button\gaiabutton\blelibrary\src\main\AndroidManifest.xml

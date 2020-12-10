@@ -5,6 +5,7 @@
 package com.gaia.button.models.equalizer;
 
 
+import com.gaia.button.models.equalizer.parameters.Band;
 import com.gaia.button.models.equalizer.parameters.MasterGain;
 import com.gaia.button.models.equalizer.parameters.Parameter;
 

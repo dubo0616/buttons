@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "applicationId": "com.qualcomm.qti.libraries.gaia",
+  "variantType": "LIBRARY",
+  "elements": [
+    {
+      "outputType": {
+        "type": "MERGED_MANIFESTS"
+      },
+      "apkData": {
+        "type": "MAIN",
+        "splits": [],
+        "versionCode": 2,
+        "versionName": "3.2.2.2",
+        "outputFile": "gaialibrary-debug.aar",
+        "fullName": "debug",
+        "baseName": "debug",
+        "dirName": ""
+      },
+      "path": "../../library_manifest/debug/AndroidManifest.xml",
+      "properties": {
+        "packageId": "com.qualcomm.qti.libraries.gaia",
+        "split": ""
+      }
+    }
+  ]
+}

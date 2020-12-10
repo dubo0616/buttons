@@ -27,26 +27,6 @@ import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_UP;
 
-/**
- * 作用: 圆弧形 SeekBar
- * 作者: GcsSloop
- * 摘要: 该 SeekBar 实现的核心原理非常简单,其绘制内容实际上为一个圆弧,只用了一条 Path,
- * 尽管核心原理简单,但仍有以下细节需要进行注意:
- * 1. 画布旋转导致的坐标系问题.
- * -  为了让开口方向可控,并且实现起来简单,进行了画布旋转,因此实际显示的坐标系下的坐标和绘制坐标系坐标是不同的,尤其需要注意.
- * 2.当前进度确定问题
- * -  进度是由角度确定的, 先根据当前点击位置和中心点连线与水平线的夹角表示当前角度,
- * -  根据该角度和实际圆弧的角度相关信息推算出当前进度百分比.
- * -  根据百分比和最大数值确定当前实际的进度.
- * 3. 拖动与点击
- * -  为了防止误触, 只有手指按下位置在拖动按钮附近时才可以执行拖动.
- * -  但是用户单击时,可以可以直接跳转进度, 当然,只有点击在圆弧进度条的区域内才允许设置新的进度.
- * -  如何判断是否点击在圆弧区域内,使用了 Region 的相关方法,该 Region 区域是从 Paint 的 getFillPath 得到的.
- * 4. 进度回调去重
- * -  用户拖动时,判断是否和上次进度相同,如果相同,则不发送回调.
- * 5. 防止突变
- * -  由于进度条时圆弧形状的,因此进度可能会从 0.0 直接突变到 1.0 或者相反,因此在计算进度与当前进度差异过大时,禁止改变当前进度.
- */
 public class ArcSeekBarInner extends View {
     private static final int DEFAULT_EDGE_LENGTH = 260;              // 默认宽高
 

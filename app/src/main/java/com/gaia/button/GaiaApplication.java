@@ -8,7 +8,6 @@ public class GaiaApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-//        NoHttp.initialize(this);
     }
     public static GaiaApplication getInstance() {
         return s_ins;

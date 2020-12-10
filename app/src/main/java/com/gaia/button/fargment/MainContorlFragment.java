@@ -99,8 +99,7 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
     private final BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
         @Override
         public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-            Log.e("FUck", "===========" + device.getName());
-            Log.e("FUck", "===========" + device.getAddress());
+
         }
     };
     private final Handler mHandler = new Handler();
@@ -254,7 +253,6 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
         mArcSeekBarInner.setOnProgressChangeListener(new ArcSeekBarInner.OnProgressChangeListener() {
             @Override
             public void onProgressChanged(ArcSeekBarInner seekBar, int progress, boolean isUser) {
-                Log.e("TTTTT", "============" + progress);
                 if(mProgress >=progress){
                     mAudioManager.adjustStreamVolume(AudioManager.FLAG_PLAY_SOUND, AudioManager.ADJUST_LOWER,AudioManager.FLAG_SHOW_UI);
                 }else{
