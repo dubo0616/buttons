@@ -43,7 +43,7 @@ public final class GAIA {
     /**
      * <p>The vendor default value defined by the protocol for Qualcomm vendor.</p>
      */
-    public static final int VENDOR_QUALCOMM = 0x000A;
+    public static final int VENDOR_QUALCOMM = 0x000C;
     
     
     // -------------------------------------------------------------------

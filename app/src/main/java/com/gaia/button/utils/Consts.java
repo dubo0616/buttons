@@ -68,14 +68,16 @@ public final class Consts {
      * The key to use for the shared preferences to store the Bluetooth address of a device.
      */
     public static final String BLUETOOTH_ADDRESS_KEY = "Device Bluetooth address";
+    public static final String BLUETOOTH_NAME_KEY = "Device Bluetooth name";
     /**
      * The key to use for the shared preferences to store the type of transport which is used.
      */
     public static final String TRANSPORT_KEY = "Transport type";
+    public static final String TRANSPORT_NAME = "Transport Name";
     /**
      * To display or hide the debug logs of the application.
      */
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
 
     public static final class MTU {
         public static final int MINIMUM = BLEService.MTU_SIZE_MINIMUM;

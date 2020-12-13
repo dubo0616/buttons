@@ -25,8 +25,12 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.gaia.button.R;
+import com.gaia.button.data.PreferenceManager;
+import com.gaia.button.model.AccountInfo;
+import com.gaia.button.net.BaseResult;
 import com.gaia.button.net.user.IUserListener;
 import com.gaia.button.net.user.UserManager;
+import com.gaia.button.utils.ConstantUtil;
 import com.gaia.button.utils.PhoneCheckUtil;
 
 
@@ -91,10 +95,6 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
                 checkBtnStatus();
             }
         });
-
-        Intent intent = new Intent(PhoneLoginActivity.this, MainActivity.class);
-        intent.putExtra("Tab",1);
-        startActivity(intent);
     }
     private void init(TextView textView){
         ForegroundColorSpan defaultTextColorSpan = new ForegroundColorSpan(Color.parseColor("#949494")); // 默认文本颜色
@@ -230,6 +230,33 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void onRequestSuccess(int requestTag, Object data) {
+        if(requestTag == ConstantUtil.Net_Tag_UserLogin_Sms) {
+
+            if(data instanceof AccountInfo){
+                AccountInfo info = (AccountInfo) data;
+                PreferenceManager.getInstance().save(info);
+                Intent intent = new Intent(PhoneLoginActivity.this, MainActivity.class);
+                intent.putExtra("Tab", 1);
+                startActivity(intent);
+                finish();
+            }
+
+        } else if(requestTag == ConstantUtil.Net_Tag_User_Login_SEND_CODE) {
+
+            if(data instanceof BaseResult){
+             BaseResult result = (BaseResult) data;
+             if(result.getErrorCode() == 0){
+                 Toast.makeText(PhoneLoginActivity.this,"验证码发送成功",Toast.LENGTH_SHORT).show();
+             }else{
+                 mSmsHandler.removeMessages(RESEND_COUNT_DOWN);
+                 mCountDown = 60;
+                 mTvGetcode.setEnabled(true);
+                 mTvGetcode.setText(getString(R.string.login_get_phone_code));
+                 Toast.makeText(PhoneLoginActivity.this,"验证码发送失败",Toast.LENGTH_SHORT).show();
+             }
+            }
+
+        }
 
     }
 

@@ -24,6 +24,8 @@ public class PreferenceManager {
     private static final String ACC_LOGIN_PERSON_NAME = "acc_login_person_name";
 
     private static final String FRIST_INSTALL = "first_install";
+    private static final String PLAY_MODE = "paly_mode";
+    private static final String PLAY_SOUND_MODE = "paly_sound_mode";
 
     private PreferenceManager(){
         mySharedPreferences = GaiaApplication.getInstance().getSharedPreferences(PreferenceManager.KEY,MODE_PRIVATE);
@@ -72,6 +74,7 @@ public class PreferenceManager {
         setStringValue(ACC_LOGIN_PERSON_SGIN,"");
         setStringValue(ACC_LOGIN_PERSON_NAME,"");
         setBlooeanValue(ACC_LOGIN_PASSWORD,false);
+        mAccountInfo=null;
     }
 
     /****
@@ -119,7 +122,21 @@ public class PreferenceManager {
         setBlooeanValue(FRIST_INSTALL, true);
     }
 
+    public String getPlaymode(String uid) {
+        return getStringValue(uid+PLAY_MODE);
+    }
 
+    public void setPlaymode(String uid,int value) {
+        setStringValue(uid+PLAY_MODE,value+"");
+    }
+
+    public String getPlaySoundMode(String uid) {
+        return getStringValue(uid+PLAY_SOUND_MODE);
+    }
+
+    public void setPlaySoundMode(String uid,String value) {
+        setStringValue(uid+PLAY_SOUND_MODE,value);
+    }
 
 
 }

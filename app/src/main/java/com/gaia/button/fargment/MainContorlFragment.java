@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -39,6 +40,7 @@ import com.gaia.button.activity.ServiceActivity;
 import com.gaia.button.activity.UpgradeActivity;
 import com.gaia.button.adapter.DevicesListAdapter;
 import com.gaia.button.data.PreferenceManager;
+import com.gaia.button.gaia.MainGaiaManager;
 import com.gaia.button.models.gatt.GATTServices;
 import com.gaia.button.receivers.BREDRDiscoveryReceiver;
 import com.gaia.button.receivers.BluetoothStateReceiver;
@@ -50,13 +52,15 @@ import com.gaia.button.utils.DensityUtil;
 import com.gaia.button.view.ArcSeekBarInner;
 import com.gaia.button.view.ArcSeekBarOutter;
 import com.gaia.button.view.GaiaPop;
+import com.gaia.button.view.GaiaSoundModePop;
+import com.qualcomm.qti.libraries.gaia.GAIA;
 
 import java.lang.ref.WeakReference;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.BIND_AUTO_CREATE;
 
-public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryReceiver.BREDRDiscoveryListener, BluetoothStateReceiver.BroadcastReceiverListener {
+public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryReceiver.BREDRDiscoveryListener, BluetoothStateReceiver.BroadcastReceiverListener, MainGaiaManager.MainGaiaManagerListener {
     private View mRootView;
     private ArcSeekBarInner mArcSeekBarInner;
     private ArcSeekBarOutter mArcSeekBarOutter;
@@ -73,7 +77,7 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
     /**
      * The service connection object to manage the service bind and unbind.
      */
-    private final ServiceConnection mServiceConnection = new ActivityServiceConnection(MainContorlFragment.this);
+    private final ServiceConnection mServiceConnection = new ActivityServiceConnection(this);
     /**
      * The handler used by the service to be linked to this activity.
      */
@@ -96,6 +100,9 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
     private ImageView mImageViewWhiteBg,mImageViewGrayBg;
     private TextView mTvBatty,mTvScan,mTvConectDeviceName;
     private ImageView mIvSwitch;
+
+    private MainGaiaManager mGaiaManager;
+
     private final BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
         @Override
         public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
@@ -108,10 +115,10 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
      */
     private boolean mIsScanning = false;
 
-    private @BluetoothService.Transport
-    int mTransport = BluetoothService.Transport.UNKNOWN;
+    private @BluetoothService.Transport int mTransport = BluetoothService.Transport.UNKNOWN;
 
     private AudioManager mAudioManager;
+    private boolean isClick =false;
 
     @Nullable
     @Override
@@ -123,6 +130,7 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
         return mRootView;
     }
     private GaiaPop mPop;
+    private GaiaSoundModePop mSoundPop;
     private void initView() {
 //        mScrollView = mRootView.findViewById(R.id.sl_scroll);
         mDeviceUpdate = mRootView.findViewById(R.id.cl_device_update);
@@ -141,35 +149,44 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
         mIvSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(mContext, DeviceDiscoveryActivity.class));
+                startActivityForResult(new Intent(mContext, DeviceDiscoveryActivity.class),1000);
             }
         });
         mStandard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mStandard.setSelected(true);
-                mAmbient.setSelected(false);
-                mNoise.setSelected(false);
+                if (mService != null && mService.getDevice() != null) {
+                    PreferenceManager.getInstance().setPlaymode(PreferenceManager.getInstance().getAccountInfo().getUserID()+mService.getDevice().getAddress(), 1);
+                }
+                setPlayMode("1");
             }
         });
         mNoise = mRootView.findViewById(R.id.tv_noise);
         mNoise.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mStandard.setSelected(false);
-                mAmbient.setSelected(false);
-                mNoise.setSelected(true);
+                if (mService != null && mService.getDevice() != null) {
+                    PreferenceManager.getInstance().setPlaymode(PreferenceManager.getInstance().getAccountInfo().getUserID()+mService.getDevice().getAddress(), 2);
+                }
+                setPlayMode("2");
             }
         });
         mAmbient = mRootView.findViewById(R.id.tv_ambient);
         mAmbient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mStandard.setSelected(false);
-                mAmbient.setSelected(true);
-                mNoise.setSelected(false);
+                if (mService != null && mService.getDevice() != null) {
+                    PreferenceManager.getInstance().setPlaymode(PreferenceManager.getInstance().getAccountInfo().getUserID()+mService.getDevice().getAddress(), 3);
+                }
+                setPlayMode("3");
             }
         });
+        if (mService != null && mService.getDevice() != null) {
+            String type = PreferenceManager.getInstance().getPlaymode(PreferenceManager.getInstance().getAccountInfo().getUserID()+mService.getDevice().getAddress());
+            setPlayMode(type);
+        } else{
+            mStandard.setSelected(true);
+        }
         mDeviceContorl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -178,6 +195,19 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
                         @Override
                         public void onItemClick(int position,String text) {
                             mTvContorlName.setText(text);
+                            if(mSoundPop == null){
+                                mSoundPop = new GaiaSoundModePop(getActivity());
+                            }
+                            mSoundPop.setSoundStyle(position);
+                            mSoundPop.show(mDeviceContorl,0,-DensityUtil.dip2px(mContext,200),Gravity.TOP);
+                            mDeviceContorl.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if(mSoundPop != null) {
+                                        mSoundPop.disMiss();
+                                    }
+                                }
+                            },3000) ;
                         }
                     });
                 }
@@ -187,7 +217,7 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
         mDeviceInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mService != null && mService.isGaiaReady()){
+                if (mService != null && mService.getConnectionState() == BluetoothService.State.CONNECTED && mService.isGaiaReady()) {
                     startActivity(new Intent(mContext, InformationActivity.class));
                 }else{
                     displayShortToast("设备未连接");
@@ -215,18 +245,17 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
             }
         });
         mArcSeekBarInner = mRootView.findViewById(R.id.arc_seek_bar);
-        mArcSeekBarInner.setMaxValue(maxVoice);
-        mArcSeekBarInner.setProgress(mProgress);
         mArcSeekBarOutter = mRootView.findViewById(R.id.arc_seek_bar1);
         mVoicePlus = mRootView.findViewById(R.id.iv_void_p);
         mVoicePlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                isClick = true;
 //                if(mService != null && mService.isGaiaReady()) {
-                    mProgress = mProgress + 1;
+                    mProgress = mArcSeekBarInner.getProgress() + 1;
                     mArcSeekBarInner.setProgress(mProgress == maxVoice ? maxVoice : mProgress);
                     mArcSeekBarOutter.setProgress(mProgress == maxVoice ? maxVoice : mProgress);
-                    mAudioManager.adjustStreamVolume(AudioManager.FLAG_PLAY_SOUND, AudioManager.ADJUST_RAISE,AudioManager.FLAG_SHOW_UI);
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,mProgress, AudioManager.FLAG_SHOW_UI);
 //                }else{
 //                    displayShortToast("设备未连接");
 //                }
@@ -236,30 +265,30 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
         mVoiceDe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                if(mService != null && mService.isGaiaReady()) {
-                    mProgress = mProgress - 1;
+                isClick = true;
+                Log.e("TTTT","======="+mService.isGaiaReady());
+                if(mService != null && mService.isGaiaReady()) {
+                    mProgress = mArcSeekBarInner.getProgress() - 1;
                     mArcSeekBarInner.setProgress(mProgress == minVoice ? minVoice : mProgress);
                     mArcSeekBarOutter.setProgress(mProgress == minVoice ? minVoice : mProgress);
-                    mAudioManager.adjustStreamVolume(AudioManager.FLAG_PLAY_SOUND, AudioManager.ADJUST_LOWER,AudioManager.FLAG_SHOW_UI);
-//                }else{
-//                    displayShortToast("设备未连接");
-//                }
-
-
-
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,mProgress, AudioManager.FLAG_SHOW_UI);                }else{
+                    displayShortToast("设备未连接");
+                }
             }
         });
-        mProgress = mArcSeekBarInner.getProgress();
         mArcSeekBarInner.setOnProgressChangeListener(new ArcSeekBarInner.OnProgressChangeListener() {
             @Override
             public void onProgressChanged(ArcSeekBarInner seekBar, int progress, boolean isUser) {
-                if(mProgress >=progress){
-                    mAudioManager.adjustStreamVolume(AudioManager.FLAG_PLAY_SOUND, AudioManager.ADJUST_LOWER,AudioManager.FLAG_SHOW_UI);
-                }else{
-                    mAudioManager.adjustStreamVolume(AudioManager.FLAG_PLAY_SOUND, AudioManager.ADJUST_RAISE,AudioManager.FLAG_SHOW_UI);
+                if(!isClick) {
+                    if (mProgress >= progress) {
+                        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,mProgress, AudioManager.FLAG_SHOW_UI);
+                    } else {
+                        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,mProgress, AudioManager.FLAG_SHOW_UI);
+                    }
                 }
                 mProgress = progress;
                 mArcSeekBarOutter.setProgress(progress);
+                isClick = false;
             }
 
             @Override
@@ -272,9 +301,39 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
 
             }
         });
-        connectDevice();
-//        scanDevice();
+//        connectDevice();
+        scanDevice();
 
+    }
+    private void setPlayMode(String type){
+        switch (type){
+            case "1":
+                mStandard.setSelected(true);
+                mAmbient.setSelected(false);
+                mNoise.setSelected(false);
+                if(mService!= null && mService.isGaiaReady()){
+                    mGaiaManager.setAncControl(false);
+                    mGaiaManager.setAmbientControl(false);
+
+                }
+                break;
+            case "2":
+                mStandard.setSelected(false);
+                mAmbient.setSelected(false);
+                mNoise.setSelected(true);
+                if(mService!= null && mService.isGaiaReady()){
+                    mGaiaManager.setAncControl(true);
+                }
+                break;
+            case "3":
+                mStandard.setSelected(false);
+                mAmbient.setSelected(true);
+                mNoise.setSelected(false);
+                if(mService!= null && mService.isGaiaReady()){
+                    mGaiaManager.setAmbientControl(true);
+                }
+                break;
+        }
     }
     private void hasNoDevice(){
         mImageButtonIcon.setVisibility(View.INVISIBLE);
@@ -282,6 +341,7 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
         mImageViewWhiteBg.setVisibility(View.INVISIBLE);
         mTvBatty.setVisibility(View.INVISIBLE);
         mTvScan.setVisibility(View.VISIBLE);
+        mImageViewGrayBg.setVisibility(View.GONE);
         mTvScan.setText("设备未连接…");
         mTvConectDeviceName.setVisibility(View.INVISIBLE);
     }
@@ -295,6 +355,7 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
         mImageButtonIcon.setVisibility(View.VISIBLE);
         mArcSeekBarInner.setVisibility(View.VISIBLE);
         mImageViewWhiteBg.setVisibility(View.VISIBLE);
+        mImageViewGrayBg.setVisibility(View.VISIBLE);
         mTvBatty.setVisibility(View.VISIBLE);;
         mTvScan.setVisibility(View.GONE);
         mTvConectDeviceName.setVisibility(View.VISIBLE);
@@ -320,12 +381,13 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
     public void onDeviceFound(BluetoothDevice device) {
         SharedPreferences sharedPref = mContext.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt(Consts.TRANSPORT_KEY, BluetoothService.Transport.BLE);
+        editor.putInt(Consts.TRANSPORT_KEY, device.getType());
+        editor.putString(Consts.BLUETOOTH_NAME_KEY, device.getName());
         editor.putString(Consts.BLUETOOTH_ADDRESS_KEY, device.getAddress());
         editor.apply();
-        if (mService == null) {
-            startService();
-        }
+//        if (mService == null) {
+//            startService();
+//        }
 
     }
 
@@ -336,6 +398,9 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
 
     @Override
     public void onBluetoothEnabled() {
+        if (mService == null) {
+            startService();
+        }
         scanDevices(true);
     }
 
@@ -344,12 +409,13 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
         if (mService.getDevice() == null) {
             // get the bluetooth information
             SharedPreferences sharedPref = mContext.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
-
             // get the device Bluetooth address
             String address = sharedPref.getString(Consts.BLUETOOTH_ADDRESS_KEY, "");
+            String name = sharedPref.getString(Consts.BLUETOOTH_NAME_KEY, "");
             boolean done = mService.connectToDevice(address);
-            Log.e("TTTTT", "===========" + address);
-            Log.e("TTTTT", "===========" + done);
+            Log.e("UUUU","==========done"+done);
+        }else{
+            Log.e("UUUU","=========="+mService.getDevice().getName());
         }
     }
 
@@ -364,6 +430,11 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
                 }
                 break;
             }
+            case 1000:
+                if (resultCode == RESULT_OK) {
+                    startService();
+                }
+                break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
         }
@@ -374,8 +445,8 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
     public void onResume() {
         super.onResume();
         mIsPaused = false;
-        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver();
+        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         mContext.registerReceiver(mBluetoothStateReceiver, filter);
         checkEnableBt();
         if (mService != null) {
@@ -428,9 +499,12 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
 
         // get the transport type
         int transport = sharedPref.getInt(Consts.TRANSPORT_KEY, BluetoothService.Transport.UNKNOWN);
+        Log.e("UUUU","===========transport"+transport);
         mTransport = transport == BluetoothService.Transport.BLE ? BluetoothService.Transport.BLE :
                 transport == BluetoothService.Transport.BR_EDR ? BluetoothService.Transport.BR_EDR :
                         BluetoothService.Transport.UNKNOWN;
+
+        Log.e("UUUU","===========mTransport"+mTransport);
         if (mTransport == BluetoothService.Transport.UNKNOWN) {
             // transport unknown, not possible to establish a connection
             return false;
@@ -461,9 +535,9 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
                             : "UNKNOWN";
                     Log.d(TAG, handleMessage + "CONNECTION_STATE_HAS_CHANGED: " + stateLabel);
                 }
-//                if (connectionState == BluetoothService.State.CONNECTED) {
-//                    getGeneralDeviceInformation();
-//                }
+                if (connectionState == BluetoothService.State.CONNECTED) {
+                    getInformationFromDevice();
+                }
                 break;
 
             case BluetoothService.Messages.DEVICE_BOND_STATE_HAS_CHANGED:
@@ -490,7 +564,7 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
 
             case BluetoothService.Messages.GAIA_PACKET:
                 byte[] data = (byte[]) msg.obj;
-//                mGaiaManager.onReceiveGAIAPacket(data);
+                mGaiaManager.onReceiveGAIAPacket(data);
                 // no log as these will be logged by the GAIA manager
                 break;
 
@@ -509,7 +583,7 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
             case BluetoothService.Messages.GATT_MESSAGE:
                 @GAIAGATTBLEService.GattMessage int gattMessage = msg.arg1;
                 Object content = msg.obj;
-//                onReceiveGattMessage(gattMessage, content);
+                onReceiveGattMessage(gattMessage, content);
                 if (DEBUG) Log.d(TAG, handleMessage + "GATT_MESSAGE > " + gattMessage);
                 break;
 
@@ -524,11 +598,62 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
      * <p>This method is called when the service has been bound to this activity.</p>
      */
     public void onServiceConnected() {
+        @GAIA.Transport int transport = mTransport == BluetoothService.Transport.BR_EDR ?
+                GAIA.Transport.BR_EDR : GAIA.Transport.BLE;
+        mGaiaManager = new MainGaiaManager(this, transport);
+        Log.e("UUUU","onServiceConnected=="+mTransport);
+        Log.e("UUUU","onServiceConnected=="+mService.getConnectionState());
+        Log.e("UUUU","onServiceConnected=="+mService.isGaiaReady());
+
+        SharedPreferences sharedPref = mContext.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
+
+        String name = sharedPref.getString(Consts.BLUETOOTH_NAME_KEY, "");
+
+        if(mService!= null && mService.isGaiaReady() && mService.getConnectionState() == BluetoothService.State.CONNECTED ) {
+            if (mTvConectDeviceName != null) {
+                mTvConectDeviceName.setText(name);
+            }
+            mArcSeekBarInner.setMaxValue(maxVoice);
+            mArcSeekBarInner.setProgress(maxVoice/2);
+            String text = PreferenceManager.getInstance().getPlaySoundMode(PreferenceManager.getInstance().getAccountInfo().getUserID()+mService.getDevice().getAddress());
+            if(!TextUtils.isEmpty(text)) {
+                mTvContorlName.setText(text);
+            }
+            connectDevice();
+//            getInformationFromDevice();
+        }else {
+            if (mTvConectDeviceName != null) {
+                mTvConectDeviceName.setText("");
+            }
+            mArcSeekBarInner.setMaxValue(maxVoice);
+            mArcSeekBarInner.setProgress(0);
+            hasNoDevice();
+        }
+
 
     }
 
     public void onServiceDisconnected() {
+        hasNoDevice();
 
+    }
+
+    /**
+     * <p>This method requests all device information which are displayed in this activity such as the RSSI or battery
+     * levels, the API version, etc.</p>
+     */
+    private void getInformationFromDevice() {
+        Log.e("UUUU","111111111112"+mService.isGaiaReady());
+        Log.e("UUUU","111111111112"+mService.getConnectionState());
+        if (mService != null && mService.getConnectionState() == BluetoothService.State.CONNECTED
+                && mService.isGaiaReady()) {
+            Log.e("UUUU","11111111111");
+            mGaiaManager.getInformation(MainGaiaManager.Information.API_VERSION);
+            mGaiaManager.getInformation(MainGaiaManager.Information.RSSI);
+            mGaiaManager.getInformation(MainGaiaManager.Information.BATTERY);
+            mGaiaManager.getNotifications(MainGaiaManager.Information.BATTERY, true);
+//            getRSSINotifications(true);
+        }
     }
     // ====== PRIVATE METHODS ======================================================================
 
@@ -591,6 +716,99 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
         mContext.unregisterReceiver(mDiscoveryReceiver);
     }
 
+    @Override // MainGaiaManager.MainGaiaManagerListener
+    public boolean sendGAIAPacket(byte[] packet) {
+        return mService!= null && mService.sendGAIAPacket(packet);
+    }
+
+
+    @Override
+    public void onGetLedControl(boolean activate) {
+
+    }
+
+    @Override
+    public void onFeatureSupported(int feature) {
+
+    }
+
+    @Override
+    public void onInformationNotSupported(int information) {
+
+    }
+
+    @Override
+    public void onChargerConnected(boolean isConnected) {
+
+    }
+
+    @Override
+    public void onGetBatteryLevel(int level) {
+        mBatteryLevel = level;
+        Log.e("UUUU","level============"+level);
+        refreshBatteryLevel();
+    }
+
+    @Override
+    public void onGetRSSILevel(int level) {
+
+    }
+
+    @Override
+    public void onGetAPIVersion(int versionPart1, int versionPart2, int versionPart3) {
+
+    }
+
+    @Override
+    public void onFeaturesDiscovered() {
+
+    }
+
+    @Override
+    public void onSetAncResult(boolean result) {
+        if(!result){
+            displayShortToast("设置失败");
+        }else{
+            displayShortToast("设置成功");
+        }
+    }
+
+    @Override
+    public void onSetAmbientResult(boolean result) {
+        if(!result){
+            displayShortToast("设置失败");
+        }else{
+            displayShortToast("设置成功");
+        }
+    }
+
+    private void onReceiveGattMessage(@GAIAGATTBLEService.GattMessage int gattMessage, Object content) {
+        if (gattMessage == GAIAGATTBLEService.GattMessage.RSSI_LEVEL) {
+            int rssi = (int) content;
+            onGetRSSILevel(rssi);
+        }
+        else if (gattMessage == GAIAGATTBLEService.GattMessage.GATT_STATE) {
+            @GAIAGATTBLEService.GattState int state = (int) content;
+            switch (state) {
+                case GAIAGATTBLEService.GattState.IN_USE_BY_SYSTEM:
+                    displayShortToast("完蛋");
+                    break;
+                case GAIAGATTBLEService.GattState.DISCOVERING_SERVICES:
+                    displayShortToast("台湾单");
+                    break;
+            }
+        }
+    }
+    private int mBatteryLevel = -1;
+    private void refreshBatteryLevel() {
+        // The battery level to display depends on a percentage, we calculate the percentage.
+        int value = mBatteryLevel * 100 / Consts.BATTERY_LEVEL_MAX;
+        if(mTvBatty != null){
+            mTvBatty.setText(value+"%");
+        }
+
+    }
+
     /**
      * <p>This class is used to be informed of the connection state of the BLE service.</p>
      */
@@ -614,7 +832,6 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             MainContorlFragment parentActivity = mActivity.get();
-
             if (componentName.getClassName().equals(GAIAGATTBLEService.class.getName())) {
                 parentActivity.mService = ((GAIAGATTBLEService.LocalBinder) service).getService();
             } else if (componentName.getClassName().equals(GAIABREDRService.class.getName())) {
@@ -636,6 +853,7 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
             }
         }
     }
+
 
     private final Runnable mStopScanRunnable = new Runnable() {
         @Override

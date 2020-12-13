@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.ParcelUuid;
 import android.os.Parcelable;
+import android.util.Log;
 
 /**
  * <p>This class allows reception of information from the system about discovery of UUID for a BluetoothDevice.</p>
@@ -39,7 +40,9 @@ public class UUIDReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
+        Log.e("FUCK","========="+action);
         if (action != null && action.equals(BluetoothDevice.ACTION_UUID)) {
+
             BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
             Parcelable[] parcels = intent.getParcelableArrayExtra(BluetoothDevice.EXTRA_UUID);
                 // note: EXTRA_UUID gives an array of Parcelable,

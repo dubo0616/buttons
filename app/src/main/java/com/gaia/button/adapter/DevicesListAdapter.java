@@ -53,6 +53,7 @@ public class DevicesListAdapter extends RecyclerView.Adapter<DeviceViewHolder>
         mListener = listener;
     }
 
+
     @Override // RecyclerView.Adapter<DeviceViewHolder>
     public DeviceViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_devices_item, parent, false);
@@ -70,9 +71,16 @@ public class DevicesListAdapter extends RecyclerView.Adapter<DeviceViewHolder>
         int rssi = hasRssi ? mRssi.get(position) : 0;
         hasRssi = hasRssi && rssi < 0;
         int type = device.getType();
-
         // fill data
         holder.refreshValues(deviceName, device.getAddress(), type, hasRssi, rssi, isSelected, mListener.getContext());
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if(position == 0){
+            return 1;
+        }
+        return super.getItemViewType(position);
     }
 
     @Override // RecyclerView.Adapter<DeviceViewHolder>

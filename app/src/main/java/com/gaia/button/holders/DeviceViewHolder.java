@@ -13,6 +13,9 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.gaia.button.R;
+import com.gaia.button.utils.Utils;
+
 import java.util.Locale;
 
 ///**
@@ -21,26 +24,23 @@ import java.util.Locale;
 // */
 public class DeviceViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-//    /**
-//     * The text view to display the device name.
-//     */
-//    private final TextView textViewDeviceName;
-//    /**
-//     * The text view to display the device address.
-//     */
+    /**
+     * The text view to display the device name.
+     */
+    private final TextView textViewDeviceName;
+    /**
+     * The text view to display the device address.
+     */
 //    private final TextView textViewDeviceAddress;
-//    /**
-//     * The text view to display the RSSI for the device.
-//     */
+    /**
+     * The text view to display the RSSI for the device.
+     */
 //    private final TextView textViewDeviceRssi;
-//    /**
+    /**
 //     * The text view to display the type of the device.
 //     */
 //    private final TextView textViewDeviceType;
-//    /**
-//     * The checkbox to select the item.
-//     */
-//    private final CheckBox checkbox;
+
     /**
      * The instance of the parent to interact with it as a listener.
      */
@@ -56,12 +56,10 @@ public class DeviceViewHolder extends RecyclerView.ViewHolder implements View.On
      */
     public DeviceViewHolder(View rowView, IDeviceViewHolder listener) {
         super(rowView);
-//        textViewDeviceName = (TextView) rowView.findViewById(R.id.tv_device_name);
+        textViewDeviceName = (TextView) rowView.findViewById(R.id.tv_device_name);
 //        textViewDeviceAddress = (TextView) rowView.findViewById(R.id.tv_device_address);
 //        textViewDeviceRssi = (TextView) rowView.findViewById(R.id.tv_device_rssi);
 //        textViewDeviceType = (TextView) rowView.findViewById(R.id.tv_device_type);
-//        checkbox = (CheckBox)rowView.findViewById(R.id.cb_item_selected);
-//        checkbox.setOnClickListener(this);
         mListener = listener;
         itemView.setOnClickListener(this);
     }
@@ -96,18 +94,18 @@ public class DeviceViewHolder extends RecyclerView.ViewHolder implements View.On
      */
     public void refreshValues(String name, String address, int type, boolean hasRssi, int rssi, boolean isSelected,
                               Context context) {
-        // display name
-//        textViewDeviceName.setText(name);
-//        // display bluetooth address
+//         display name
+        textViewDeviceName.setText(name);
+        // display bluetooth address
 //        textViewDeviceAddress.setText(address);
 
-//        // display RSSI level if known
-//        int rssiVisibility = hasRssi ? View.VISIBLE : View.GONE;
-//        textViewDeviceRssi.setVisibility(rssiVisibility);
+        // display RSSI level if known
+        int rssiVisibility = hasRssi ? View.VISIBLE : View.GONE;
+//        textViewDeviceRssi.setVisibility(View.GONE);
 //        if (hasRssi) {
 //            textViewDeviceRssi.setText(String.format(Locale.getDefault(), "%d dBm", rssi));
-//            textViewDeviceRssi.setCompoundDrawablesWithIntrinsicBounds(null,
-//                    Utils.getSignalIconFromRssi(context, rssi), null, null);
+////            textViewDeviceRssi.setCompoundDrawablesWithIntrinsicBounds(null,
+////                    Utils.getSignalIconFromRssi(context, rssi), null, null);
 //        }
 //        // display bluetooth device type
 //        int typeLabel = type == BluetoothDevice.DEVICE_TYPE_CLASSIC ? R.string.device_type_classic :
@@ -115,9 +113,7 @@ public class DeviceViewHolder extends RecyclerView.ViewHolder implements View.On
 //                        type == BluetoothDevice.DEVICE_TYPE_DUAL ? R.string.device_type_dual :
 //                                R.string.device_type_unknown;
 //        textViewDeviceType.setText(typeLabel);
-//
-//        // display check if device is selected
-//        checkbox.setChecked(isSelected);
+
     }
 
     /**

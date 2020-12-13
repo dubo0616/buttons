@@ -36,7 +36,6 @@ public class BaseActivity extends AppCompatActivity {
 @Override
 protected void onResume() {
     super.onResume();
-    checkPermissions();
 }
 
     @Override
@@ -54,7 +53,7 @@ protected void onResume() {
         }
     }
     @SuppressWarnings("UnusedReturnValue") // the return value is used for some implementations
-    private boolean checkPermissions() {
+    protected boolean checkPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             List<String> notGrantedPermissions = new ArrayList<>(); // all permissions which needs to be enabled
             boolean needsMessage = false;

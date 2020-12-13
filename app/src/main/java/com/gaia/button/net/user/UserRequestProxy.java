@@ -177,7 +177,7 @@ public class UserRequestProxy implements IUserInterface {
         }
         mCurrentRequestId = NetManager.getHttpConnect().sendRequest(
                 ConstantUtil.NEW_BAPI_URL+ ConstantUtil.SERVER_URL_NAME_SMSCODE,
-                ConstantUtil.Net_Tag_User_LoginPwd_Set, mJsonObject.toString(), iNetListener);
+                ConstantUtil.Net_Tag_User_Login_SEND_CODE, mJsonObject.toString(), iNetListener);
         addObserver(observer, mCurrentRequestId);
     }
 

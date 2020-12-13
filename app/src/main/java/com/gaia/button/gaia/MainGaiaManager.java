@@ -8,6 +8,7 @@ import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.util.ArrayMap;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.IntDef;
 
@@ -359,8 +360,36 @@ public class MainGaiaManager extends AGaiaManager {
     }
 
 
-    // ====== PROTECTED METHODS ====================================================================
 
+    public void onReceiveAncResult(GaiaPacket packet){
+        byte[] payload = packet.getPayload();
+        final int PAYLOAD_VALUE_OFFSET = 1;
+        final int PAYLOAD_VALUE_LENGTH = 1;
+        final int PAYLOAD_MIN_LENGTH = PAYLOAD_VALUE_LENGTH + 1; // event length is 1 in the payload
+
+        if (payload.length >= PAYLOAD_MIN_LENGTH) {
+            createAcknowledgmentRequest(packet, GAIA.Status.SUCCESS, null);
+            boolean isCharging = packet.getPayload()[PAYLOAD_VALUE_OFFSET] == 0x01;
+            mListener.onSetAncResult(isCharging);
+        } else {
+            mListener.onSetAncResult(false);
+        }
+    }
+    public void onReceiveAmbientResult(GaiaPacket packet){
+        byte[] payload = packet.getPayload();
+        final int PAYLOAD_VALUE_OFFSET = 1;
+        final int PAYLOAD_VALUE_LENGTH = 1;
+        final int PAYLOAD_MIN_LENGTH = PAYLOAD_VALUE_LENGTH + 1; // event length is 1 in the payload
+
+        if (payload.length >= PAYLOAD_MIN_LENGTH) {
+            createAcknowledgmentRequest(packet, GAIA.Status.SUCCESS, null);
+            boolean isCharging = packet.getPayload()[PAYLOAD_VALUE_OFFSET] == 0x01;
+            mListener.onSetAmbientResult(isCharging);
+        } else {
+            mListener.onSetAmbientResult(false);
+        }
+    }
+    // ====== PROTECTED METHODS ====================================================================
     @Override // extends GaiaManager
     protected void receiveSuccessfulAcknowledgement(GaiaPacket packet) {
         Log.d("Command","receiveSuccessfulAcknowledgement==="+packet.getCommand());
@@ -384,14 +413,14 @@ public class MainGaiaManager extends AGaiaManager {
             case GAIA.COMMAND_GET_API_VERSION:
                 receivePacketGetAPIVersionACK(packet);
                 break;
-            case 0x02B0:
-                Log.e("TTTT","================"+packet.getStatus()+"==="+packet.getCommand());
+            case SET_ANC_CONTROL:
+                onReceiveAncResult(packet);
                 break;
             case 0x02B1:
                 Log.e("TTTT","================"+packet.getStatus()+"==="+packet.getCommand());
                 break;
-            case 0x02B2:
-                Log.e("TTTT","================"+packet.getStatus()+"==="+packet.getCommand());
+            case SET_AMBIENT_CONTROL:
+                onReceiveAmbientResult(packet);
                 break;
             case 0x02B3:
                 Log.e("TTTT","================"+packet.getStatus()+"==="+packet.getCommand());
@@ -979,6 +1008,8 @@ public class MainGaiaManager extends AGaiaManager {
          * {@link #getSupportedFeatures() getSupportedFeatures()}.</p>
          */
         void onFeaturesDiscovered();
+        void onSetAncResult(boolean result);
+        void onSetAmbientResult(boolean result);
     }
 
     public void getANC(byte level) {
@@ -992,16 +1023,25 @@ public class MainGaiaManager extends AGaiaManager {
         GaiaPacket packet = createPacket(0x02BD);
         createRequest(packet);
     }
-    public void setANCcontrol(byte level) {
 
-        final int PAYLOAD_LENGTH = 1;
-        final int LEVEL_OFFSET = 0;
-        byte[] payload = new byte[PAYLOAD_LENGTH];
-        payload[LEVEL_OFFSET] = level;
-//        createRequest(createPacket(GAIA.COMMAND_FIND_MY_REMOTE1, payload));
-        int aa = 0x02BC;
-//        byte[] payload = activate ? 1 : PAYLOAD_BOOLEAN_FALSE;
-        GaiaPacket packet = createPacket(aa,payload);
+    /***
+     *降噪0x02B0
+     * @param ancControl
+     */
+    public void setAncControl(boolean ancControl) {
+
+        byte[] payload = ancControl ? PAYLOAD_BOOLEAN_TRUE : PAYLOAD_BOOLEAN_FALSE;
+        GaiaPacket packet = createPacket(SET_ANC_CONTROL,payload);
+        createRequest(packet);
+    }
+
+    /***
+     *环境音0x02B2
+     * @param ancControl
+     */
+    public void setAmbientControl(boolean ancControl) {
+        byte[] payload = ancControl ? PAYLOAD_BOOLEAN_TRUE : PAYLOAD_BOOLEAN_FALSE;
+        GaiaPacket packet = createPacket(SET_AMBIENT_CONTROL,payload);
         createRequest(packet);
     }
 
@@ -1009,4 +1049,6 @@ public class MainGaiaManager extends AGaiaManager {
     public void showDebugLogs(boolean show) {
         super.showDebugLogs(show);
     }
+    public static final int SET_ANC_CONTROL = 0x02B0;
+    public static final int SET_AMBIENT_CONTROL = 0x02B2;
 }

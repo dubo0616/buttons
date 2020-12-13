@@ -19,7 +19,12 @@ public final class JsonHelper {
 		}
 
 		switch (requestTag) {
-
+			case ConstantUtil.Net_Tag_UserLogin_Sms:
+				res = JsonManager.getJsonParser().parserLoginSms(resData);
+				break;
+			case ConstantUtil.Net_Tag_User_Login_SEND_CODE:
+				res = JsonManager.getJsonParser().parserLoginSendCode(resData);
+				break;
 			default:
 				break;
 		}

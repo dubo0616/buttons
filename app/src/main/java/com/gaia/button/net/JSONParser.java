@@ -2,8 +2,11 @@ package com.gaia.button.net;
 
 import android.text.TextUtils;
 
+import com.gaia.button.model.AccountInfo;
+import com.gaia.button.utils.ConstantUtil;
 import com.gaia.button.utils.DcError;
 import com.gaia.button.utils.StringConstant;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -54,6 +57,49 @@ public class JSONParser implements JsonParserInterface {
 		}
 		return res;
 	}
+
+    @Override
+    public BaseResult parserLoginSms(String responseStr) throws Exception {
+        BaseResult res = new BaseResult();
+        String url ="";
+        try {
+
+            JSONObject obj = new JSONObject(responseStr);
+            parserHeader(obj, res);
+            int errorCode = res.getErrorCode();
+            if (errorCode == DcError.DC_OK) {
+                String dataStr = obj.optString(StringConstant.JSON_DATA);
+                if (!TextUtils.isEmpty(dataStr)) {
+                    Gson gson = new Gson();
+                    res = gson.fromJson(dataStr, AccountInfo.class);
+                }
+                res.setErrorCode(0);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception(e);
+        }
+        return res;
+    }
+
+    @Override
+    public BaseResult parserLoginSendCode(String responseStr) throws Exception {
+        BaseResult res = new BaseResult();
+        String url ="";
+        try {
+
+            JSONObject obj = new JSONObject(responseStr);
+            parserHeader(obj, res);
+            int errorCode = res.getErrorCode();
+            if (errorCode == DcError.DC_OK) {
+                res.setErrorCode(0);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception(e);
+        }
+        return res;
+    }
 
     /**
      * 表头数据解析

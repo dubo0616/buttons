@@ -46,7 +46,7 @@ public class ConstantUtil {
 
 	public static final int Net_Tag_RegistWithPhone = 112;
 
-	public static final int Net_Tag_User_LoginPwd_Set = 113;
+	public static final int Net_Tag_User_Login_SEND_CODE= 113;
 
 
 

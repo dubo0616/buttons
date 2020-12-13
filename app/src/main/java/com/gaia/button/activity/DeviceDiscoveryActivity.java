@@ -6,7 +6,9 @@ package com.gaia.button.activity;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -87,7 +89,21 @@ public class DeviceDiscoveryActivity extends BluetoothActivity implements
 
     @Override // DevicesListFragmentListener
     public void onItemSelected(boolean selected) {
-//        enableButtons(selected);
+        onConnectButtonClicked();
+    }
+    private void onConnectButtonClicked() {
+        stopScan();
+        BluetoothDevice device = mDevicesListFragment.getSelectedDevice();
+        // keep information
+        SharedPreferences sharedPref = getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        Log.e("UUUU","===========ee"+device.getType());
+        editor.putInt(Consts.TRANSPORT_KEY, device.getType());
+        editor.putString(Consts.BLUETOOTH_NAME_KEY, device.getName());
+        editor.putString(Consts.BLUETOOTH_ADDRESS_KEY, device.getAddress());
+        editor.apply();
+        setResult(RESULT_OK);
+        finish();
     }
 
     @Override // DevicesListFragmentListener
@@ -109,7 +125,7 @@ public class DeviceDiscoveryActivity extends BluetoothActivity implements
                 listBLEDevices.add(device);
             }
         }
-        adapter.setListDevices(listBLEDevices);
+//        adapter.setListDevices(listBLEDevices);
     }
 
     @Override
@@ -117,8 +133,6 @@ public class DeviceDiscoveryActivity extends BluetoothActivity implements
 
         if (mDevicesAdapter != null && device != null
                 && device.getName() != null && device.getName().length() > 0) {
-            Log.e("TTTT","======"+device.getName());
-            Log.e("TTTT","======"+device.getAddress());
             mDevicesAdapter.add(device, 0);
         }
     }
@@ -197,21 +211,6 @@ public class DeviceDiscoveryActivity extends BluetoothActivity implements
         transaction.commitAllowingStateLoss();
     }
 
-    private void onConnectButtonClicked(@BluetoothService.Transport int transport) {
-        stopScan();
-
-//        BluetoothDevice device;
-//
-//        // keep information
-//        SharedPreferences sharedPref = getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPref.edit();
-//        editor.putInt(Consts.TRANSPORT_KEY, transport);
-//        editor.putString(Consts.BLUETOOTH_ADDRESS_KEY, device.getAddress());
-//        editor.apply();
-//
-//        startMainActivity();
-    }
-
     /**
      * <p>To register the bond state receiver to be aware of any bond state change.</p>
      */
@@ -237,6 +236,19 @@ public class DeviceDiscoveryActivity extends BluetoothActivity implements
 
         @Override
         public void onLeScan(final BluetoothDevice device, final int rssi, final byte[] scanRecord) {
+
+//            if (mBtAdapter != null && mBtAdapter.isEnabled()) {
+//                Set<BluetoothDevice> listDevices = mBtAdapter.getBondedDevices();
+//                for (BluetoothDevice device1 : listDevices) {
+//                    if (device.getType() == BluetoothDevice.DEVICE_TYPE_DUAL
+//                            || device.getType() == BluetoothDevice.DEVICE_TYPE_CLASSIC
+//                            || device.getType() == BluetoothDevice.DEVICE_TYPE_LE) {
+//                        Log.e("TTTT", "0888888===" + device1.getName());
+//                    }
+//                }
+//
+//
+//            }
             if (mDevicesAdapter != null && device != null
                     && device.getName() != null && device.getName().length() > 0) {
                 mDevicesAdapter.add(device, rssi);

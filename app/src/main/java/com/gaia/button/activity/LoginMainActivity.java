@@ -40,6 +40,12 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
         mWechatLoginBtn.setBtnLoginTextStyle(Color.WHITE,R.string.login_wechat);
         mPhoneLoginBtn.setOnClickListener(this);
         mWechatLoginBtn.setOnClickListener(this);
+        if(PreferenceManager.getInstance().isLogin()){
+            Intent intent = new Intent(LoginMainActivity.this, MainActivity.class);
+            intent.putExtra("Tab", 1);
+            startActivity(intent);
+            finish();
+        }
         if(!PreferenceManager.getInstance().getFristInstall()){
             mClLayout.setVisibility(View.VISIBLE);
         }else{
@@ -48,6 +54,7 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
         mTvKnow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                checkPermissions();
                 PreferenceManager.getInstance().setFristInstall();
                 mClLayout.setVisibility(View.GONE);
             }
@@ -77,5 +84,6 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
     private void handlePhoneLogin(){
         Intent intent = new Intent(this,PhoneLoginActivity.class);
         startActivity(intent);
+        finish();
     }
 }
