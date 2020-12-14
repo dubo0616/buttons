@@ -20,6 +20,8 @@ public class WebViewActivity extends BaseActivity {
     public static final String URL_KEY = "url_key";
     private WebView mWebView;
     private String mUrl = "";
+    private String webViewHeaderKey = "token" ;
+    private String webViewHeaderValue = "" ;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,6 +62,7 @@ public class WebViewActivity extends BaseActivity {
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 super.onReceivedError(view, request, error);
             }
+
 
         });
         WebSettings webSettings = webView.getSettings();
