@@ -1,5 +1,6 @@
 package com.gaia.button.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.gaia.button.R;
 
 import java.util.List;
@@ -20,11 +22,12 @@ public class ProductAdater extends RecyclerView.Adapter<ProductAdater.ViewHolder
     private List<ProductModel> mList;
     private ProductAdapterOnclickListener mOnClickListener;
     private int mType;//0产品页1发现页
-
-    public ProductAdater(List<ProductModel> list, ProductAdapterOnclickListener listener,int type) {
+    private Context mContext;
+    public ProductAdater(Context context,List<ProductModel> list, ProductAdapterOnclickListener listener,int type) {
         this.mList = list;
         this.mOnClickListener = listener;
         this.mType = type;
+        this.mContext = context;
     }
 
     public void setData(List<ProductModel> list) {
@@ -61,11 +64,11 @@ public class ProductAdater extends RecyclerView.Adapter<ProductAdater.ViewHolder
 //        });
 
 
-//        holder.detailImg.setImageResource(model.getImgUrl());
-//        holder.mTvDetail.setText(model.getDetail());
+        Glide.with(mContext).load(model.getList_img()).into(holder.ivDetail);
+        holder.mTvDetail.setText(model.getTitle());
         if(mType == 0) {
-//            holder.mTvPrice.setText(model.getPrice());
-//            holder.mTvSales.setText(model.getSales());
+            holder.mTvPrice.setText("￥"+model.getPrice());
+            holder.mTvSales.setText("￥"+model.getDc_price());
         }else{
             holder.mTvPrice.setVisibility(View.GONE);
             holder.mLayoutSales.setVisibility(View.GONE);
@@ -84,6 +87,7 @@ public class ProductAdater extends RecyclerView.Adapter<ProductAdater.ViewHolder
         private TextView mTvPrice;
         private TextView mTvDetail;
         private ConstraintLayout mLayoutSales;
+        private ImageView ivDetail;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -92,6 +96,7 @@ public class ProductAdater extends RecyclerView.Adapter<ProductAdater.ViewHolder
             mTvSales = itemView.findViewById(R.id.tv_sales);
             mTvPrice = itemView.findViewById(R.id.tv_price);
             mTvDetail = itemView.findViewById(R.id.tv_detail);
+            ivDetail = itemView.findViewById(R.id.iv_detail);
             mLayoutSales = itemView.findViewById(R.id.layout_sales);
         }
     }

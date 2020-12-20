@@ -3,25 +3,36 @@ package com.gaia.button.model;
 import java.io.Serializable;
 
 public class ProductModel implements Serializable {
-    private String imgUrl;
-    private String detail;
+    private String skuid;
+    private String title;
+    private String list_img;
     private String price;
-    private String sales;
+    private String dc_price;
+    private String is_collect;
+    private String detailUrl;
 
-    public String getImgUrl() {
-        return imgUrl;
+    public String getSkuid() {
+        return skuid;
     }
 
-    public void setImgUrl(String imgUrl) {
-        this.imgUrl = imgUrl;
+    public void setSkuid(String skuid) {
+        this.skuid = skuid;
     }
 
-    public String getDetail() {
-        return detail;
+    public String getTitle() {
+        return title;
     }
 
-    public void setDetail(String detail) {
-        this.detail = detail;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getList_img() {
+        return list_img;
+    }
+
+    public void setList_img(String list_img) {
+        this.list_img = list_img;
     }
 
     public String getPrice() {
@@ -32,11 +43,27 @@ public class ProductModel implements Serializable {
         this.price = price;
     }
 
-    public String getSales() {
-        return sales;
+    public String getDc_price() {
+        return dc_price;
     }
 
-    public void setSales(String sales) {
-        this.sales = sales;
+    public void setDc_price(String dc_price) {
+        this.dc_price = dc_price;
+    }
+
+    public String getIs_collect() {
+        return is_collect;
+    }
+
+    public void setIs_collect(String is_collect) {
+        this.is_collect = is_collect;
+    }
+
+    public String getDetailUrl() {
+        return detailUrl;
+    }
+
+    public void setDetailUrl(String detailUrl) {
+        this.detailUrl = detailUrl;
     }
 }

@@ -78,7 +78,7 @@ public class AccountInfo extends BaseResult implements Serializable {
             String mobile = jdata.optString("mobile");
             String avtorURL = jdata.optString("avtorURL");
             String userID = jdata.optString("userID");
-            boolean setPassword = jdata.optBoolean("mobile");
+            boolean setPassword = jdata.optBoolean("setPassword");
             String person_sign = jdata.optString("person_sign");
             ainfo.setToken(token);
             ainfo.setMobile(mobile);

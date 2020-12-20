@@ -34,4 +34,20 @@ public class PhoneCheckUtil {
 
         return isValidNum;
     }
+
+    public static boolean checkPhonePass(String phonecode) {
+        if (TextUtils.isEmpty(phonecode)) {
+            return false;
+        }
+
+        boolean isValidNum = phonecode.matches("^[0-9]*$") ;
+        if (!isValidNum) {
+            return false;
+        }
+        if(phonecode.length() != 6){
+            return false;
+        }
+
+        return isValidNum;
+    }
 }

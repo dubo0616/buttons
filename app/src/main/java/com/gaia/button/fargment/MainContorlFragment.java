@@ -90,7 +90,6 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
 
     private ConstraintLayout mDeviceUpdate;
     private ConstraintLayout mDeviceInfo;
-    private ConstraintLayout mDeviceReset;
     private ConstraintLayout mDeviceContorl;
     private TextView mTvContorlName;
     private TextView mStandard;
@@ -135,7 +134,6 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
 //        mScrollView = mRootView.findViewById(R.id.sl_scroll);
         mDeviceUpdate = mRootView.findViewById(R.id.cl_device_update);
         mDeviceInfo = mRootView.findViewById(R.id.cl_device_info);
-        mDeviceReset = mRootView.findViewById(R.id.cl_device_reset);
         mDeviceContorl = mRootView.findViewById(R.id.cl_contorl_bottom);
         mTvContorlName = mRootView.findViewById(R.id.tv_contorl_name);
         mStandard = mRootView.findViewById(R.id.tv_standard);
@@ -225,16 +223,6 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
             }
         });
         mDeviceUpdate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mService != null && mService.isGaiaReady()){
-                    startActivity(new Intent(mContext, UpgradeActivity.class));
-                }else{
-                    displayShortToast("设备未连接");
-                }
-            }
-        });
-        mDeviceReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(mService != null && mService.isGaiaReady()){

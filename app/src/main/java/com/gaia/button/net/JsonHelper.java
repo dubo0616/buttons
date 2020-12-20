@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.gaia.button.utils.ConstantUtil;
 
+import static com.gaia.button.utils.ConstantUtil.Net_Tag_User_ArticleCollect;
+
 public final class JsonHelper {
 	/**
 	 * 应答结果解析
@@ -25,6 +27,40 @@ public final class JsonHelper {
 			case ConstantUtil.Net_Tag_User_Login_SEND_CODE:
 				res = JsonManager.getJsonParser().parserLoginSendCode(resData);
 				break;
+			case ConstantUtil.Net_Tag_UserLogin_Pwd:
+				res = JsonManager.getJsonParser().parserLoginPwd(resData);
+				break;
+			case ConstantUtil.Net_Tag_User_Login_FORGETPASS:
+				res = JsonManager.getJsonParser().parserLoginPwd(resData);
+				break;
+			case ConstantUtil.Net_Tag_User_Login_SETPASS:
+				res = JsonManager.getJsonParser().parserSetPwd(resData);
+				break;
+			case ConstantUtil.Net_Tag_User_ArticleList:
+				res = JsonManager.getJsonParser().parserArticleList(resData);
+				break;
+			case ConstantUtil.Net_Tag_User_ArticleCollect:
+				res = JsonManager.getJsonParser().parserArticleCollect(resData);
+				break;
+			case ConstantUtil.Net_Tag_User_ProductList:
+				res = JsonManager.getJsonParser().parserProductList(resData);
+				break;
+			case ConstantUtil.Net_Tag_User_GetCollect:
+				res = JsonManager.getJsonParser().parserGetCollect(resData);
+				break;
+			case ConstantUtil.Net_Tag_User_GetDevice:
+				res = JsonManager.getJsonParser().parserGetDevice(resData);
+				break;
+			case ConstantUtil.Net_Tag_LogOut:
+				res = JsonManager.getJsonParser().parserLoginout(resData);
+				break;
+			case ConstantUtil.Net_Tag_User_WechatLogin:
+				res = JsonManager.getJsonParser().parserWeixinLogin(resData);
+				break;
+			case ConstantUtil.Net_Tag_User_WechatBindPhone:
+				res = JsonManager.getJsonParser().parserWeixinLoginBindphone(resData);
+				break;
+
 			default:
 				break;
 		}

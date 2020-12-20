@@ -1,5 +1,6 @@
 package com.gaia.button.activity;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
@@ -14,17 +15,21 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gaia.button.R;
 import com.gaia.button.fargment.MainContorlFragment;
 import com.gaia.button.fargment.MainDiscoveryFragment;
 import com.gaia.button.fargment.MainProductFragment;
+
+import javax.xml.transform.Result;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
@@ -41,7 +46,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private SparseArray<Fragment> mBottomFragmentMap = new SparseArray<>();
     private Fragment mCurFragment;
     private ConstraintLayout mSearchLayout;
-    private EditText mEditText;
+    private TextView mEditText;
     private ImageView mPersonal;
     private int mTab = 0;
 
@@ -64,22 +69,26 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mEditText = findViewById(R.id.et_search);
         mPersonal = findViewById(R.id.iv_personal);
         mPersonal.setOnClickListener(this);
-        mEditText.addTextChangedListener(new TextWatcher() {
+        mEditText.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public boolean onTouch(View v, MotionEvent event) {
 
-            }
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        Log.v("TAG", "TextView: ACTION_DOWN" + MotionEvent.ACTION_DOWN);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if(mCurFragment == mainDiscoveryFragment) {
+                            startActivityForResult(new Intent(MainActivity.this, SearchActivity.class), 1000);
+                        }else{
+                            startActivityForResult(new Intent(MainActivity.this, SearchActivity.class), 1001);
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > 0) {
-                    search(s.toString());
+                        }
+                        break;
+                    default:
+                        break;
                 }
+                return true;
             }
         });
         switch (mTab){
@@ -224,4 +233,31 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         return super.onKeyDown(keyCode, event);
     }
     private long exitTime = 0;
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case 1000:
+            if(resultCode == RESULT_OK && mCurFragment == mainDiscoveryFragment){
+                if(data != null){
+                    String key = data.getStringExtra("key");
+                    mainDiscoveryFragment.searchKey(key);
+                }
+
+            }
+            break;
+            case 1001:
+                if(resultCode == RESULT_OK && mCurFragment == mainProductFragment){
+                    if(data != null){
+                        String key = data.getStringExtra("key");
+                        mainProductFragment.searchKey(key);
+                    }
+
+                }
+                break;
+        }
+
+    }
 }

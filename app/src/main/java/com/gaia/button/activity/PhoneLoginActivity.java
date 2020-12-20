@@ -45,6 +45,7 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
     private TextView mTvGetcode;
     private TextView mTvServer;
     private CheckBox mBox;
+    private TextView mTvPass;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +63,13 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
         mTvGetcode.setOnClickListener(this);
         mTvServer = findViewById(R.id.tv_server);
         mBox = findViewById(R.id.cb_box);
+        mTvPass = findViewById(R.id.tv_pass_login);
+        mTvPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(PhoneLoginActivity.this,PhonePassLoginActivity.class));
+            }
+        });
         init(mTvServer);
         mPhoneNumber.addTextChangedListener(new TextWatcher() {
             @Override
@@ -231,13 +239,17 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
     @Override
     public void onRequestSuccess(int requestTag, Object data) {
         if(requestTag == ConstantUtil.Net_Tag_UserLogin_Sms) {
-
             if(data instanceof AccountInfo){
                 AccountInfo info = (AccountInfo) data;
-                PreferenceManager.getInstance().save(info);
-                Intent intent = new Intent(PhoneLoginActivity.this, MainActivity.class);
-                intent.putExtra("Tab", 1);
-                startActivity(intent);
+//                PreferenceManager.getInstance().save(info);
+                if(info.isSetPassword()) {
+                    Intent intent = new Intent(PhoneLoginActivity.this, MainActivity.class);
+                    intent.putExtra("Tab", 1);
+                    startActivity(intent);
+                }else{
+                    Intent intent = new Intent(PhoneLoginActivity.this, PhoneSetPassActivity.class);
+                    startActivity(intent);
+                }
                 finish();
             }
 
@@ -246,7 +258,7 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
             if(data instanceof BaseResult){
              BaseResult result = (BaseResult) data;
              if(result.getErrorCode() == 0){
-                 Toast.makeText(PhoneLoginActivity.this,"验证码发送成功",Toast.LENGTH_SHORT).show();
+                 showTotast("验证码发送成功");
              }else{
                  mSmsHandler.removeMessages(RESEND_COUNT_DOWN);
                  mCountDown = 60;

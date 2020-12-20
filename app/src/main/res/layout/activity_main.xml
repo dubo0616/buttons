@@ -94,7 +94,7 @@
             android:src="@drawable/icon_search"
             android:layout_width="22dp"
             android:layout_height="22dp"/>
-        <EditText
+        <TextView
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/iv_personal"
             android:background="@null"
@@ -105,7 +105,7 @@
             android:maxLength="120"
             android:id="@+id/et_search"
             android:gravity="start|center_vertical"
-            android:hint="请输入您的问题......"
+            android:text="请输入您的问题......"
             android:textColorHint="#949494"
             android:layout_marginBottom="4dp"
             android:layout_width="match_parent"

@@ -1,5 +1,6 @@
 package com.gaia.button.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.gaia.button.R;
 import com.gaia.button.model.DiscoveryModel;
 
@@ -19,10 +21,12 @@ public class DiscoveryAdapter extends RecyclerView.Adapter<DiscoveryAdapter.View
 
     private List<DiscoveryModel> mList;
     private DiscoveryAdapterOnclickListener mOnClickListener;
+    private Context mContext;
 
-    public DiscoveryAdapter(List<DiscoveryModel> list,DiscoveryAdapterOnclickListener listener){
+    public DiscoveryAdapter(Context context,List<DiscoveryModel> list,DiscoveryAdapterOnclickListener listener){
          this.mList = list;
          this.mOnClickListener = listener;
+         this.mContext =context;
     }
     public void setData(List<DiscoveryModel> list){
         this.mList = list;
@@ -31,7 +35,7 @@ public class DiscoveryAdapter extends RecyclerView.Adapter<DiscoveryAdapter.View
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_discovery_item,parent,false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.layout_discovery_item,parent,false);
         ViewHolder holder = new ViewHolder(view);
         return holder;
     }
@@ -71,9 +75,8 @@ public class DiscoveryAdapter extends RecyclerView.Adapter<DiscoveryAdapter.View
                 }
             }
         });
-
-//        holder.detailImg.setImageResource(model.getImgUrl());
-//        holder.detailContent.setText(model.getDetailContent());
+        Glide.with(mContext).load(model.getList_img()).into(holder.detailImg);
+        holder.detailContent.setText(model.getCate_name());
     }
 
     @Override

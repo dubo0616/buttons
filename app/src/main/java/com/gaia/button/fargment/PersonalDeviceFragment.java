@@ -16,19 +16,31 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.bumptech.glide.Glide;
 import com.gaia.button.R;
+import com.gaia.button.model.DeviceList;
+import com.gaia.button.model.DeviceMode;
 import com.gaia.button.model.PersonalDeviceModel;
+import com.gaia.button.model.ProductModelList;
+import com.gaia.button.net.NetConfig;
+import com.gaia.button.net.user.IUserListener;
+import com.gaia.button.net.user.UserManager;
 import com.gaia.button.view.GridSpaceItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PersonalDeviceFragment extends BaseFragment {
+import static com.gaia.button.utils.ConstantUtil.Net_Tag_User_GetCollect;
+import static com.gaia.button.utils.ConstantUtil.Net_Tag_User_GetDevice;
+
+public class PersonalDeviceFragment extends BaseFragment implements IUserListener {
     private View mRootView;
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private List<PersonalDeviceModel> mList = new ArrayList<>();
+    private List<DeviceMode> mList = new ArrayList<>();
     private PersonalDeviceAdapter mDeviceAdapter;
+    private boolean mRefreshFlag = false;
+    private TextView mTvNodata;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -38,34 +50,82 @@ public class PersonalDeviceFragment extends BaseFragment {
         }
         return mRootView;
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initData();
+    }
+
     private void initView(){
+        mTvNodata = mRootView.findViewById(R.id.tv_nodata);
         mSwipeRefreshLayout = (SwipeRefreshLayout) mRootView.findViewById(R.id.swipe_refresh);
-        mSwipeRefreshLayout.setEnabled(false);
-//        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//                if(mRefreshFlag)
-//                    return;
-//                mRefreshFlag = true;
-//                initData();
-//            }
-//        });
+        mSwipeRefreshLayout.setEnabled(true);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if(mRefreshFlag)
+                    return;
+                initData();
+            }
+        });
         mRecyclerView = (RecyclerView) mRootView.findViewById(R.id.list_msg);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setItemAnimator(null);
-        mList.add(new PersonalDeviceModel());
-        mList.add(new PersonalDeviceModel());
-        mList.add(new PersonalDeviceModel());
-        mList.add(new PersonalDeviceModel());
         mDeviceAdapter = new PersonalDeviceAdapter(mList);
         mRecyclerView.setAdapter(mDeviceAdapter);
+    }
+    private void initData(){
+        if(mRefreshFlag){
+            return;
+        }
+        mRefreshFlag = true;
+        NetConfig.isGet = true;
+        UserManager.getRequestHandler().requestGetDevice(PersonalDeviceFragment.this);
+
+    }
+
+    @Override
+    public void onRequestSuccess(int requestTag, Object data) {
+        mSwipeRefreshLayout.setRefreshing(false);
+        mRefreshFlag = false;
+        mSwipeRefreshLayout.setRefreshing(false);
+        if(requestTag == Net_Tag_User_GetDevice){
+            DeviceList list = (DeviceList) data;
+            if(list != null && list.getData() != null && list.getData().size()>0){
+                mDeviceAdapter.setData(list.getData());
+                mTvNodata.setVisibility(View.GONE);
+            }else{
+                mTvNodata.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestError(int requestTag, int errorCode, String errorMsg, Object data) {
+        mSwipeRefreshLayout.setRefreshing(false);
+        mRefreshFlag = false;
+    }
+
+    @Override
+    public void startProgressDialog(int requestTag) {
+
+    }
+
+    @Override
+    public void endProgressDialog(int requestTag) {
+
     }
 
     private class PersonalDeviceAdapter extends RecyclerView.Adapter<PersonalDeviceAdapter.ViewHolder>{
 
-        private List<PersonalDeviceModel> mList;
-        public PersonalDeviceAdapter(List<PersonalDeviceModel> list){
+        private List<DeviceMode> mList;
+        public PersonalDeviceAdapter(List<DeviceMode> list){
             this.mList = list;
+        }
+        public void setData(List<DeviceMode> list){
+            this.mList = list;
+            notifyDataSetChanged();
         }
         @NonNull
         @Override
@@ -78,7 +138,9 @@ public class PersonalDeviceFragment extends BaseFragment {
         @Override
         public void onBindViewHolder(@NonNull final PersonalDeviceAdapter.ViewHolder holder, int position) {
 
-            PersonalDeviceModel model = mList.get(position);
+            DeviceMode model = mList.get(position);
+            Glide.with(mContext).load(model.getDevice_img()).into(holder.mDeviceIcon);
+            holder.mDeviceName.setText(model.getDevice_name());
             holder.mArrow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -112,6 +174,7 @@ public class PersonalDeviceFragment extends BaseFragment {
             private LinearLayout mLayouProductIntro;
             private View mLine;
             private TextView mDeviceName;
+            private ImageView mDeviceIcon;
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 mBottomInfo = itemView.findViewById(R.id.layout_control);
@@ -122,6 +185,7 @@ public class PersonalDeviceFragment extends BaseFragment {
                 mLayouProductIntro = itemView.findViewById(R.id.ll_product_intro);
                 mLine = itemView.findViewById(R.id.v_line);
                 mDeviceName = itemView.findViewById(R.id.tv_device_name);
+                mDeviceIcon = itemView.findViewById(R.id.iv_device_icon);
             }
         }
     }

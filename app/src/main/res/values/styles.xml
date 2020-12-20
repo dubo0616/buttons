@@ -169,5 +169,11 @@
         <item name="android:textColor">@drawable/text_color_secondary</item>
         <item name="android:textSize">@dimen/text_size_list_item_secondary</item>
     </style>
-
+    <style name="loading_dialog" parent="android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:background">#00000000</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
 </resources>

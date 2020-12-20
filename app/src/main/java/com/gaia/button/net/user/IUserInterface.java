@@ -24,6 +24,24 @@ public interface IUserInterface {
 		获取验证码
 	 */
 	void requestGetCode(IUserListener observer, String mobile);
+	/**
+	 找回密码
+	 */
+	void requestForgetPass(IUserListener observer, String mobile,String code,String newpass,String confirm);
+
+	/**
+	 找回密码
+	 */
+	void requestSetPass(IUserListener observer,String newpass,String confirm);
+	void requestgetDiscover(IUserListener observer,int page,String title);
+	void requestCollect(IUserListener observer,String id);
+	void requestProductList(IUserListener observer,int page,String title);
+	void requestGetCollectIUserListener (IUserListener observer);
+	void requestGetDevice (IUserListener observer);
+	void requestLoginOut (IUserListener observer);
+	void requestLoginWeixin (IUserListener observer,String openid,String access_token,String nickname,String avatar);
+	void requestLoginBindPhone (IUserListener observer,String openid,String access_token,String nickname,String avatar,String phone,String code);
+
 
 
 }

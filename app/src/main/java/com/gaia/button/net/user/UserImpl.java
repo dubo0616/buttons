@@ -51,8 +51,8 @@ public class UserImpl implements INetListener {
 
 		} else if (requestTag == ConstantUtil.Net_Tag_UserLogin_Sms || requestTag == ConstantUtil.Net_Tag_UserLogin_Pwd) {
 			// login
-			// exit pre login user
-			PreferenceManager.getInstance().setLoginOut();
+//			// exit pre login user
+//			PreferenceManager.getInstance().setLoginOut();
 			try {
 				AccountInfo res = (AccountInfo) responseData;
 				if (res.getErrorCode() == 0) {

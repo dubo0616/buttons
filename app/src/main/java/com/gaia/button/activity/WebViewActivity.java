@@ -4,24 +4,37 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.View;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
 import com.gaia.button.R;
+import com.gaia.button.data.PreferenceManager;
+import com.gaia.button.model.AccountInfo;
+import com.gaia.button.utils.ConstantUtil;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static android.view.KeyEvent.KEYCODE_BACK;
 
 public class WebViewActivity extends BaseActivity {
     public static final String URL_KEY = "url_key";
+    public static final String TITLE_KEY = "title_key";
     private WebView mWebView;
     private String mUrl = "";
     private String webViewHeaderKey = "token" ;
     private String webViewHeaderValue = "" ;
+    private TextView mTvTitle;
+    private String title;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,15 +42,56 @@ public class WebViewActivity extends BaseActivity {
         setContentView(R.layout.activity_webview);
         mWebView = findViewById(R.id.wv_web);
         mUrl = getIntent().getStringExtra(URL_KEY);
+        title = getIntent().getStringExtra(TITLE_KEY);
+
+        mTvTitle = findViewById(R.id.tv_title);
+        mTvTitle.setText(title);
+        findViewById(R.id.iv_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        initCookie();
         init(mWebView);
         startLoad(mUrl);
 
     }
+    private void initCookie() {
+
+        AccountInfo accountInfo = PreferenceManager.getInstance().getAccountInfo();
+        try {
+            CookieManager cookieManager = CookieManager.getInstance();
+            cookieManager.setAcceptCookie(true);
+
+            if (accountInfo != null) {
+                if (TextUtils.isEmpty(accountInfo.getToken())) {
+//				cookieManager.removeAllCookie();// 移除
+                } else {
+                    cookieManager.setCookie(".lovetoshare168.com", "token=" + accountInfo.getToken() + ";path=/");
+                    cookieManager.flush();
+                }
+            } else {
+                cookieManager.removeAllCookie();// 移除
+                cookieManager.flush();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void startLoad(String url) {
         if (TextUtils.isEmpty(url) || mWebView == null)
             return;
+        CookieManager.getInstance().setCookie(ConstantUtil.NEW_BAPI_NAME_DEFAULT, "token="+PreferenceManager.getInstance().getAccountInfo().getToken());
         mWebView.loadUrl(url);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mWebView.clearCache(true);
     }
 
     private void init(WebView webView) {

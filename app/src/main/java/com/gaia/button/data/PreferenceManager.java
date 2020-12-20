@@ -26,6 +26,8 @@ public class PreferenceManager {
     private static final String FRIST_INSTALL = "first_install";
     private static final String PLAY_MODE = "paly_mode";
     private static final String PLAY_SOUND_MODE = "paly_sound_mode";
+    private static final String SEARCH_HISTORY = "search_history";
+    private static final String AUTO_PLAY = "auto_play";
 
     private PreferenceManager(){
         mySharedPreferences = GaiaApplication.getInstance().getSharedPreferences(PreferenceManager.KEY,MODE_PRIVATE);
@@ -138,5 +140,20 @@ public class PreferenceManager {
         setStringValue(uid+PLAY_SOUND_MODE,value);
     }
 
+    public String getSearchHistory(String uid) {
+        return getStringValue(uid+SEARCH_HISTORY);
+    }
+
+    public void setSearchHistoryString(String uid,String value) {
+        setStringValue(uid+SEARCH_HISTORY,value);
+    }
+
+    public boolean getAutoPlay(String uid) {
+        return getBlooeanValue(uid+AUTO_PLAY);
+    }
+
+    public void setAutoPlayString( String uid,boolean value) {
+        setBlooeanValue(uid+AUTO_PLAY,value);
+    }
 
 }

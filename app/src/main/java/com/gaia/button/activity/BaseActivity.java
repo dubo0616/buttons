@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.gaia.button.R;
 import com.gaia.button.utils.Consts;
+import com.gaia.button.view.ProgressDialogUtil;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,22 +22,53 @@ import java.util.List;
 public class BaseActivity extends AppCompatActivity {
 
     private String[] mPermissions;
-    protected void showTotast(String text){
-        Toast.makeText(this,text,Toast.LENGTH_SHORT).show();
+    private ProgressDialogUtil mPd;
+    private ProgressDialogUtil getWaitPd() {
+        if (mPd == null) {
+            mPd = new ProgressDialogUtil(this, "加载中...");
+        }
+        return mPd;
     }
-//    /**
-//     * 异步请求，是否显示dialog。
-//     */
-//    public <T> void request(@NonNull AbstractRequest<T> request, boolean dialog,
-//                            HttpCallback<T> httpCallback) {
-//        request.setCancelSign(this);
-//        CallServer.getInstance().request(this, request, httpCallback, dialog);
-//    }
-// When the activity is resumed.
-@Override
-protected void onResume() {
-    super.onResume();
-}
+    protected void showTotast(String text) {
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+    }
+    public void showWaitDialog() {
+        showWaitDialog("加载中...");
+    }
+
+    public void showWaitDialog(String title) {
+        if (!isFinishing()) {
+            if (mPd == null) {
+                mPd = new ProgressDialogUtil(this, title);
+            }
+            if (!mPd.isShowing()) {
+                mPd.showDialog();
+            }
+        }
+    }
+
+    public void showWaitDialog(boolean isCanceled) {
+        if (!isFinishing()) {
+            if (mPd == null) {
+                mPd = new ProgressDialogUtil(this, "加载中...");
+
+            }
+            if (!mPd.isShowing()) {
+                mPd.showDialog();
+                mPd.setCanceledOnTouchOutside(isCanceled);
+            }
+        }
+    }
+
+    public void hideWaitDialog() {
+        if (mPd != null && mPd.isShowing()) {
+            mPd.hideDialog();
+        }
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,16 +81,17 @@ protected void onResume() {
             e.printStackTrace(); // PackageManager.NameNotFoundException or NullPointerException
         }
         if (mPermissions == null) {
-            mPermissions = new String [0];
+            mPermissions = new String[0];
         }
     }
+
     @SuppressWarnings("UnusedReturnValue") // the return value is used for some implementations
     protected boolean checkPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             List<String> notGrantedPermissions = new ArrayList<>(); // all permissions which needs to be enabled
             boolean needsMessage = false;
 
-            for (int i=0; i<mPermissions.length; i++) {
+            for (int i = 0; i < mPermissions.length; i++) {
                 if (ActivityCompat.checkSelfPermission(this, mPermissions[i]) != PackageManager.PERMISSION_GRANTED) {
                     notGrantedPermissions.add(mPermissions[i]);
                     needsMessage = needsMessage
@@ -76,6 +109,7 @@ protected void onResume() {
 
         return true;
     }
+
     private void requestPermissions(final String[] permissions, boolean needsMessage) {
         // the permissions management has only to be performed for Android 6 (API 23) and above
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -94,8 +128,7 @@ protected void onResume() {
                     }
                 });
                 builder.show();
-            }
-            else {
+            } else {
                 // no need to inform the user, we directly request the permissions
                 ActivityCompat.requestPermissions(this, permissions, Consts.ACTION_REQUEST_PERMISSIONS);
             }

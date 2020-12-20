@@ -13,6 +13,18 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_width="14dp"
         android:layout_height="25dp"/>
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="15dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/tv_pass_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="手机密码登录"
+        android:textColor="#ff949494"
+        android:textSize="20sp" />
     <TextView
         android:id="@+id/tv_title"
         android:layout_marginTop="60dp"
@@ -82,7 +94,7 @@
             android:layout_height="1dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="5dp"
         android:id="@+id/layout_bottom"
         app:layout_constraintTop_toBottomOf="@+id/layout_top"
         app:layout_constraintStart_toStartOf="parent"

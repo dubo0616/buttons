@@ -12,6 +12,7 @@ import com.gaia.button.utils.ConnectManager;
 import com.gaia.button.utils.ContextHolder;
 import com.gaia.button.utils.DcError;
 import com.gaia.button.utils.StringConstant;
+import com.squareup.okhttp.Call;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -196,11 +197,32 @@ public class OkHttpRequest implements Runnable {
             }
 
             if (NetConfig.isGet) {
-//				getResponse = client.execute(getRequest);
+                Request.Builder builder= new Request.Builder().url(mUrl);
+                if(!TextUtils.isEmpty(token)){
+                    builder.addHeader("token",token);
+                }
+                Request request = builder.build();
+                Call call = client.newCall(request);
+                Response response  = call.execute();
+                if (response.isSuccessful()) {
+                    try {
+                        handleSuccessEvent(response.body().string());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        handleErrorEvent(ContextHolder.getContext().getString(R.string.net_error_title),
+                                DcError.DC_NET_GENER_ERROR);
+                    }
+                } else {
+                    handleErrorEvent(ContextHolder.getContext().getString(R.string.net_error_title),
+                            DcError.DC_NET_GENER_ERROR);
+                }
             } else {
                 RequestBody body = RequestBody.create(JSON, (String) mRequestData);
-                Request request = new Request.Builder().url(mUrl).post(body)
-                        .addHeader("Cookie", "token=" + token).build();
+                 Request.Builder builder= new Request.Builder().url(mUrl).post(body);
+                if(!TextUtils.isEmpty(token)){
+                    builder.addHeader("token",token);
+                }
+                Request request = builder.build();
                 //异步请求
 //                client.newCall(request).enqueue(mHttpCallback);
                 try {
@@ -229,12 +251,6 @@ public class OkHttpRequest implements Runnable {
             NetConfig.isGet = false;
         } catch (Exception e) {
             e.printStackTrace();
-            //暂时去掉灾备域名切换
-//            if (e instanceof SocketTimeoutException || e instanceof ConnectTimeoutException) {
-//            	checkChangeDomain(e);
-//            } else {
-//            	handleErrorEvent("exception happen", DcError.DC_NET_GENER_ERROR);
-//            }
             handleErrorEvent(ContextHolder.getContext().getString(R.string.net_error_title), DcError.DC_NET_GENER_ERROR);
             
         } finally {

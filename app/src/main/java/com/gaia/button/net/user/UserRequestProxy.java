@@ -1,6 +1,7 @@
 package com.gaia.button.net.user;
 
 import android.text.TextUtils;
+import android.widget.TextView;
 
 
 import com.gaia.button.data.PreferenceManager;
@@ -151,18 +152,20 @@ public class UserRequestProxy implements IUserInterface {
 
     public void requestLoginByPwd(IUserListener observer, String phonenum, String pwd) {
         // 将参数与key值对应放入HashMap中
-        HashMap<String, String> params = new HashMap<>();
-        params.put(StringConstant.JSON_USER_PHONE, phonenum);
-        params.put(StringConstant.JSON_PASSWORD, pwd);
+        JSONObject mJsonObject = new JSONObject();
+        try {
+            mJsonObject.put("mobile",phonenum);
+            mJsonObject.put("password",pwd);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-        // 使用公共方法传递HashMap参数组合以及funName
-        Object str = HttpSubmitDataManager.getBuilder().buildDefaultString(
-                ConstantUtil.SERVER_URL_NAME_SMSCODE, params);
 
         mCurrentRequestId = NetManager.getHttpConnect().sendRequest(
-                ConstantUtil.NEW_BAPI_NAME_DEFAULT + ConstantUtil.NEW_API_URL_SUFFIX,
-                ConstantUtil.Net_Tag_UserLogin_Pwd, str, iNetListener);
+                ConstantUtil.NEW_BAPI_URL+ ConstantUtil.SERVER_URL_NAME_PWDLOGIN,
+                ConstantUtil.Net_Tag_UserLogin_Pwd, mJsonObject.toString(), iNetListener);
         addObserver(observer, mCurrentRequestId);
+
     }
 
     @Override
@@ -181,6 +184,150 @@ public class UserRequestProxy implements IUserInterface {
         addObserver(observer, mCurrentRequestId);
     }
 
+    @Override
+    public void requestForgetPass(IUserListener observer, String mobile,String code,String pass,String passnew) {
+        JSONObject mJsonObject = new JSONObject();
+        try {
+            mJsonObject.put("mobile",mobile);
+            mJsonObject.put("verifyCode",code);
+            mJsonObject.put("password",pass);
+            mJsonObject.put("ture_password",passnew);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mCurrentRequestId = NetManager.getHttpConnect().sendRequest(
+                ConstantUtil.NEW_BAPI_URL+ ConstantUtil.SERVER_URL_NAME_FORGETPASS,
+                ConstantUtil.Net_Tag_User_Login_FORGETPASS, mJsonObject.toString(), iNetListener);
+        addObserver(observer, mCurrentRequestId);
+
+    }
+
+    @Override
+    public void requestSetPass(IUserListener observer, String newpass, String confirm) {
+        JSONObject mJsonObject = new JSONObject();
+        try {
+            mJsonObject.put("password",newpass);
+            mJsonObject.put("ture_password",confirm);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mCurrentRequestId = NetManager.getHttpConnect().sendRequest(
+                ConstantUtil.NEW_BAPI_URL+ ConstantUtil.SERVER_URL_NAME_LOGINPWD_SET,
+                ConstantUtil.Net_Tag_User_Login_SETPASS, mJsonObject.toString(), iNetListener);
+        addObserver(observer, mCurrentRequestId);
+    }
+
+    @Override
+    public void requestgetDiscover(IUserListener observer, int page, String title) {
+        JSONObject mJsonObject = new JSONObject();
+        try {
+            mJsonObject.put("page",page+"");
+            if(!TextUtils.isEmpty(title)) {
+                mJsonObject.put("title", title);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mCurrentRequestId = NetManager.getHttpConnect().sendRequest(
+                ConstantUtil.NEW_BAPI_URL+ ConstantUtil.SERVER_URL_NAME_ArticleList,
+                ConstantUtil.Net_Tag_User_ArticleList, mJsonObject.toString(), iNetListener);
+        addObserver(observer, mCurrentRequestId);
+    }
+
+    @Override
+    public void requestCollect(IUserListener observer, String id) {
+        JSONObject mJsonObject = new JSONObject();
+        try {
+            mJsonObject.put("id",id);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mCurrentRequestId = NetManager.getHttpConnect().sendRequest(
+                ConstantUtil.NEW_BAPI_URL+ ConstantUtil.SERVER_URL_NAME_ArticleCollect,
+                ConstantUtil.Net_Tag_User_ArticleCollect, mJsonObject.toString(), iNetListener);
+        addObserver(observer, mCurrentRequestId);
+
+    }
+
+    @Override
+    public void requestProductList(IUserListener observer, int page, String title) {
+        JSONObject mJsonObject = new JSONObject();
+        try {
+            mJsonObject.put("page",page+"");
+            if(!TextUtils.isEmpty(title)) {
+                mJsonObject.put("title", title);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mCurrentRequestId = NetManager.getHttpConnect().sendRequest(
+                ConstantUtil.NEW_BAPI_URL+ ConstantUtil.SERVER_URL_NAME_ProductList,
+                ConstantUtil.Net_Tag_User_ProductList, mJsonObject.toString(), iNetListener);
+        addObserver(observer, mCurrentRequestId);
+    }
+
+    @Override
+    public void requestGetCollectIUserListener(IUserListener observer) {
+        mCurrentRequestId = NetManager.getHttpConnect().sendRequest(
+                ConstantUtil.NEW_BAPI_URL+ ConstantUtil.SERVER_URL_NAME_GetCollect,
+                ConstantUtil.Net_Tag_User_GetCollect, null, iNetListener);
+        addObserver(observer, mCurrentRequestId);
+    }
+
+    @Override
+    public void requestGetDevice(IUserListener observer) {
+        mCurrentRequestId = NetManager.getHttpConnect().sendRequest(
+                ConstantUtil.NEW_BAPI_URL+ ConstantUtil.SERVER_URL_NAME_GetDevice,
+                ConstantUtil.Net_Tag_User_GetDevice, null, iNetListener);
+        addObserver(observer, mCurrentRequestId);
+
+    }
+
+    @Override
+    public void requestLoginOut(IUserListener observer) {
+        mCurrentRequestId = NetManager.getHttpConnect().sendRequest(
+                ConstantUtil.NEW_BAPI_URL+ ConstantUtil.SERVER_URL_NAME_LOGOUT,
+                ConstantUtil.Net_Tag_LogOut, null, iNetListener);
+        addObserver(observer, mCurrentRequestId);
+    }
+
+    @Override
+    public void requestLoginWeixin(IUserListener observer, String openid, String access_token, String nickname, String avatar) {
+        JSONObject mJsonObject = new JSONObject();
+        try {
+            mJsonObject.put("openid",openid);
+            mJsonObject.put("access_token",access_token);
+            mJsonObject.put("nickname",nickname);
+            mJsonObject.put("avatar",avatar);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mCurrentRequestId = NetManager.getHttpConnect().sendRequest(
+                ConstantUtil.NEW_BAPI_URL+ ConstantUtil.SERVER_URL_NAME_WechatLogin,
+                ConstantUtil.Net_Tag_User_WechatLogin, mJsonObject.toString(), iNetListener);
+        addObserver(observer, mCurrentRequestId);
+    }
+
+    @Override
+    public void requestLoginBindPhone(IUserListener observer, String openid, String access_token, String nickname, String avatar, String phone, String code) {
+        JSONObject mJsonObject = new JSONObject();
+        try {
+            mJsonObject.put("openid",openid);
+            mJsonObject.put("access_token",access_token);
+            mJsonObject.put("nickname",nickname);
+            mJsonObject.put("avatar",avatar);
+            mJsonObject.put("mobile",phone);
+            mJsonObject.put("verifyCode",code);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mCurrentRequestId = NetManager.getHttpConnect().sendRequest(
+                ConstantUtil.NEW_BAPI_URL+ ConstantUtil.SERVER_URL_NAME_WechatBindphone,
+                ConstantUtil.Net_Tag_User_WechatBindPhone, mJsonObject.toString(), iNetListener);
+        addObserver(observer, mCurrentRequestId);
+    }
 
 
 }
