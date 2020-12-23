@@ -65,6 +65,7 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
         mWechatLoginBtn.setOnClickListener(this);
         if(PreferenceManager.getInstance().isLogin()){
             Intent intent = new Intent(LoginMainActivity.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("Tab", 1);
             startActivity(intent);
             finish();
@@ -162,7 +163,6 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
     private void handlePhoneLogin(){
         Intent intent = new Intent(this,PhoneLoginActivity.class);
         startActivity(intent);
-        finish();
     }
 
     @Override
@@ -173,6 +173,7 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
                 AccountInfo info = (AccountInfo) data;
                 PreferenceManager.getInstance().save(info);
                 Intent intent = new Intent(LoginMainActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent.putExtra("Tab", 1);
                 startActivity(intent);
                 finish();

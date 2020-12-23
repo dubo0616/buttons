@@ -41,6 +41,8 @@ public interface IUserInterface {
 	void requestLoginOut (IUserListener observer);
 	void requestLoginWeixin (IUserListener observer,String openid,String access_token,String nickname,String avatar);
 	void requestLoginBindPhone (IUserListener observer,String openid,String access_token,String nickname,String avatar,String phone,String code);
+	void requestSetAutoPlay (IUserListener observer,int auto);
+	void requestUpdate (IUserListener observer,String version);
 
 
 

@@ -186,6 +186,7 @@ public class BindPhoneActivity extends BaseActivity implements IUserListener,Vie
                 PreferenceManager.getInstance().save(info);
                 if(info.isSetPassword()) {
                     Intent intent = new Intent(BindPhoneActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.putExtra("Tab", 1);
                     startActivity(intent);
                 }else{

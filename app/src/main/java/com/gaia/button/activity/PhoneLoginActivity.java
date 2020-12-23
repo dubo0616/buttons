@@ -244,6 +244,7 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
 //                PreferenceManager.getInstance().save(info);
                 if(info.isSetPassword()) {
                     Intent intent = new Intent(PhoneLoginActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.putExtra("Tab", 1);
                     startActivity(intent);
                 }else{

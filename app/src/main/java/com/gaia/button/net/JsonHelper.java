@@ -60,6 +60,12 @@ public final class JsonHelper {
 			case ConstantUtil.Net_Tag_User_WechatBindPhone:
 				res = JsonManager.getJsonParser().parserWeixinLoginBindphone(resData);
 				break;
+			case ConstantUtil.Net_Tag_User_AUTOPLAY:
+				res = JsonManager.getJsonParser().parserAutoPlay(resData);
+				break;
+			case ConstantUtil.Net_Tag_User_GetVersion:
+				res = JsonManager.getJsonParser().parserUpdate(resData);
+				break;
 
 			default:
 				break;

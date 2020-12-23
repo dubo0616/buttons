@@ -112,6 +112,7 @@ public class PhoneSetPassActivity extends BaseActivity implements View.OnClickLi
         if(requestTag == ConstantUtil.Net_Tag_User_Login_SETPASS) {
             showTotast("密码设置成功");
             Intent intent = new Intent(PhoneSetPassActivity.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.putExtra("Tab", 1);
             startActivity(intent);
             finish();

@@ -1,5 +1,6 @@
 package com.gaia.button.fargment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +20,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.gaia.button.R;
+import com.gaia.button.activity.WebViewActivity;
 import com.gaia.button.model.DeviceList;
 import com.gaia.button.model.DeviceMode;
 import com.gaia.button.model.PersonalDeviceModel;
@@ -138,7 +141,7 @@ public class PersonalDeviceFragment extends BaseFragment implements IUserListene
         @Override
         public void onBindViewHolder(@NonNull final PersonalDeviceAdapter.ViewHolder holder, int position) {
 
-            DeviceMode model = mList.get(position);
+            final DeviceMode model = mList.get(position);
             Glide.with(mContext).load(model.getDevice_img()).into(holder.mDeviceIcon);
             holder.mDeviceName.setText(model.getDevice_name());
             holder.mArrow.setOnClickListener(new View.OnClickListener() {
@@ -157,6 +160,43 @@ public class PersonalDeviceFragment extends BaseFragment implements IUserListene
 
                 }
             });
+            holder.mLayoutLink.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(mContext,"耳机控制",Toast.LENGTH_SHORT).show();
+                }
+            });
+            holder.mLayouDeviceInfo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(mContext,"设备信息",Toast.LENGTH_SHORT).show();
+                }
+            });
+            holder.mLayouHardUpgrade.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), WebViewActivity.class);
+                    String url = "http://img.lovetoshare168.com/bz/v1/user_explain/1";
+                    if(model.getDevice_name().endsWith("x") || model.getDevice_name().endsWith("X")){
+                        url = "http://img.lovetoshare168.com/bz/v1/user_explain/4";
+                    }
+                    intent.putExtra(WebViewActivity.URL_KEY,url);
+                    intent.putExtra(WebViewActivity.TITLE_KEY,"商品说明");
+                }
+            });
+            holder.mLayouProductIntro.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), WebViewActivity.class);
+                    String url = "http://img.lovetoshare168.com/bz/v1/user_faq/1";
+                    if(model.getDevice_name().endsWith("x") || model.getDevice_name().endsWith("X")){
+                        url = "http://img.lovetoshare168.com/bz/v1/user_faq/4";
+                    }
+                    intent.putExtra(WebViewActivity.URL_KEY,url);
+                    intent.putExtra(WebViewActivity.TITLE_KEY,"商品问答");
+                }
+            });
+
         }
 
         @Override

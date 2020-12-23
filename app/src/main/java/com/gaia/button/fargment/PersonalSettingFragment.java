@@ -1,7 +1,11 @@
 package com.gaia.button.fargment;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +28,10 @@ import com.gaia.button.activity.CustomerActivity;
 import com.gaia.button.activity.LoginMainActivity;
 import com.gaia.button.adapter.PersonalSettingAdapter;
 import com.gaia.button.data.PreferenceManager;
+import com.gaia.button.model.AutoplayModel;
 import com.gaia.button.model.PersonalDeviceModel;
 import com.gaia.button.model.PersonalSettingModel;
+import com.gaia.button.model.UpdateModel;
 import com.gaia.button.net.NetConfig;
 import com.gaia.button.net.user.IUserListener;
 import com.gaia.button.net.user.UserManager;
@@ -40,7 +46,7 @@ public class PersonalSettingFragment extends BaseFragment implements PersonalSet
 //    private List<PersonalSettingModel> mList = new ArrayList<>();
 //    private PersonalSettingAdapter mSettingAdapter;
     private TextView mTvLoginout;
-    private ConstraintLayout mCLAbout,mClCustomer,mClAccount;
+    private ConstraintLayout mCLAbout,mClCustomer,mClAccount,mClUpdate;
     private ImageView mAutoPlay;
 
     @Nullable
@@ -83,8 +89,17 @@ public class PersonalSettingFragment extends BaseFragment implements PersonalSet
                 startActivity(new Intent(getActivity(), AccountActivity.class));
             }
         });
+
+        mClUpdate = mRootView.findViewById(R.id.cl_update);
+        mClUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                UserManager.getRequestHandler().requestUpdate(PersonalSettingFragment.this,getVersion());
+            }
+        });
         mAutoPlay = mRootView.findViewById(R.id.iv_auto_play);
-        mAutoPlay.setSelected(PreferenceManager.getInstance().getAutoPlay(PreferenceManager.getInstance().getAccountInfo().getUserID()));
+        mAutoPlay.setSelected(PreferenceManager.getInstance().getAccountInfo().getAutoplay() ==1);
         mAutoPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,11 +109,31 @@ public class PersonalSettingFragment extends BaseFragment implements PersonalSet
                     mAutoPlay.setSelected(true);
 
                 }
-                PreferenceManager.getInstance().setAutoPlayString(PreferenceManager.getInstance().getAccountInfo().getUserID(),mAutoPlay.isSelected());
+                UserManager.getRequestHandler().requestSetAutoPlay(PersonalSettingFragment.this,mAutoPlay.isSelected()?1:2);
+
             }
         });
     }
+    /**
+     * 获取版本号
+     *
+     * @return 当前应用的版本号
+     */
+    private String getVersion() {
+        if(getActivity() == null){
+            return "1.0";
+        }
+        try {
+            PackageManager manager = getActivity().getPackageManager();
+            PackageInfo info = manager.getPackageInfo(getActivity().getPackageName(), 0);
+            String version = info.versionName;
+            return version;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "1.0";
+        }
 
+    }
 
     @Override
     public void onItemClick(int pos) {
@@ -110,14 +145,40 @@ public class PersonalSettingFragment extends BaseFragment implements PersonalSet
         if (requestTag == ConstantUtil.Net_Tag_LogOut) {
             PreferenceManager.getInstance().setLoginOut();
             GaiaApplication.getInstance().clearActivities();
-            startActivity(new Intent(getActivity(), LoginMainActivity.class));
+            Intent intent = new Intent(getActivity(), LoginMainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
             getActivity().finish();
+        }else if(requestTag == ConstantUtil.Net_Tag_User_AUTOPLAY){
+            AutoplayModel model = (AutoplayModel) data;
+            if(model != null){
+                PreferenceManager.getInstance().getAccountInfo().setAutoplay(model.getAutoplay());
+                PreferenceManager.getInstance().setIntValue(PreferenceManager.ACC_AUTO_PLAY,model.getAutoplay());
+            }
+            displayShortToast("设置成功");
+        }else if(requestTag == ConstantUtil.Net_Tag_User_GetVersion){
+            UpdateModel model = (UpdateModel) data;
+            if(model.getIsUpdate() == 1 && !TextUtils.isEmpty(model.getUrl())){
+                Uri uri = Uri.parse(model.getUrl());
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(uri);
+                startActivity(intent);
+            }else {
+                displayShortToast("已经是最新版本");
+            }
+
         }
     }
 
     @Override
     public void onRequestError(int requestTag, int errorCode, String errorMsg, Object data) {
-
+        if (requestTag == ConstantUtil.Net_Tag_LogOut) {
+            displayShortToast("退出登录失败");
+        }else if(requestTag == ConstantUtil.Net_Tag_User_AUTOPLAY){
+            displayShortToast("设置失败");
+        } else if(requestTag == ConstantUtil.Net_Tag_User_GetVersion){
+            displayShortToast("网络异常");
+        }
     }
 
     @Override

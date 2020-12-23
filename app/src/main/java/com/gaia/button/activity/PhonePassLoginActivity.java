@@ -203,6 +203,7 @@ public class PhonePassLoginActivity extends BaseActivity implements View.OnClick
                 AccountInfo info = (AccountInfo) data;
                 PreferenceManager.getInstance().save(info);
                 Intent intent = new Intent(PhonePassLoginActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent.putExtra("Tab", 1);
                 startActivity(intent);
                 finish();

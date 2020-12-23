@@ -6,10 +6,12 @@ import android.text.TextUtils;
 import com.gaia.button.GaiaApplication;
 import com.gaia.button.activity.LoginMainActivity;
 import com.gaia.button.model.AccountInfo;
+import com.gaia.button.model.AutoplayModel;
 import com.gaia.button.model.DeviceList;
 import com.gaia.button.model.DiscoverList;
 import com.gaia.button.model.DiscoveryModel;
 import com.gaia.button.model.ProductModelList;
+import com.gaia.button.model.UpdateModel;
 import com.gaia.button.utils.ConstantUtil;
 import com.gaia.button.utils.DcError;
 import com.gaia.button.utils.StringConstant;
@@ -344,6 +346,56 @@ public class JSONParser implements JsonParserInterface {
                 if (!TextUtils.isEmpty(dataStr)) {
                     Gson gson = new Gson();
                     res = gson.fromJson(dataStr, AccountInfo.class);
+                }
+
+                res.setErrorCode(0);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception(e);
+        }
+        return res;
+    }
+
+    @Override
+    public BaseResult parserAutoPlay(String responseStr) throws Exception {
+        BaseResult res = new BaseResult();
+        String url = "";
+        try {
+
+            JSONObject obj = new JSONObject(responseStr);
+            parserHeader(obj, res);
+            int errorCode = res.getErrorCode();
+            if (errorCode == DcError.DC_OK) {
+                String dataStr = obj.optString(StringConstant.JSON_DATA);
+                if (!TextUtils.isEmpty(dataStr)) {
+                    Gson gson = new Gson();
+                    res = gson.fromJson(dataStr, AutoplayModel.class);
+                }
+
+                res.setErrorCode(0);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception(e);
+        }
+        return res;
+    }
+
+    @Override
+    public BaseResult parserUpdate(String responseStr) throws Exception {
+        BaseResult res = new BaseResult();
+        String url = "";
+        try {
+
+            JSONObject obj = new JSONObject(responseStr);
+            parserHeader(obj, res);
+            int errorCode = res.getErrorCode();
+            if (errorCode == DcError.DC_OK) {
+                String dataStr = obj.optString(StringConstant.JSON_DATA);
+                if (!TextUtils.isEmpty(dataStr)) {
+                    Gson gson = new Gson();
+                    res = gson.fromJson(dataStr, UpdateModel.class);
                 }
 
                 res.setErrorCode(0);

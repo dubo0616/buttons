@@ -196,7 +196,6 @@ public class OkHttpRequest implements Runnable {
             if (user != null && !TextUtils.isEmpty(user.getToken())) {
                 token = user.getToken();
             }
-            Log.e("TTTT",Log.getStackTraceString(new Throwable())+"========"+token);
             if (NetConfig.isGet) {
                 Request.Builder builder= new Request.Builder().url(mUrl);
                 if(!TextUtils.isEmpty(token)){

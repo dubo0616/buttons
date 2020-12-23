@@ -63,14 +63,5 @@
         android:text="￥1798.00"
         android:textColor="#ff949494"
         android:textSize="12sp" />
-    <View
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:background="#949494"
-        android:layout_marginBottom="3dp"
-        android:layout_width="wrap_content"
-        android:layout_height="1dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

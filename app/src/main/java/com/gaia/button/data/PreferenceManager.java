@@ -27,7 +27,7 @@ public class PreferenceManager {
     private static final String PLAY_MODE = "paly_mode";
     private static final String PLAY_SOUND_MODE = "paly_sound_mode";
     private static final String SEARCH_HISTORY = "search_history";
-    private static final String AUTO_PLAY = "auto_play";
+    public static final String ACC_AUTO_PLAY = "acc_auto_play";
 
     private PreferenceManager(){
         mySharedPreferences = GaiaApplication.getInstance().getSharedPreferences(PreferenceManager.KEY,MODE_PRIVATE);
@@ -63,6 +63,7 @@ public class PreferenceManager {
             mAccountInfo.setAvtorURL(getStringValue(ACC_LOGIN_AVTOR_URL));
             mAccountInfo.setPerson_sign(getStringValue(ACC_LOGIN_PERSON_SGIN));
             mAccountInfo.setSetPassword(getBlooeanValue(ACC_LOGIN_PASSWORD));
+            mAccountInfo.setAutoplay(getIntValue(ACC_AUTO_PLAY));
 
         }
        return  mAccountInfo;
@@ -76,6 +77,7 @@ public class PreferenceManager {
         setStringValue(ACC_LOGIN_PERSON_SGIN,"");
         setStringValue(ACC_LOGIN_PERSON_NAME,"");
         setBlooeanValue(ACC_LOGIN_PASSWORD,false);
+        setIntValue(ACC_AUTO_PLAY,-1);
         mAccountInfo=null;
     }
 
@@ -86,6 +88,14 @@ public class PreferenceManager {
     public boolean isLogin(){
         String token = getStringValue(ACC_LOGIN_INFO_TOKEN);
         return !TextUtils.isEmpty(token);
+    }
+    public void setIntValue(String key,int value){
+        SharedPreferences.Editor mEditor = mySharedPreferences.edit();
+        mEditor.putInt(key, value);
+        mEditor.commit();
+    }
+    public int getIntValue(String key){
+        return mySharedPreferences.getInt(key,-1);
     }
     public void setStringValue(String key,String value){
         SharedPreferences.Editor mEditor = mySharedPreferences.edit();
@@ -113,6 +123,7 @@ public class PreferenceManager {
             setStringValue(ACC_LOGIN_PERSON_SGIN,info.isPerson_sign());
             setStringValue(ACC_LOGIN_PERSON_NAME,"");
             setBlooeanValue(ACC_LOGIN_PASSWORD,info.isSetPassword());
+            setIntValue(ACC_AUTO_PLAY,info.getAutoplay());
             mAccountInfo = info;
         }
     }
@@ -147,14 +158,6 @@ public class PreferenceManager {
 
     public void setSearchHistoryString(String uid,String value) {
         setStringValue(uid+SEARCH_HISTORY,value);
-    }
-
-    public boolean getAutoPlay(String uid) {
-        return getBlooeanValue(uid+AUTO_PLAY);
-    }
-
-    public void setAutoPlayString( String uid,boolean value) {
-        setBlooeanValue(uid+AUTO_PLAY,value);
     }
 
 }

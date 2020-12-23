@@ -61,6 +61,7 @@ public class MainProductFragment extends BaseFragment implements ProductAdater.P
         mTvNodata = mRootView.findViewById(R.id.tv_nodata);
         mSwipeRefreshLayout = (SwipeRefreshLayout) mRootView.findViewById(R.id.swipe_refresh);
         mSwipeRefreshLayout.setEnabled(true);
+        mSwipeRefreshLayout.setRefreshing(true);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

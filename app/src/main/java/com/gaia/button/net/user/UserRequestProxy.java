@@ -329,5 +329,33 @@ public class UserRequestProxy implements IUserInterface {
         addObserver(observer, mCurrentRequestId);
     }
 
+    @Override
+    public void requestSetAutoPlay(IUserListener observer, int auto) {
+        JSONObject mJsonObject = new JSONObject();
+        try {
+            mJsonObject.put("autoplay",auto);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mCurrentRequestId = NetManager.getHttpConnect().sendRequest(
+                ConstantUtil.NEW_BAPI_URL+ ConstantUtil.SERVER_URL_NAME_SetAutoplay,
+                ConstantUtil.Net_Tag_User_AUTOPLAY, mJsonObject.toString(), iNetListener);
+        addObserver(observer, mCurrentRequestId);
+    }
+
+    @Override
+    public void requestUpdate(IUserListener observer, String version) {
+        JSONObject mJsonObject = new JSONObject();
+        try {
+            mJsonObject.put("version",version);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mCurrentRequestId = NetManager.getHttpConnect().sendRequest(
+                ConstantUtil.NEW_BAPI_URL+ ConstantUtil.SERVER_URL_NAME_GetVersion,
+                ConstantUtil.Net_Tag_User_GetVersion, mJsonObject.toString(), iNetListener);
+        addObserver(observer, mCurrentRequestId);
+    }
+
 
 }

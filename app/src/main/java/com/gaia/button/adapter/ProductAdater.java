@@ -1,6 +1,10 @@
 package com.gaia.button.adapter;
 
 import android.content.Context;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextUtils;
+import android.text.style.StrikethroughSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,7 +72,17 @@ public class ProductAdater extends RecyclerView.Adapter<ProductAdater.ViewHolder
         holder.mTvDetail.setText(model.getTitle());
         if(mType == 0) {
             holder.mTvPrice.setText("￥"+model.getPrice());
-            holder.mTvSales.setText("￥"+model.getDc_price());
+            if(!TextUtils.isEmpty(model.getDc_price())) {
+                String off = "￥" + model.getDc_price();
+                SpannableString ss = new SpannableString(off);
+                //用删除线标记文本
+                ss.setSpan(new StrikethroughSpan(), 0, off.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                holder.mTvSales.setText("");
+                holder.mTvSales.append(ss);
+                holder.mTvSales.setText(ss);
+            }else{
+                holder.mTvSales.setVisibility(View.GONE);
+            }
         }else{
             holder.mTvPrice.setVisibility(View.GONE);
             holder.mLayoutSales.setVisibility(View.GONE);

@@ -45,7 +45,7 @@ public class AboutActivity extends BaseActivity {
             return version;
         } catch (Exception e) {
             e.printStackTrace();
-            return "无法获取到版本号";
+            return "1.0";
         }
 
     }
