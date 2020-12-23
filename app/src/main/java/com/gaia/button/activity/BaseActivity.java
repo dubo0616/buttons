@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.gaia.button.GaiaApplication;
 import com.gaia.button.R;
 import com.gaia.button.utils.Consts;
 import com.gaia.button.view.ProgressDialogUtil;
@@ -83,6 +84,7 @@ public class BaseActivity extends AppCompatActivity {
         if (mPermissions == null) {
             mPermissions = new String[0];
         }
+        GaiaApplication.getInstance().addActivity(this);
     }
 
     @SuppressWarnings("UnusedReturnValue") // the return value is used for some implementations
@@ -135,5 +137,8 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

@@ -3,6 +3,7 @@ package com.gaia.button.net;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 
 
 import com.gaia.button.R;
@@ -195,7 +196,7 @@ public class OkHttpRequest implements Runnable {
             if (user != null && !TextUtils.isEmpty(user.getToken())) {
                 token = user.getToken();
             }
-
+            Log.e("TTTT",Log.getStackTraceString(new Throwable())+"========"+token);
             if (NetConfig.isGet) {
                 Request.Builder builder= new Request.Builder().url(mUrl);
                 if(!TextUtils.isEmpty(token)){
@@ -220,6 +221,7 @@ public class OkHttpRequest implements Runnable {
                 RequestBody body = RequestBody.create(JSON, (String) mRequestData);
                  Request.Builder builder= new Request.Builder().url(mUrl).post(body);
                 if(!TextUtils.isEmpty(token)){
+                    builder.removeHeader("token");
                     builder.addHeader("token",token);
                 }
                 Request request = builder.build();

@@ -137,6 +137,7 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void handleWechatLogin() {
+        showWaitDialog();
         IWXAPI api = GaiaApplication.getWeinAPIHandler(this);
         if (!api.isWXAppInstalled()) {
             showTotast("请安装微信客户端");
@@ -166,7 +167,7 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void onRequestSuccess(int requestTag, Object data) {
-        Log.e("TTTT","11111111");
+        hideWaitDialog();
         if(requestTag == Net_Tag_User_WechatLogin){
             if(data != null && data instanceof AccountInfo) {
                 AccountInfo info = (AccountInfo) data;
@@ -190,7 +191,7 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void onRequestError(int requestTag, int errorCode, String errorMsg, Object data) {
-        Log.e("TTTT","11111222222111");
+        hideWaitDialog();
         if(requestTag == Net_Tag_User_WechatLogin){
             if(errorCode == 1200){
                 Intent intent = new Intent(LoginMainActivity.this, BindPhoneActivity.class);

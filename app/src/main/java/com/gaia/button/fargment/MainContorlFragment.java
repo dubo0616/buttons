@@ -243,7 +243,7 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
                     mProgress = mArcSeekBarInner.getProgress() + 1;
                     mArcSeekBarInner.setProgress(mProgress == maxVoice ? maxVoice : mProgress);
                     mArcSeekBarOutter.setProgress(mProgress == maxVoice ? maxVoice : mProgress);
-                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,mProgress, AudioManager.FLAG_SHOW_UI);
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,mProgress, 0);
 //                }else{
 //                    displayShortToast("设备未连接");
 //                }
@@ -254,12 +254,11 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
             @Override
             public void onClick(View v) {
                 isClick = true;
-                Log.e("TTTT","======="+mService.isGaiaReady());
                 if(mService != null && mService.isGaiaReady()) {
                     mProgress = mArcSeekBarInner.getProgress() - 1;
                     mArcSeekBarInner.setProgress(mProgress == minVoice ? minVoice : mProgress);
                     mArcSeekBarOutter.setProgress(mProgress == minVoice ? minVoice : mProgress);
-                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,mProgress, AudioManager.FLAG_SHOW_UI);                }else{
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,mProgress, 0);                }else{
                     displayShortToast("设备未连接");
                 }
             }
@@ -269,9 +268,9 @@ public class MainContorlFragment extends BaseFragment implements BREDRDiscoveryR
             public void onProgressChanged(ArcSeekBarInner seekBar, int progress, boolean isUser) {
                 if(!isClick) {
                     if (mProgress >= progress) {
-                        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,mProgress, AudioManager.FLAG_SHOW_UI);
+                        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,mProgress, 0);
                     } else {
-                        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,mProgress, AudioManager.FLAG_SHOW_UI);
+                        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,mProgress, 0);
                     }
                 }
                 mProgress = progress;

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.gaia.button.GaiaApplication;
 import com.gaia.button.R;
 import com.gaia.button.activity.AboutActivity;
 import com.gaia.button.activity.AccountActivity;
@@ -108,6 +109,7 @@ public class PersonalSettingFragment extends BaseFragment implements PersonalSet
     public void onRequestSuccess(int requestTag, Object data) {
         if (requestTag == ConstantUtil.Net_Tag_LogOut) {
             PreferenceManager.getInstance().setLoginOut();
+            GaiaApplication.getInstance().clearActivities();
             startActivity(new Intent(getActivity(), LoginMainActivity.class));
             getActivity().finish();
         }

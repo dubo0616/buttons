@@ -32,45 +32,50 @@ public class UserImpl implements INetListener {
 	// Net listener
 	public void onNetResponse(int requestTag, BaseResult responseData,
 			int requestId, int errorCode, String responseStr) {
-		if (requestTag == ConstantUtil.Net_Tag_RegistWithPhone) {//注册
-			// register with phone
-			PreferenceManager.getInstance().setLoginOut();
-			try {
-				AccountInfo res = (AccountInfo) responseData;
-				if (res.getErrorCode() == 0) {
-//					mCurrentUser = res;
-					PreferenceManager.getInstance().save(res);
-					handleSuccessResult(requestId, ConstantUtil.Net_Tag_RegistWithPhone, (Object) res, responseStr);
-				} else {
-					handleFailedResult(requestId, requestTag, errorCode, "注册失败，请稍后重试", responseData);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				handleFailedResult(requestId, requestTag, errorCode, "注册失败，请稍后重试", responseData);
-			}
-
-		} else if (requestTag == ConstantUtil.Net_Tag_UserLogin_Sms || requestTag == ConstantUtil.Net_Tag_UserLogin_Pwd) {
-			// login
-//			// exit pre login user
-//			PreferenceManager.getInstance().setLoginOut();
-			try {
-				AccountInfo res = (AccountInfo) responseData;
-				if (res.getErrorCode() == 0) {
-//					mCurrentUser = res;
-					PreferenceManager.getInstance().save(res);
-					handleSuccessResult(requestId, requestTag, (Object) res, responseStr);
-				} else {
-					handleFailedResult(requestId, requestTag, errorCode, "登录失败，请稍后重试", responseData);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				handleFailedResult(requestId, requestTag, errorCode, "登录失败，请稍后重试", responseData);
-			}
-
-		}  else {
-			//通用消息处理
+		if(responseData != null && responseData.getErrorCode() == 0){
 			handleSuccessResult(requestId, requestTag, responseData, responseStr);
-		} 
+		}else{
+			handleFailedResult(requestId, requestTag, errorCode, "网络错误，请稍后重试", responseData);
+		}
+//		if (requestTag == ConstantUtil.Net_Tag_RegistWithPhone) {//注册
+//			// register with phone
+//			PreferenceManager.getInstance().setLoginOut();
+//			try {
+//				AccountInfo res = (AccountInfo) responseData;
+//				if (res.getErrorCode() == 0) {
+////					mCurrentUser = res;
+//					PreferenceManager.getInstance().save(res);
+//					handleSuccessResult(requestId, ConstantUtil.Net_Tag_RegistWithPhone, (Object) res, responseStr);
+//				} else {
+//					handleFailedResult(requestId, requestTag, errorCode, "注册失败，请稍后重试", responseData);
+//				}
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//				handleFailedResult(requestId, requestTag, errorCode, "注册失败，请稍后重试", responseData);
+//			}
+//
+//		} else if (requestTag == ConstantUtil.Net_Tag_UserLogin_Sms || requestTag == ConstantUtil.Net_Tag_UserLogin_Pwd) {
+//			// login
+////			// exit pre login user
+////			PreferenceManager.getInstance().setLoginOut();
+//			try {
+//				AccountInfo res = (AccountInfo) responseData;
+//				if (res.getErrorCode() == 0) {
+////					mCurrentUser = res;
+//					PreferenceManager.getInstance().save(res);
+//					handleSuccessResult(requestId, requestTag, (Object) res, responseStr);
+//				} else {
+//					handleFailedResult(requestId, requestTag, errorCode, "登录失败，请稍后重试", responseData);
+//				}
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//				handleFailedResult(requestId, requestTag, errorCode, "登录失败，请稍后重试", responseData);
+//			}
+//
+//		}  else {
+//			//通用消息处理
+//			handleSuccessResult(requestId, requestTag, responseData, responseStr);
+//		}
 	}
 
 	public void onDownLoadStatus(DownLoadStatus status, int requestId) {

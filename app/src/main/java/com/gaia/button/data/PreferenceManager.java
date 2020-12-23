@@ -113,6 +113,7 @@ public class PreferenceManager {
             setStringValue(ACC_LOGIN_PERSON_SGIN,info.isPerson_sign());
             setStringValue(ACC_LOGIN_PERSON_NAME,"");
             setBlooeanValue(ACC_LOGIN_PASSWORD,info.isSetPassword());
+            mAccountInfo = info;
         }
     }
 

@@ -1,7 +1,10 @@
 package com.gaia.button.net;
 
+import android.content.Intent;
 import android.text.TextUtils;
 
+import com.gaia.button.GaiaApplication;
+import com.gaia.button.activity.LoginMainActivity;
 import com.gaia.button.model.AccountInfo;
 import com.gaia.button.model.DeviceList;
 import com.gaia.button.model.DiscoverList;
@@ -385,6 +388,12 @@ public class JSONParser implements JsonParserInterface {
                 errorcode = jsonObj.optInt(StringConstant.JSON_ERROR_CODE);
                 errormsg = jsonObj.optString(StringConstant.JSON_ERROR_MESSAGE);
                 if (errorcode != DcError.DC_OK) {
+                    if(errorcode == 1100){
+                        GaiaApplication.getInstance().clearActivities();
+                        Intent intent = new Intent(GaiaApplication.getInstance().getApplicationContext(), LoginMainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        GaiaApplication.getInstance().getApplicationContext().startActivity(intent);
+                    }
                     JSONObject data = jsonObj
                             .optJSONObject(StringConstant.JSON_DATA);
                     if (data != null) {

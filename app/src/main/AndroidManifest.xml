@@ -37,11 +37,11 @@
         <activity
             android:name="com.gaia.button.activity.LoginMainActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing" />
+            android:windowSoftInputMode="stateHidden|adjustPan"  />
         <activity
             android:name="com.gaia.button.activity.ForgetActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing" />
+            android:windowSoftInputMode="stateHidden|adjustPan" />
 
         <activity
         android:name="com.gaia.button.activity.PhonePassLoginActivity"
@@ -50,25 +50,29 @@
         <activity
             android:name="com.gaia.button.activity.PhoneSetPassActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing" />
+            android:windowSoftInputMode="stateHidden|adjustPan"  />
         <activity
             android:name="com.gaia.button.activity.AboutActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing" />
+            android:windowSoftInputMode="stateHidden|adjustPan"  />
 
         <activity
             android:name="com.gaia.button.activity.MainActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustNothing" />
+            android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name="com.gaia.button.activity.PhoneLoginActivity"
+            android:parentActivityName="com.gaia.button.activity.MainActivity"
+            android:windowSoftInputMode="stateHidden|adjustPan"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.gaia.button.activity.PersonnalActivity"
+            android:parentActivityName="com.gaia.button.activity.MainActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.gaia.button.activity.WebViewActivity"
+            android:parentActivityName="com.gaia.button.activity.MainActivity"
             android:screenOrientation="portrait" />
 
         <activity android:name="com.gaia.button.activity.InformationActivity"
