@@ -162,7 +162,7 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
 
     private void handlePhoneLogin(){
         Intent intent = new Intent(this,PhoneLoginActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent,1000);
     }
 
     @Override
@@ -185,8 +185,17 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
                 i.putExtra("access_token", access_token);
                 i.putExtra("sex", sex);
                 startActivity(i);
+                finish();
             }
 
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == 1000) {
+            finish();
         }
     }
 
@@ -200,6 +209,7 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
                 finish();
             }
         }
+        Toast.makeText(this,errorMsg,Toast.LENGTH_SHORT).show();
     }
 
     @Override

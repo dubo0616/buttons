@@ -251,6 +251,7 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
                     Intent intent = new Intent(PhoneLoginActivity.this, PhoneSetPassActivity.class);
                     startActivity(intent);
                 }
+                setResult(1000);
                 finish();
             }
 
@@ -275,7 +276,7 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void onRequestError(int requestTag, int errorCode, String errorMsg, Object data) {
-
+        Toast.makeText(PhoneLoginActivity.this,errorMsg,Toast.LENGTH_SHORT).show();
     }
 
     @Override

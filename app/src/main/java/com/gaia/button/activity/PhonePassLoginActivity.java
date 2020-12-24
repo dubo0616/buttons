@@ -205,7 +205,7 @@ public class PhonePassLoginActivity extends BaseActivity implements View.OnClick
                 Intent intent = new Intent(PhonePassLoginActivity.this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent.putExtra("Tab", 1);
-                startActivity(intent);
+                startActivityForResult(intent,1000);
                 finish();
             }
 
@@ -216,6 +216,7 @@ public class PhonePassLoginActivity extends BaseActivity implements View.OnClick
     @Override
     public void onRequestError(int requestTag, int errorCode, String errorMsg, Object data) {
 
+        Toast.makeText(this,errorMsg,Toast.LENGTH_SHORT).show();
     }
 
     @Override
