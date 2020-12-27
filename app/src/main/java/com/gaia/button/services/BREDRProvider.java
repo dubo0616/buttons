@@ -238,27 +238,28 @@ import java.util.UUID;
      */
     @SuppressWarnings("UnusedReturnValue")
     /*package*/ boolean connect(String address, @NonNull Context context) {
+        Log.e("TTTT","11111111connect");
         if (mShowDebugLogs) {
             Log.d(TAG, "Request received to connect to a device with address " + address);
         }
 
         if (address == null) {
-            Log.w(TAG, "connection failed: Bluetooth address is null.");
+            Log.e(TAG, "connection failed: Bluetooth address is null.");
             return false;
         }
 
         if (address.length() == 0) {
-            Log.w(TAG, "connection failed: Bluetooth address null or empty.");
+            Log.e(TAG, "connection failed: Bluetooth address null or empty.");
             return false;
         }
 
         if (!isBluetoothAvailable()) {
-            Log.w(TAG, "connection failed: unable to get the adapter to get the device object from BT address.");
+            Log.e(TAG, "connection failed: unable to get the adapter to get the device object from BT address.");
             return false;
         }
 
         if (!BluetoothAdapter.checkBluetoothAddress(address)) {
-            Log.w(TAG, "connection failed: unknown BT address.");
+            Log.e(TAG, "connection failed: unknown BT address.");
             return false;
         }
 
@@ -267,7 +268,7 @@ import java.util.UUID;
 
         if (device == null) {
             // unknown device
-            Log.w(TAG, "connection failed: get device from BT address failed.");
+            Log.e(TAG, "connection failed: get device from BT address failed.");
             return false;
         }
 

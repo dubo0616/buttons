@@ -40,14 +40,13 @@ public class Utils {
     /**
      * Convert a byte array to a human readable String.
      *
-     * @param value
-     *            The byte array.
+     * @param value The byte array.
      * @return String object containing values in byte array formatted as hex.
      */
     public static String getStringFromBytes(byte[] value) {
         if (value == null)
             return "null";
-        final StringBuilder stringBuilder = new StringBuilder(value.length*2);
+        final StringBuilder stringBuilder = new StringBuilder(value.length * 2);
         //noinspection ForLoopReplaceableByForEach // the for loop is more efficient than the foreach one
         for (int i = 0; i < value.length; i++) {
             stringBuilder.append(String.format("0x%02x ", value[i]));
@@ -58,9 +57,7 @@ public class Utils {
     /**
      * Get 16-bit hexadecimal string representation of byte.
      *
-     * @param i
-     *            The value.
-     *
+     * @param i The value.
      * @return Hex value as a string.
      */
     @SuppressWarnings("unused")
@@ -97,19 +94,14 @@ public class Utils {
      * <p>This method allows to copy a int value into a byte array from the specified <code>offset</code> location to
      * the <code>offset + length</code> location.</p>
      *
-     * @param sourceValue
-     *         The <code>int</code> value to copy in the array.
-     * @param target
-     *         The <code>byte</code> array to copy in the <code>int</code> value.
-     * @param targetOffset
-     *         The targeted offset in the array to copy the first byte of the <code>int</code> value.
-     * @param length
-     *         The number of bytes in the array to copy the <code>int</code> value.
-     * @param reverse
-     *         True if bytes should be interpreted in reverse (little endian) order.
+     * @param sourceValue  The <code>int</code> value to copy in the array.
+     * @param target       The <code>byte</code> array to copy in the <code>int</code> value.
+     * @param targetOffset The targeted offset in the array to copy the first byte of the <code>int</code> value.
+     * @param length       The number of bytes in the array to copy the <code>int</code> value.
+     * @param reverse      True if bytes should be interpreted in reverse (little endian) order.
      */
     @SuppressWarnings("SameParameterValue")
-    public static void copyIntIntoByteArray(int sourceValue, byte [] target, int targetOffset, int length, boolean reverse) {
+    public static void copyIntIntoByteArray(int sourceValue, byte[] target, int targetOffset, int length, boolean reverse) {
         if (length < 0 | length > BYTES_IN_INT) {
             throw new IndexOutOfBoundsException("Length must be between 0 and " + BYTES_IN_INT);
         }
@@ -117,18 +109,17 @@ public class Utils {
         if (reverse) {
             int shift = 0;
             int j = 0;
-            for (int i = length-1; i >= 0; i--) {
+            for (int i = length - 1; i >= 0; i--) {
                 int mask = 0xFF << shift;
-                target[j+targetOffset] = (byte)((sourceValue & mask) >> shift);
+                target[j + targetOffset] = (byte) ((sourceValue & mask) >> shift);
                 shift += BITS_IN_BYTE;
                 j++;
             }
-        }
-        else {
-            int shift = (length-1) * BITS_IN_BYTE;
+        } else {
+            int shift = (length - 1) * BITS_IN_BYTE;
             for (int i = 0; i < length; i++) {
                 int mask = 0xFF << shift;
-                target[i+targetOffset] = (byte)((sourceValue & mask) >> shift);
+                target[i + targetOffset] = (byte) ((sourceValue & mask) >> shift);
                 shift -= BITS_IN_BYTE;
             }
         }
@@ -136,27 +127,27 @@ public class Utils {
 
     /**
      * Extract a <code>short</code> field from an array.
-     * @param source The array to extract from.
-     * @param offset Offset within source array.
-     * @param length Number of bytes to use (maximum 2).
+     *
+     * @param source  The array to extract from.
+     * @param offset  Offset within source array.
+     * @param length  Number of bytes to use (maximum 2).
      * @param reverse True if bytes should be interpreted in reverse (little endian) order.
      * @return The extracted integer.
      */
     @SuppressWarnings("SameParameterValue")
-    public static short extractShortFromByteArray(byte [] source, int offset, int length, boolean reverse) {
+    public static short extractShortFromByteArray(byte[] source, int offset, int length, boolean reverse) {
         if (length < 0 | length > BYTES_IN_SHORT)
             throw new IndexOutOfBoundsException("Length must be between 0 and " + BYTES_IN_SHORT);
         short result = 0;
-        int shift = (length-1) * BITS_IN_BYTE;
+        int shift = (length - 1) * BITS_IN_BYTE;
 
         if (reverse) {
-            for (int i = offset+length-1; i >= offset; i--) {
+            for (int i = offset + length - 1; i >= offset; i--) {
                 result |= ((source[i] & 0xFF) << shift);
                 shift -= BITS_IN_BYTE;
             }
-        }
-        else {
-            for (int i = offset; i < offset+length; i++) {
+        } else {
+            for (int i = offset; i < offset + length; i++) {
                 result |= ((source[i] & 0xFF) << shift);
                 shift -= BITS_IN_BYTE;
             }
@@ -167,15 +158,10 @@ public class Utils {
     /**
      * <p>Extract an <code>int</code> value from a <code>bytes</code> array.</p>
      *
-     * @param source
-     *         The array to extract from.
-     * @param offset
-     *         Offset within source array.
-     * @param length
-     *         Number of bytes to use (maximum 4).
-     * @param reverse
-     *         True if bytes should be interpreted in reverse (little endian) order.
-     *
+     * @param source  The array to extract from.
+     * @param offset  Offset within source array.
+     * @param length  Number of bytes to use (maximum 4).
+     * @param reverse True if bytes should be interpreted in reverse (little endian) order.
      * @return The extracted <code>int</code>.
      */
     @SuppressWarnings("SameParameterValue")
@@ -207,8 +193,7 @@ public class Utils {
     public static String getStringForPercentage(double percentage) {
         if (percentage <= 1) {
             DECIMAL_FORMAT.setMaximumFractionDigits(2);
-        }
-        else {
+        } else {
             DECIMAL_FORMAT.setMaximumFractionDigits(1);
         }
 
@@ -220,9 +205,37 @@ public class Utils {
      */
     public static String GetStringNoNil(String value) {
         StringBuilder builder = new StringBuilder();
-        if(!TextUtils.isEmpty(value)) {
+        if (!TextUtils.isEmpty(value)) {
             builder.append(value);
         }
         return builder.toString();
     }
+
+    public static String getBatteryLevel(int level) {
+        if (level <= 3200) {
+            return "0%";
+        } else if (level > 3200 && level <= 3650) {
+            return "10%";
+        } else if (level > 3650 && level <= 3690) {
+            return "20%";
+        } else if (level > 3690 && level <= 3730) {
+            return "30%";
+        } else if (level > 3730 && level <= 3760) {
+            return "40%";
+        } else if (level > 3760 && level < 3800) {
+            return "50%";
+        } else if (level > 3800 && level <= 3842) {
+            return "60%";
+        } else if (level > 3842 && level <= 3908) {
+            return "70%";
+        } else if (level > 3908 && level <= 3970) {
+            return "80%";
+        } else if (level > 3970 && level <= 4080) {
+            return "90%";
+        } else if (level >= 4080) {
+            return "100%";
+        }
+        return "100%";
+    }
+
 }

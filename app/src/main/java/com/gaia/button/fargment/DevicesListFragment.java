@@ -46,10 +46,6 @@ public class DevicesListFragment extends BaseFragment implements DevicesListAdap
      * The layout which is in charge of the "pull to refresh" feature.
      */
     private SwipeRefreshLayout mRefreshLayout;
-    /**
-     * Th text view to display a message when no devices are available.
-     */
-    private TextView mTVNoDeviceAvailable;
 
     /**
      * Returns a new instance of this fragment for the given section number.
@@ -80,7 +76,6 @@ public class DevicesListFragment extends BaseFragment implements DevicesListAdap
     @Override // Fragment
     public void onResume() {
         super.onResume();
-
         switch (mListType) {
             case DevicesListTabsAdapter.SCANNED_LIST_TYPE:
                 mDevicesListAdapter.reset();
@@ -104,18 +99,10 @@ public class DevicesListFragment extends BaseFragment implements DevicesListAdap
         View rootView = inflater.inflate(R.layout.fragment_devices, container, false);
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.rv_devices_list);
         mRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.refresh_layout);
-        mTVNoDeviceAvailable = (TextView) rootView.findViewById(R.id.tv_no_available_device);
-
-        String text = mListType == DevicesListTabsAdapter.BONDED_LIST_TYPE ?
-                getString(R.string.connect_no_available_paired_device) :
-                getString(R.string.connect_no_available_scanned_device);
-        mTVNoDeviceAvailable.setText(text);
-
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mDevicesListAdapter.reset();
-                mTVNoDeviceAvailable.setVisibility(View.GONE);
+//                mDevicesListAdapter.reset();
                 switch (mListType) {
                     case DevicesListTabsAdapter.SCANNED_LIST_TYPE:
                         mListener.startScan(mDevicesListAdapter);
@@ -134,7 +121,7 @@ public class DevicesListFragment extends BaseFragment implements DevicesListAdap
         recyclerView.setHasFixedSize(true);
 
         // specify an adapter for the recycler view
-        mDevicesListAdapter = new DevicesListAdapter(this);
+        mDevicesListAdapter = new DevicesListAdapter(getActivity(),this);
         recyclerView.setAdapter(mDevicesListAdapter);
 
         return rootView;
@@ -159,8 +146,6 @@ public class DevicesListFragment extends BaseFragment implements DevicesListAdap
      */
     public void stopRefreshing() {
         mRefreshLayout.setRefreshing(false);
-        int visibility = mDevicesListAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE;
-        mTVNoDeviceAvailable.setVisibility(visibility);
     }
 
     /**

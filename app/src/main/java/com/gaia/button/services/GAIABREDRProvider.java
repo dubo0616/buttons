@@ -45,7 +45,7 @@ import java.lang.annotation.RetentionPolicy;
     /**
      * <p>To show the debug logs.</p>
      */
-    private boolean mShowDebugLogs = false;
+    private boolean mShowDebugLogs = true;
     /**
      * <p>The listener which is interested in events going on on this provider: connection state, errors, messages
      * received, etc.</p>

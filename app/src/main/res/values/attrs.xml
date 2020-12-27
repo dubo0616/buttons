@@ -48,4 +48,20 @@
         <attr name="margin_hor" format="dimension"/>
         <attr name="margin_vertial" format="dimension"/>
     </declare-styleable>
+
+
+    <style name="DialogWindowTitle">
+        <item name="android:maxLines">1</item>
+        <item name="android:scrollHorizontally">true</item>
+    </style>
+    <style name="fullscreenDialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowTitleStyle">@style/DialogWindowTitle</item>
+        <item name="android:popupBackground">@null</item>
+        <item name="android:windowSoftInputMode">adjustPan</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
 </resources>

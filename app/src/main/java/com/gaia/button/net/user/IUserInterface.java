@@ -33,6 +33,7 @@ public interface IUserInterface {
 	 找回密码
 	 */
 	void requestSetPass(IUserListener observer,String newpass,String confirm);
+	void requestModPass(IUserListener observer,String oldpa,String newpass,String confirm);
 	void requestgetDiscover(IUserListener observer,int page,String title);
 	void requestCollect(IUserListener observer,String id);
 	void requestProductList(IUserListener observer,int page,String title);

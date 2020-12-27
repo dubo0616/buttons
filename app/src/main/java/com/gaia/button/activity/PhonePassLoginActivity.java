@@ -120,7 +120,12 @@ public class PhonePassLoginActivity extends BaseActivity implements View.OnClick
                 }
                 @Override
                 public void onClick(View widget) {
+                    Intent intent = new Intent(PhonePassLoginActivity.this, WebViewActivity.class);
+                    intent.putExtra(WebViewActivity.URL_KEY,ConstantUtil.USER_URL);
+                    intent.putExtra(WebViewActivity.TITLE_KEY,"用户协议");
+                    startActivity(intent);
                 }
+
             }, indexOfTermsOfUse, indexOfTermsOfUse + termsOfUse.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         int indexOfPrivacyPolicy = tips.indexOf(privacyPolicy);
@@ -135,6 +140,10 @@ public class PhonePassLoginActivity extends BaseActivity implements View.OnClick
 
                 @Override
                 public void onClick(View widget) {
+                    Intent intent = new Intent(PhonePassLoginActivity.this, WebViewActivity.class);
+                    intent.putExtra(WebViewActivity.URL_KEY,ConstantUtil.PRIVATE_URL);
+                    intent.putExtra(WebViewActivity.TITLE_KEY,"隐私政策");
+                    startActivity(intent);
                 }
             }, indexOfPrivacyPolicy, indexOfPrivacyPolicy + privacyPolicy.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }

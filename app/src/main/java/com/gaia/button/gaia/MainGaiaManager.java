@@ -392,7 +392,7 @@ public class MainGaiaManager extends AGaiaManager {
     // ====== PROTECTED METHODS ====================================================================
     @Override // extends GaiaManager
     protected void receiveSuccessfulAcknowledgement(GaiaPacket packet) {
-        Log.d("Command","receiveSuccessfulAcknowledgement==="+packet.getCommand());
+        Log.d("Command","receiveSuccessfulAcknowledgement==="+packet.getCommand()+packet.getStatus());
         onFeatureSupported(packet.getCommand());
         switch (packet.getCommand()) {
             case GAIA.COMMAND_GET_LED_CONTROL:
@@ -430,9 +430,6 @@ public class MainGaiaManager extends AGaiaManager {
                 break;
             case 0x02BF:
                 Log.e("TTTT","================"+packet.getStatus()+"==="+packet.getEvent());
-                break;
-            case 0x02BC:
-//                Log.e("TTTT","================"+packet.getStatus()+"==="+packet.getCommand());
                 break;
             case 0x02BD:
                 byte[] payload = packet.getPayload();
@@ -734,11 +731,11 @@ public class MainGaiaManager extends AGaiaManager {
         final int PAYLOAD_VALUE_2_OFFSET = PAYLOAD_VALUE_1_OFFSET + 1;
         final int PAYLOAD_VALUE_3_OFFSET = PAYLOAD_VALUE_2_OFFSET + 1;
         final int PAYLOAD_VALUE_LENGTH = 3;
-        final int PAYLOAD_MIN_LENGTH = PAYLOAD_VALUE_LENGTH + 1; // ACK status length is 1
+        final int PAYLOAD_MIN_LENGTH = PAYLOAD_VALUE_LENGTH; // ACK status length is 1
 
         if (payload.length >= PAYLOAD_MIN_LENGTH) {
-            mListener.onGetAPIVersion(payload[PAYLOAD_VALUE_1_OFFSET], payload[PAYLOAD_VALUE_2_OFFSET],
-                    payload[PAYLOAD_VALUE_3_OFFSET]);
+            mListener.onGetAPIVersion(payload[PAYLOAD_VALUE_1_OFFSET-1], payload[PAYLOAD_VALUE_2_OFFSET-1],
+                    payload[PAYLOAD_VALUE_3_OFFSET-1]);
         }
     }
 
@@ -1042,6 +1039,25 @@ public class MainGaiaManager extends AGaiaManager {
     public void setAmbientControl(boolean ancControl) {
         byte[] payload = ancControl ? PAYLOAD_BOOLEAN_TRUE : PAYLOAD_BOOLEAN_FALSE;
         GaiaPacket packet = createPacket(SET_AMBIENT_CONTROL,payload);
+        createRequest(packet);
+    }
+    private static final class TransferModes {
+        /**
+         * <p>Sending this value enables the RWCP transfer mode. Receiving it means it is activated.</p>
+         */
+        private static final byte MODE_RWCP = (byte) 0x01;
+        /**
+         * <p>Sending this value disables all transfer mode and activates the default one for data transfer.</p>
+         */
+        private static final byte MODE_NONE = (byte) 0x00;
+    }
+    public void setRWCPMode(boolean enabled) {
+        byte mode = enabled ? TransferModes.MODE_RWCP : TransferModes.MODE_NONE;
+        byte[] RWCPMode = {mode};
+        sendSetDataEndPointMode(RWCPMode);
+    }
+    private void sendSetDataEndPointMode(byte[] payload) {
+        GaiaPacket packet = new GaiaPacketBLE(GAIA.VENDOR_QUALCOMM, GAIA.COMMAND_SET_DATA_ENDPOINT_MODE, payload);
         createRequest(packet);
     }
 

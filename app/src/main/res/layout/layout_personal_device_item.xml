@@ -16,13 +16,12 @@
 
     <TextView
         android:id="@+id/tv_device_name"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iv_device_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:text="BUTTONS AIR"
         android:textColor="#ff1e1e1e"
         android:textSize="16sp" />
     <ImageView
@@ -53,9 +52,10 @@
         app:layout_constraintTop_toBottomOf="@+id/iv_device_icon"
         android:layout_width="match_parent"
         android:background="#F8F8F8"
-        android:paddingStart="30dp"
-        android:paddingEnd="30dp"
-        android:layout_height="90dp">
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:paddingBottom="10dp"
+        android:layout_height="110dp">
         <LinearLayout
             android:id="@+id/ll_link"
             app:layout_constraintEnd_toStartOf="@+id/ll_device_info"
@@ -71,7 +71,7 @@
             <ImageView
                 android:layout_width="44dp"
                 android:layout_height="44dp"
-                android:background="#0affdd" />
+                android:background="@drawable/bg_ari_select" />
             <TextView
                 android:layout_marginTop="10dp"
                 android:layout_width="wrap_content"
@@ -96,7 +96,7 @@
             <ImageView
                 android:layout_width="44dp"
                 android:layout_height="44dp"
-                android:background="#0affdd" />
+                android:background="@drawable/bg_air_info" />
             <TextView
                 android:layout_marginTop="10dp"
                 android:layout_width="wrap_content"
@@ -120,7 +120,7 @@
             <ImageView
                 android:layout_width="44dp"
                 android:layout_height="44dp"
-                android:background="#0affdd" />
+                android:background="@drawable/bg_air_ques" />
             <TextView
                 android:layout_marginTop="10dp"
                 android:layout_width="wrap_content"
@@ -144,7 +144,7 @@
             <ImageView
                 android:layout_width="44dp"
                 android:layout_height="44dp"
-                android:background="#0affdd" />
+                android:background="@drawable/bg_air_pro" />
             <TextView
                 android:layout_marginTop="10dp"
                 android:layout_width="wrap_content"

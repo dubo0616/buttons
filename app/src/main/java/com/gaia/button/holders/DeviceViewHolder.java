@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
@@ -28,6 +29,7 @@ public class DeviceViewHolder extends RecyclerView.ViewHolder implements View.On
      * The text view to display the device name.
      */
     private final TextView textViewDeviceName;
+    private  ImageView image_item_selected;
     /**
      * The text view to display the device address.
      */
@@ -57,9 +59,7 @@ public class DeviceViewHolder extends RecyclerView.ViewHolder implements View.On
     public DeviceViewHolder(View rowView, IDeviceViewHolder listener) {
         super(rowView);
         textViewDeviceName = (TextView) rowView.findViewById(R.id.tv_device_name);
-//        textViewDeviceAddress = (TextView) rowView.findViewById(R.id.tv_device_address);
-//        textViewDeviceRssi = (TextView) rowView.findViewById(R.id.tv_device_rssi);
-//        textViewDeviceType = (TextView) rowView.findViewById(R.id.tv_device_type);
+        image_item_selected = (ImageView) rowView.findViewById(R.id.image_item_selected);
         mListener = listener;
         itemView.setOnClickListener(this);
     }
@@ -69,53 +69,20 @@ public class DeviceViewHolder extends RecyclerView.ViewHolder implements View.On
         mListener.onClickItem(this.getAdapterPosition());
     }
 
-    /**
-     * <p>This method is for refreshing all the values displayed in the corresponding view which show all information
-     * related to a Device.</p>
-     *
-     * @param name
-     *          The name which has to be displayed.
-     * @param address
-     *          The Bluetooth address which has to be displayed.
-     * @param type
-     *          The type of the device, one of the following:
-     *          {@link BluetoothDevice#DEVICE_TYPE_LE DEVICE_TYPE_LE},
-     *          {@link BluetoothDevice#DEVICE_TYPE_CLASSIC DEVICE_TYPE_CLASSIC},
-     *          {@link BluetoothDevice#DEVICE_TYPE_DUAL DEVICE_TYPE_DUAL} or
-     *          {@link BluetoothDevice#DEVICE_TYPE_UNKNOWN DEVICE_TYPE_UNKNOWN},
-     * @param hasRssi
-     *          To know if the rssi should be displayed.
-     * @param rssi
-     *          The rssi to display if one has to be displayed.
-     * @param isSelected
-     *          To know if the device should be displayed as selected.
-     * @param context
-     *          The context to use to load images for the view.
-     */
-    public void refreshValues(String name, String address, int type, boolean hasRssi, int rssi, boolean isSelected,
+    public void refreshValues(String name, String address,boolean isSelected,
                               Context context) {
-//         display name
         textViewDeviceName.setText(name);
-        // display bluetooth address
-//        textViewDeviceAddress.setText(address);
+        if(name.contains("BUTTONS")) {
+            if (name.endsWith("X") || name.endsWith("x")) {
+                image_item_selected.setBackgroundResource(R.drawable.icon_airx);
+            } else {
+                image_item_selected.setBackgroundResource(R.drawable.icon_air);
 
-        // display RSSI level if known
-        int rssiVisibility = hasRssi ? View.VISIBLE : View.GONE;
-//        textViewDeviceRssi.setVisibility(View.GONE);
-//        if (hasRssi) {
-//            textViewDeviceRssi.setText(String.format(Locale.getDefault(), "%d dBm", rssi));
-////            textViewDeviceRssi.setCompoundDrawablesWithIntrinsicBounds(null,
-////                    Utils.getSignalIconFromRssi(context, rssi), null, null);
-//        }
-//        // display bluetooth device type
-//        int typeLabel = type == BluetoothDevice.DEVICE_TYPE_CLASSIC ? R.string.device_type_classic :
-//                type == BluetoothDevice.DEVICE_TYPE_LE ? R.string.device_type_le :
-//                        type == BluetoothDevice.DEVICE_TYPE_DUAL ? R.string.device_type_dual :
-//                                R.string.device_type_unknown;
-//        textViewDeviceType.setText(typeLabel);
-
+            }
+        }else{
+            image_item_selected.setBackgroundResource(R.drawable.icon_air);
+        }
     }
-
     /**
      * The interface to allow this class to interact with its parent.
      */

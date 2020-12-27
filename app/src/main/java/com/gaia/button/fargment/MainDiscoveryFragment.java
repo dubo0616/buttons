@@ -89,6 +89,7 @@ public class MainDiscoveryFragment extends BaseFragment implements DiscoveryAdap
             return;
         }
         mRefreshFlag = true;
+//        showWaitDialog();
         UserManager.getRequestHandler().requestgetDiscover(MainDiscoveryFragment.this, mPage,"");
 
     }
@@ -110,7 +111,7 @@ public class MainDiscoveryFragment extends BaseFragment implements DiscoveryAdap
 
     @Override
     public void onClickForward(DiscoveryModel model) {
-        Toast.makeText(getActivity(),"转发",Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity(),"转发",Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -124,6 +125,7 @@ public class MainDiscoveryFragment extends BaseFragment implements DiscoveryAdap
 
     @Override
     public void onRequestSuccess(int requestTag, Object data) {
+        hideWaitDialog();
         mRefreshFlag = false;
         mSwipeRefreshLayout.setRefreshing(false);
         if(requestTag == Net_Tag_User_ArticleList){
@@ -151,6 +153,7 @@ public class MainDiscoveryFragment extends BaseFragment implements DiscoveryAdap
 
     @Override
     public void onRequestError(int requestTag, int errorCode, String errorMsg, Object data) {
+        hideWaitDialog();
         mRefreshFlag = false;
         mSwipeRefreshLayout.setRefreshing(false);
          if(requestTag == Net_Tag_User_ArticleCollect){

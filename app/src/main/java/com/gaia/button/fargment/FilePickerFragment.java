@@ -26,6 +26,7 @@ import com.gaia.button.utils.Consts;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * A fragment to manage the display of a File list.
@@ -143,7 +144,7 @@ public class FilePickerFragment extends Fragment implements View.OnClickListener
     @Override
     public void onResume() {
         super.onResume();
-        updateFileList(Environment.getExternalStorageDirectory().getPath());
+        updateFileList(Objects.requireNonNull(getActivity().getExternalFilesDir("")).getPath());
 
         // button label depends on app current state
         if (mListener != null && mBtChoose != null) {

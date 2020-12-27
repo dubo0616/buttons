@@ -35,11 +35,14 @@ public class ConstantUtil {
 	public static final String SERVER_URL_NAME_SetAutoplay= "setAutoplay";
 	public static final String SERVER_URL_NAME_GetVersion= "getVersion";
 
-	public static final String SERVER_URL_NAME_LOGINPWD_RESET = "reset_password";
+	public static final String SERVER_URL_NAME_LOGINPW_UPDATE = "updatePassword";
 
 	public static final String SERVER_URL_NAME_PAYPWD_RESET = "reset_pay_password";
 
 	public static final String SERVER_URL_NAME_PAYPWD_SET = "set_pay_password";
+
+	public static final String USER_URL =NEW_BAPI_URL+"usage_agreement";
+	public static final String PRIVATE_URL =NEW_BAPI_URL+"privacy_clause";
 
 	public static final String SERVER_URL_NAME_LOGOUT = "logout";
 	public static final NetConfig.SubmitDataType HTTP_DATA_TYPE = NetConfig.SubmitDataType.JSON;
@@ -69,6 +72,7 @@ public class ConstantUtil {
 	public static final int Net_Tag_User_WechatBindPhone= 122;
 	public static final int Net_Tag_User_AUTOPLAY= 123;
 	public static final int Net_Tag_User_GetVersion= 124;
+	public static final int Net_Tag_User_UpdatePassword= 125;
 
 
 

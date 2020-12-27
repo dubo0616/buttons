@@ -136,8 +136,9 @@ public class GAIABREDRService extends Service implements BluetoothService, BondS
 
     @Override // BluetoothService
     public boolean connectToDevice(String address) {
+        Log.e("TTTT","11111111"+address);
         if (mGAIABREDRProvider.getState() == BREDRProvider.State.CONNECTED) {
-            Log.w(TAG, "connection failed: a device is already connected.");
+            Log.e(TAG, "connection failed: a device is already connected.");
             return false;
         }
 

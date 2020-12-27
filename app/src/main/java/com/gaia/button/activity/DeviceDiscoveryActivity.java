@@ -94,10 +94,12 @@ public class DeviceDiscoveryActivity extends BluetoothActivity implements
     private void onConnectButtonClicked() {
         stopScan();
         BluetoothDevice device = mDevicesListFragment.getSelectedDevice();
+        if(device == null){
+            return;
+        }
         // keep information
         SharedPreferences sharedPref = getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        Log.e("UUUU","===========ee"+device.getType());
         editor.putInt(Consts.TRANSPORT_KEY, device.getType());
         editor.putString(Consts.BLUETOOTH_NAME_KEY, device.getName());
         editor.putString(Consts.BLUETOOTH_ADDRESS_KEY, device.getAddress());
@@ -125,7 +127,7 @@ public class DeviceDiscoveryActivity extends BluetoothActivity implements
                 listBLEDevices.add(device);
             }
         }
-//        adapter.setListDevices(listBLEDevices);
+        adapter.setListDevices(listBLEDevices);
     }
 
     @Override
@@ -236,23 +238,14 @@ public class DeviceDiscoveryActivity extends BluetoothActivity implements
 
         @Override
         public void onLeScan(final BluetoothDevice device, final int rssi, final byte[] scanRecord) {
-
-//            if (mBtAdapter != null && mBtAdapter.isEnabled()) {
-//                Set<BluetoothDevice> listDevices = mBtAdapter.getBondedDevices();
-//                for (BluetoothDevice device1 : listDevices) {
-//                    if (device.getType() == BluetoothDevice.DEVICE_TYPE_DUAL
-//                            || device.getType() == BluetoothDevice.DEVICE_TYPE_CLASSIC
-//                            || device.getType() == BluetoothDevice.DEVICE_TYPE_LE) {
-//                        Log.e("TTTT", "0888888===" + device1.getName());
-//                    }
-//                }
-//
-//
-//            }
+            if(mDevicesAdapter != null) {
+                getBondedDevices(mDevicesAdapter);
+            }
             if (mDevicesAdapter != null && device != null
-                    && device.getName() != null && device.getName().length() > 0) {
+                    && device.getName() != null && device.getName().length() > 0 && device.getName().contains("BUTTONS")) {
                 mDevicesAdapter.add(device, rssi);
             }
+
         }
     }
 

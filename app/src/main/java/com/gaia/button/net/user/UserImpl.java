@@ -88,10 +88,10 @@ public class UserImpl implements INetListener {
 
 	public void onNetResponseErr(int requestTag, int requestId, int errorCode,
                                  String msg, Object responseData) {
-		// handleFailedResult(requestType, errorCode, msg);
-		if(errorCode == 1000) { // 用户状态失效
+		if(errorCode == 1100) { // 用户状态失效
 			PreferenceManager.getInstance().setLoginOut();
 		}
+		handleFailedResult(requestId, requestTag, errorCode, msg, responseData);
 	}
 
 	private void handleSuccessResult(int requestId, final int requestType,

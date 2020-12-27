@@ -90,6 +90,7 @@ public class MainProductFragment extends BaseFragment implements ProductAdater.P
         if(mRefreshFlag){
             return;
         }
+//        showWaitDialog();
         mRefreshFlag = true;
         UserManager.getRequestHandler().requestProductList(MainProductFragment.this, mPage,"");
 
@@ -114,6 +115,7 @@ public class MainProductFragment extends BaseFragment implements ProductAdater.P
 
     @Override
     public void onRequestSuccess(int requestTag, Object data) {
+        hideWaitDialog();
         mRefreshFlag = false;
         mSwipeRefreshLayout.setRefreshing(false);
         if(requestTag == Net_Tag_User_ProductList){
@@ -138,6 +140,7 @@ public class MainProductFragment extends BaseFragment implements ProductAdater.P
 
     @Override
     public void onRequestError(int requestTag, int errorCode, String errorMsg, Object data) {
+        hideWaitDialog();
         mRefreshFlag = false;
         mSwipeRefreshLayout.setRefreshing(false);
         if(requestTag == Net_Tag_User_ProductList){

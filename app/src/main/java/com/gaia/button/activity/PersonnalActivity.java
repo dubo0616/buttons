@@ -40,11 +40,15 @@ public class PersonnalActivity extends BaseActivity {
     private List<String> mTitleList = new ArrayList();
     private ImageView mBackView;
     private ImageView mHead;
-    private TextView mName,mTvSigin;
+    private TextView mTvSigin,mTvName;
+    private String mVersion,mName,mMac;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal);
+        mVersion = getIntent().getStringExtra("version");
+        mName =  getIntent().getStringExtra("name");
+        mMac =  getIntent().getStringExtra("mac");
         initData();
     }
     private void choosePhoto() {
@@ -77,7 +81,7 @@ public class PersonnalActivity extends BaseActivity {
                 choosePhoto();
             }
         });
-        mName = findViewById(R.id.tv_name);
+        mTvName = findViewById(R.id.tv_name);
         mTvSigin = findViewById(R.id.tv_sgin);
         mBackView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,8 +105,10 @@ public class PersonnalActivity extends BaseActivity {
         }
     }
     private void initData(){
+        PersonalDeviceFragment fragment = new PersonalDeviceFragment();
+        fragment.setData(mVersion,mName,mMac);
         mFragmentList.add(new PersonalCollectFragment());
-        mFragmentList.add(new PersonalDeviceFragment());
+        mFragmentList.add(fragment);
         mFragmentList.add(new PersonalSettingFragment());
         mTitleList.add(getString(R.string.personal_collect));
         mTitleList.add(getString(R.string.personal_device));

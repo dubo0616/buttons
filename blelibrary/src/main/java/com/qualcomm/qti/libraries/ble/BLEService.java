@@ -956,22 +956,23 @@ public abstract class BLEService extends Service {
      *         callback.
      */
     protected boolean connectToDevice(BluetoothDevice device) {
+        Log.e("TTTT","22222222222"+device.getAddress());
         if (mShowDebugLogs) {
             Log.d(TAG, "Request received to connect to a BluetoothDevice");
         }
 
         if (device == null) {
-            Log.w(TAG, "request connect to BluetoothDevice failed: device is null.");
+            Log.e(TAG, "request connect to BluetoothDevice failed: device is null.");
             return false;
         }
 
         if (mConnectionState == State.CONNECTED) {
-            Log.w(TAG, "request connect to BluetoothDevice failed: a device is already connected.");
+            Log.e(TAG, "request connect to BluetoothDevice failed: a device is already connected.");
             return false;
         }
 
         if (mBluetoothAdapter == null) {
-            Log.w(TAG, "request connect to BluetoothDevice failed: no BluetoothAdapter initialized.");
+            Log.e(TAG, "request connect to BluetoothDevice failed: no BluetoothAdapter initialized.");
             return false;
         }
 
@@ -982,7 +983,7 @@ public abstract class BLEService extends Service {
 
         // We want to directly connect to the device, so we are setting the autoConnect parameter to false.
         // initiating a complete new connection is faster than reusing the same gatt connection with Android.
-        Log.d(TAG, "request connect to BluetoothDevice " + mDevice.getAddress() + " over GATT starts.");
+        Log.e(TAG, "request connect to BluetoothDevice " + mDevice.getAddress() + " over GATT starts.");
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             mBluetoothGatt = device.connectGatt(this, false, mGattCallback, BluetoothDevice.TRANSPORT_LE);
@@ -990,8 +991,16 @@ public abstract class BLEService extends Service {
         else {
             mBluetoothGatt = device.connectGatt(this, false, mGattCallback);
         }
+        Log.e("TTTT","999999999999999"+mBluetoothGatt.toString());
+        if(mBluetoothGatt != null){
+            setState(State.CONNECTED);
+            return true;
+        }else{
+            setState(State.DISCONNECTED);
+        }
 
-        return true;
+
+        return false;
     }
 
     /**

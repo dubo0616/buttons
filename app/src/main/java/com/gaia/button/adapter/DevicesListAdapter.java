@@ -4,6 +4,7 @@
 
 package com.gaia.button.adapter;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -15,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.gaia.button.R;
 import com.gaia.button.holders.DeviceViewHolder;
+import com.gaia.button.holders.TextViewHolder;
+import com.gaia.button.holders.TopDeviceViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,17 +25,14 @@ import java.util.List;
 /**
  * <p>This class allows management of the data set for a devices list.</p>
  */
-public class DevicesListAdapter extends RecyclerView.Adapter<DeviceViewHolder>
+public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         implements DeviceViewHolder.IDeviceViewHolder {
 
     /**
      * The data managed by this adapter.
      */
     private final List<BluetoothDevice> mDevices = new ArrayList<>();
-    /**
-     * The list of RSSI values which correspond to the devices.
-     */
-    private final List<Integer> mRssi = new ArrayList<>();
+    private final List<BluetoothDevice> mConnect = new ArrayList<>();
     /**
      * When the list has no item selected it is identified by this value.
      */
@@ -49,37 +49,53 @@ public class DevicesListAdapter extends RecyclerView.Adapter<DeviceViewHolder>
     /**
      * Default constructor to build a new instance of this adapter.
      */
-    public DevicesListAdapter(IDevicesListAdapterListener listener) {
+    private Activity mContext;
+    public DevicesListAdapter(Activity context,IDevicesListAdapterListener listener) {
         mListener = listener;
+        mContext = context;
     }
 
 
     @Override // RecyclerView.Adapter<DeviceViewHolder>
-    public DeviceViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_devices_item, parent, false);
-        return new DeviceViewHolder(view, this);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == 1) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_devices_item_top, parent, false);
+            return new TopDeviceViewHolder(view,mContext,mConnect,this);
+        } else if (viewType == 2) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_devices_item_text, parent, false);
+            return new TextViewHolder(view);
+        } else {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_devices_item, parent, false);
+            return new DeviceViewHolder(view, this);
+        }
+
     }
 
+
     @Override // RecyclerView.Adapter<DeviceViewHolder>
-    public void onBindViewHolder(DeviceViewHolder holder, int position) {
-        // we define the content of this view depending on the data set of this adapter.
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         BluetoothDevice device = mDevices.get(position);
-        String deviceName = device.getName();
-        deviceName = (deviceName == null || deviceName.length() < 1) ? "Unknown" : deviceName;
-        boolean hasRssi = mRssi.size() > position;
-        boolean isSelected = mSelectedItem == position;
-        int rssi = hasRssi ? mRssi.get(position) : 0;
-        hasRssi = hasRssi && rssi < 0;
-        int type = device.getType();
-        // fill data
-        holder.refreshValues(deviceName, device.getAddress(), type, hasRssi, rssi, isSelected, mListener.getContext());
+        if (holder instanceof DeviceViewHolder) {
+            DeviceViewHolder h = (DeviceViewHolder) holder;
+            String deviceName = device.getName();
+            deviceName = (deviceName == null || deviceName.length() < 1) ? "Unknown" : deviceName;
+            boolean isSelected = mSelectedItem == position;
+            h.refreshValues(deviceName, device.getAddress(), isSelected, mListener.getContext());
+        }else if(holder instanceof TextViewHolder){
+            TextViewHolder h = (TextViewHolder) holder;
+        }else{
+
+        }
     }
 
     @Override
     public int getItemViewType(int position) {
         if(position == 0){
             return 1;
+        }else if(position == 1){
+            return 2;
         }
+
         return super.getItemViewType(position);
     }
 
@@ -101,6 +117,7 @@ public class DevicesListAdapter extends RecyclerView.Adapter<DeviceViewHolder>
         mListener.onItemSelected(hasSelection());
     }
 
+    boolean hasAdd = false;
     /**
      * <p>To update the list with a new device or update the information of an existing one.</p>
      *
@@ -111,16 +128,17 @@ public class DevicesListAdapter extends RecyclerView.Adapter<DeviceViewHolder>
      */
     public void add(BluetoothDevice device, int rssi) {
         synchronized (mDevices) {
+            if(!hasAdd) {
+                mDevices.add(null);
+                mDevices.add(null);
+                hasAdd = true;
+            }
             boolean contained = mDevices.contains(device);
             if (!contained) {
                 mDevices.add(device);
-                mRssi.add(rssi);
                 notifyItemInserted(mDevices.size()-1);
             } else {
                 int position = mDevices.indexOf(device);
-                if (position < mRssi.size()) {
-                    mRssi.add(position, rssi);
-                }
                 notifyItemChanged(position);
             }
         }
@@ -130,7 +148,6 @@ public class DevicesListAdapter extends RecyclerView.Adapter<DeviceViewHolder>
      * To completely reset the data set list and clear it completely.
      */
     public void reset() {
-        mRssi.clear();
         mDevices.clear();
         mSelectedItem = ITEM_NULL;
         notifyDataSetChanged();
@@ -166,9 +183,11 @@ public class DevicesListAdapter extends RecyclerView.Adapter<DeviceViewHolder>
      *            The list of devices to put on the RecyclerView.
      */
     public void setListDevices(ArrayList<BluetoothDevice> listDevices) {
-        this.mDevices.clear();
-        this.mDevices.addAll(listDevices);
-        this.mRssi.clear();
+        this.mConnect.clear();
+        this.mConnect.addAll(listDevices);
+        if (mConnect.size() == 0) {
+            mConnect.add(null);
+        }
         notifyDataSetChanged();
     }
 
@@ -177,20 +196,8 @@ public class DevicesListAdapter extends RecyclerView.Adapter<DeviceViewHolder>
      * fragment or an activity.
      */
     public interface IDevicesListAdapterListener {
-        /**
-         * This method is called by the adapter when the user selects or deselects an item of the list.
-         *
-         * @param itemSelected
-         *                  true if an item is selected, false otherwise.
-         */
         void onItemSelected(boolean itemSelected);
 
-        /**
-         * <p>This method gets the current context. It is called to be able to change the drawable source for the
-         * displayed RSSI signal strength of a Device. To do so, the current Context is required.</p>
-         *
-         * @return the Context of the IDevicesListAdapterListener.
-         */
         Context getContext();
     }
 }

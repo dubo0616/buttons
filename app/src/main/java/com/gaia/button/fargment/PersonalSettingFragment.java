@@ -26,6 +26,7 @@ import com.gaia.button.activity.AboutActivity;
 import com.gaia.button.activity.AccountActivity;
 import com.gaia.button.activity.CustomerActivity;
 import com.gaia.button.activity.LoginMainActivity;
+import com.gaia.button.activity.WebViewActivity;
 import com.gaia.button.adapter.PersonalSettingAdapter;
 import com.gaia.button.data.PreferenceManager;
 import com.gaia.button.model.AutoplayModel;
@@ -46,8 +47,9 @@ public class PersonalSettingFragment extends BaseFragment implements PersonalSet
 //    private List<PersonalSettingModel> mList = new ArrayList<>();
 //    private PersonalSettingAdapter mSettingAdapter;
     private TextView mTvLoginout;
-    private ConstraintLayout mCLAbout,mClCustomer,mClAccount,mClUpdate;
+    private ConstraintLayout mCLAbout,mClCustomer,mClAccount,mClUpdate,mClPrivate,mClUser;
     private ImageView mAutoPlay;
+
 
     @Nullable
     @Override
@@ -111,6 +113,26 @@ public class PersonalSettingFragment extends BaseFragment implements PersonalSet
                 }
                 UserManager.getRequestHandler().requestSetAutoPlay(PersonalSettingFragment.this,mAutoPlay.isSelected()?1:2);
 
+            }
+        });
+        mClPrivate = mRootView.findViewById(R.id.cl_yinsi);
+        mClPrivate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), WebViewActivity.class);
+                intent.putExtra(WebViewActivity.URL_KEY,ConstantUtil.PRIVATE_URL);
+                intent.putExtra(WebViewActivity.TITLE_KEY,"隐私条款");
+                startActivity(intent);
+            }
+        });
+        mClUser = mRootView.findViewById(R.id.cl_xieyi);
+        mClUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), WebViewActivity.class);
+                intent.putExtra(WebViewActivity.URL_KEY,ConstantUtil.USER_URL);
+                intent.putExtra(WebViewActivity.TITLE_KEY,"使用协议");
+                startActivity(intent);
             }
         });
     }

@@ -78,12 +78,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         Log.v("TAG", "TextView: ACTION_DOWN" + MotionEvent.ACTION_DOWN);
                         break;
                     case MotionEvent.ACTION_UP:
-                        if(mCurFragment == mainDiscoveryFragment) {
-                            startActivityForResult(new Intent(MainActivity.this, SearchActivity.class), 1000);
-                        }else{
-                            startActivityForResult(new Intent(MainActivity.this, SearchActivity.class), 1001);
 
+                        Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                        if(mCurFragment == mainDiscoveryFragment) {
+                            intent.putExtra("type",0);
+                        }else{
+                            intent.putExtra("type",1);
                         }
+
+                        startActivity(intent);
                         break;
                     default:
                         break;
@@ -131,31 +134,33 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_tab_left:
-                mSearchLayout.setVisibility(View.VISIBLE);
-                cleanAllSelect();
-                mTabLeft.setSelected(true);
                 switchToDiscovery();
                 break;
             case R.id.iv_tab_center:
-                mSearchLayout.setVisibility(View.GONE);
-                cleanAllSelect();
-                mTabCenter.setSelected(true);
                 switchToContorl();
                 break;
             case R.id.iv_tab_right:
-                mSearchLayout.setVisibility(View.VISIBLE);
-                cleanAllSelect();
-                mTabRight.setSelected(true);
                 switchToProduct();
                 break;
             case R.id.iv_personal:
                 Intent intent = new Intent(this, PersonnalActivity.class);
-                startActivity(intent);
+                if(!TextUtils.isEmpty(mainContorlFragment.getVersion())){
+                    intent.putExtra("version",mainContorlFragment.getVersion());
+                }
+                if(mainContorlFragment.getConnectDevice() != null){
+                    intent.putExtra("name",mainContorlFragment.getConnectDevice().getName());
+                    intent.putExtra("mac",mainContorlFragment.getConnectDevice().getAddress());
+                }
+                startActivityForResult(intent,1000);
+
                 break;
         }
     }
 
     private void switchToDiscovery() {
+        cleanAllSelect();
+        mTabLeft.setSelected(true);
+        mSearchLayout.setVisibility(View.VISIBLE);
         if (mCurFragment != null && mCurFragment == mainDiscoveryFragment) {
             return;
         }
@@ -172,6 +177,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void switchToContorl() {
+        cleanAllSelect();
+        mTabCenter.setSelected(true);
+        mSearchLayout.setVisibility(View.GONE);
         if (mCurFragment != null && mCurFragment == mainContorlFragment) {
             return;
         }
@@ -188,6 +196,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void switchToProduct() {
+        cleanAllSelect();
+        mTabRight.setSelected(true);
+        mSearchLayout.setVisibility(View.VISIBLE);
         if (mCurFragment != null && mCurFragment == mainProductFragment) {
             return;
         }
@@ -240,23 +251,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode){
             case 1000:
-            if(resultCode == RESULT_OK && mCurFragment == mainDiscoveryFragment){
-                if(data != null){
-                    String key = data.getStringExtra("key");
-                    mainDiscoveryFragment.searchKey(key);
-                }
-
+            if(resultCode == RESULT_OK && mCurFragment != mainContorlFragment){
+              switchToContorl();
+                mainContorlFragment.onActivityResult(requestCode,resultCode,data);
             }
             break;
-            case 1001:
-                if(resultCode == RESULT_OK && mCurFragment == mainProductFragment){
-                    if(data != null){
-                        String key = data.getStringExtra("key");
-                        mainProductFragment.searchKey(key);
-                    }
-
-                }
-                break;
+//            case 1001:
+//                if(resultCode == RESULT_OK && mCurFragment == mainProductFragment){
+//                    if(data != null){
+//                        String key = data.getStringExtra("key");
+//                        mainProductFragment.searchKey(key);
+//                    }
+//
+//                }
+//                break;
         }
 
     }

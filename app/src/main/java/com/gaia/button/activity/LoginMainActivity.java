@@ -146,7 +146,7 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
         }
         registerReceiver();
         SendAuth.Req req = new SendAuth.Req();
-        req.scope = "snsapi_userinfo";
+        req.scope = "snsapi_userinfo,snsapi_friend,snsapi_message,snsapi_contact";
         req.state = "com.gaia.button";
         api.sendReq(req);
 
@@ -209,7 +209,7 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
                 finish();
             }
         }
-        Toast.makeText(this,errorMsg,Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this,errorMsg,Toast.LENGTH_SHORT).show();
     }
 
     @Override

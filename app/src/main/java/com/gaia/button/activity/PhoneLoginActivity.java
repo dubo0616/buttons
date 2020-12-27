@@ -123,6 +123,10 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
                 }
                 @Override
                 public void onClick(View widget) {
+                    Intent intent = new Intent(PhoneLoginActivity.this, WebViewActivity.class);
+                    intent.putExtra(WebViewActivity.URL_KEY,ConstantUtil.USER_URL);
+                    intent.putExtra(WebViewActivity.TITLE_KEY,"用户协议");
+                    startActivity(intent);
                 }
             }, indexOfTermsOfUse, indexOfTermsOfUse + termsOfUse.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
@@ -138,6 +142,10 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
 
                 @Override
                 public void onClick(View widget) {
+                    Intent intent = new Intent(PhoneLoginActivity.this, WebViewActivity.class);
+                    intent.putExtra(WebViewActivity.URL_KEY,ConstantUtil.PRIVATE_URL);
+                    intent.putExtra(WebViewActivity.TITLE_KEY,"隐私政策");
+                    startActivity(intent);
                 }
             }, indexOfPrivacyPolicy, indexOfPrivacyPolicy + privacyPolicy.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }

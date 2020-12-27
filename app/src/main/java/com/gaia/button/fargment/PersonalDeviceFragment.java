@@ -1,7 +1,14 @@
 package com.gaia.button.fargment;
 
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +28,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.bumptech.glide.Glide;
 import com.gaia.button.R;
 import com.gaia.button.activity.WebViewActivity;
+import com.gaia.button.adapter.DevicesListAdapter;
 import com.gaia.button.model.DeviceList;
 import com.gaia.button.model.DeviceMode;
 import com.gaia.button.model.PersonalDeviceModel;
@@ -28,22 +36,28 @@ import com.gaia.button.model.ProductModelList;
 import com.gaia.button.net.NetConfig;
 import com.gaia.button.net.user.IUserListener;
 import com.gaia.button.net.user.UserManager;
+import com.gaia.button.utils.Consts;
+import com.gaia.button.view.DeceiveInfoDialog;
 import com.gaia.button.view.GridSpaceItemDecoration;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import static com.gaia.button.utils.ConstantUtil.Net_Tag_User_GetCollect;
 import static com.gaia.button.utils.ConstantUtil.Net_Tag_User_GetDevice;
 
-public class PersonalDeviceFragment extends BaseFragment implements IUserListener {
+public class PersonalDeviceFragment extends BaseFragment implements DevicesListAdapter.IDevicesListAdapterListener{
     private View mRootView;
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private List<DeviceMode> mList = new ArrayList<>();
+    private List<BluetoothDevice> mList = new ArrayList<>();
     private PersonalDeviceAdapter mDeviceAdapter;
     private boolean mRefreshFlag = false;
     private TextView mTvNodata;
+    private String mVersion,mName,mMac;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -52,6 +66,16 @@ public class PersonalDeviceFragment extends BaseFragment implements IUserListene
             initView();
         }
         return mRootView;
+    }
+    public void setData(String v,String n,String m){
+        this.mVersion = v;
+        this.mName = n;
+        this.mMac = m;
+    }
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        sinit();
     }
 
     @Override
@@ -64,6 +88,7 @@ public class PersonalDeviceFragment extends BaseFragment implements IUserListene
         mTvNodata = mRootView.findViewById(R.id.tv_nodata);
         mSwipeRefreshLayout = (SwipeRefreshLayout) mRootView.findViewById(R.id.swipe_refresh);
         mSwipeRefreshLayout.setEnabled(true);
+        mSwipeRefreshLayout.setRefreshing(true);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -78,55 +103,91 @@ public class PersonalDeviceFragment extends BaseFragment implements IUserListene
         mDeviceAdapter = new PersonalDeviceAdapter(mList);
         mRecyclerView.setAdapter(mDeviceAdapter);
     }
-    private void initData(){
-        if(mRefreshFlag){
-            return;
-        }
-        mRefreshFlag = true;
-        NetConfig.isGet = true;
-        UserManager.getRequestHandler().requestGetDevice(PersonalDeviceFragment.this);
-
-    }
 
     @Override
-    public void onRequestSuccess(int requestTag, Object data) {
-        mSwipeRefreshLayout.setRefreshing(false);
-        mRefreshFlag = false;
-        mSwipeRefreshLayout.setRefreshing(false);
-        if(requestTag == Net_Tag_User_GetDevice){
-            DeviceList list = (DeviceList) data;
-            if(list != null && list.getData() != null && list.getData().size()>0){
-                mDeviceAdapter.setData(list.getData());
-                mTvNodata.setVisibility(View.GONE);
-            }else{
-                mTvNodata.setVisibility(View.VISIBLE);
+    public void onBluetoothEnabled() {
+        super.onBluetoothEnabled();
+        initData();
+    }
+
+    private void initData(){
+        Set<BluetoothDevice> listDevices;
+        if (mBtAdapter != null && mBtAdapter.isEnabled()) {
+            listDevices = mBtAdapter.getBondedDevices();
+        } else {
+            listDevices = Collections.emptySet();
+        }
+
+        ArrayList<BluetoothDevice> listBLEDevices = new ArrayList<>();
+
+        for (BluetoothDevice device : listDevices) {
+            if(!device.getName().contains("BUTTONS")){
+                continue;
+            }
+            if (device.getType() == BluetoothDevice.DEVICE_TYPE_DUAL
+                    || device.getType() == BluetoothDevice.DEVICE_TYPE_CLASSIC
+                    || device.getType() == BluetoothDevice.DEVICE_TYPE_LE) {
+                listBLEDevices.add(device);
             }
         }
-    }
-
-    @Override
-    public void onRequestError(int requestTag, int errorCode, String errorMsg, Object data) {
+        if (listBLEDevices != null && listBLEDevices.size() > 0) {
+            mDeviceAdapter.setData(listBLEDevices);
+            mTvNodata.setVisibility(View.GONE);
+        } else {
+            mTvNodata.setVisibility(View.VISIBLE);
+        }
         mSwipeRefreshLayout.setRefreshing(false);
-        mRefreshFlag = false;
+
+
+//        NetConfig.isGet = true;
+//        UserManager.getRequestHandler().requestGetDevice(PersonalDeviceFragment.this);
+
     }
 
     @Override
-    public void startProgressDialog(int requestTag) {
+    public void onItemSelected(boolean itemSelected) {
 
     }
 
-    @Override
-    public void endProgressDialog(int requestTag) {
+//    @Override
+//    public void onRequestSuccess(int requestTag, Object data) {
+//        mSwipeRefreshLayout.setRefreshing(false);
+//        mRefreshFlag = false;
+//        mSwipeRefreshLayout.setRefreshing(false);
+//        if(requestTag == Net_Tag_User_GetDevice){
+//            DeviceList list = (DeviceList) data;
+//            if(list != null && list.getData() != null && list.getData().size()>0){
+//                mDeviceAdapter.setData(list.getData());
+//                mTvNodata.setVisibility(View.GONE);
+//            }else{
+//                mTvNodata.setVisibility(View.VISIBLE);
+//            }
+//        }
+//    }
 
-    }
+//    @Override
+//    public void onRequestError(int requestTag, int errorCode, String errorMsg, Object data) {
+//        mSwipeRefreshLayout.setRefreshing(false);
+//        mRefreshFlag = false;
+//    }
+//
+//    @Override
+//    public void startProgressDialog(int requestTag) {
+//
+//    }
+//
+//    @Override
+//    public void endProgressDialog(int requestTag) {
+//
+//    }
 
-    private class PersonalDeviceAdapter extends RecyclerView.Adapter<PersonalDeviceAdapter.ViewHolder>{
+     class PersonalDeviceAdapter extends RecyclerView.Adapter<PersonalDeviceAdapter.ViewHolder>{
 
-        private List<DeviceMode> mList;
-        public PersonalDeviceAdapter(List<DeviceMode> list){
+        private List<BluetoothDevice> mList;
+        public PersonalDeviceAdapter(List<BluetoothDevice> list){
             this.mList = list;
         }
-        public void setData(List<DeviceMode> list){
+        public void setData(List<BluetoothDevice> list){
             this.mList = list;
             notifyDataSetChanged();
         }
@@ -141,9 +202,9 @@ public class PersonalDeviceFragment extends BaseFragment implements IUserListene
         @Override
         public void onBindViewHolder(@NonNull final PersonalDeviceAdapter.ViewHolder holder, int position) {
 
-            final DeviceMode model = mList.get(position);
-            Glide.with(mContext).load(model.getDevice_img()).into(holder.mDeviceIcon);
-            holder.mDeviceName.setText(model.getDevice_name());
+            final BluetoothDevice model = mList.get(position);
+//            Glide.with(mContext).load(model.getDevice_img()).into(holder.mDeviceIcon);
+            holder.mDeviceName.setText(model.getName());
             holder.mArrow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -160,40 +221,83 @@ public class PersonalDeviceFragment extends BaseFragment implements IUserListene
 
                 }
             });
+
             holder.mLayoutLink.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(mContext,"耳机控制",Toast.LENGTH_SHORT).show();
+                    // keep information
+                    holder.mLayoutLink.setSelected(!holder.mLayoutLink.isSelected());
+                    holder.mLayouHardUpgrade.setSelected(false);
+                    holder.mLayouProductIntro.setSelected(false);
+                    holder.mLayouDeviceInfo.setSelected(false);
+                    if(!TextUtils.isEmpty(mMac) && mMac.equals(model.getAddress())) {
+                        getActivity().setResult(Activity.RESULT_OK);
+                        getActivity().finish();
+                        return;
+                    }
+                    SharedPreferences sharedPref = mContext.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putInt(Consts.TRANSPORT_KEY, model.getType());
+                    editor.putString(Consts.BLUETOOTH_NAME_KEY, model.getName());
+                    editor.putString(Consts.BLUETOOTH_ADDRESS_KEY, model.getAddress());
+                    editor.apply();
+                    getActivity().setResult(Activity.RESULT_OK);
+                    getActivity().finish();
                 }
             });
+            if (model.getName().endsWith("x") || model.getName().endsWith("X")){
+                holder.mDeviceIcon.setImageResource(R.drawable.icon_airx);
+        }else{
+                holder.mDeviceIcon.setImageResource(R.drawable.icon_air);
+            }
             holder.mLayouDeviceInfo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(mContext,"设备信息",Toast.LENGTH_SHORT).show();
+                    if(!TextUtils.isEmpty(mMac) && mMac.equals(model.getAddress())) {
+                        displayShortToast("设备未连接");
+                        return;
+                    }
+                    DeceiveInfoDialog dialog = new DeceiveInfoDialog(mContext);
+                    dialog.show();
+                    dialog.setData(mName,mMac,mVersion);
+                    holder.mLayoutLink.setSelected(false);
+                    holder.mLayouHardUpgrade.setSelected(false);
+                    holder.mLayouProductIntro.setSelected(false);
+                    holder.mLayouDeviceInfo.setSelected(!holder.mLayouDeviceInfo.isSelected());
                 }
             });
             holder.mLayouHardUpgrade.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    holder.mLayoutLink.setSelected(false);
+                    holder.mLayouHardUpgrade.setSelected(!holder.mLayouHardUpgrade.isSelected());
+                    holder.mLayouProductIntro.setSelected(false);
+                    holder.mLayouDeviceInfo.setSelected(false);
                     Intent intent = new Intent(getActivity(), WebViewActivity.class);
                     String url = "http://img.lovetoshare168.com/bz/v1/user_explain/1";
-                    if(model.getDevice_name().endsWith("x") || model.getDevice_name().endsWith("X")){
+                    if(model.getName().endsWith("x") || model.getName().endsWith("X")){
                         url = "http://img.lovetoshare168.com/bz/v1/user_explain/4";
                     }
                     intent.putExtra(WebViewActivity.URL_KEY,url);
                     intent.putExtra(WebViewActivity.TITLE_KEY,"商品说明");
+                    startActivity(intent);
                 }
             });
             holder.mLayouProductIntro.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    holder.mLayoutLink.setSelected(false);
+                    holder.mLayouHardUpgrade.setSelected(false);
+                    holder.mLayouProductIntro.setSelected(!holder.mLayouProductIntro.isSelected());
+                    holder.mLayouDeviceInfo.setSelected(false);
                     Intent intent = new Intent(getActivity(), WebViewActivity.class);
                     String url = "http://img.lovetoshare168.com/bz/v1/user_faq/1";
-                    if(model.getDevice_name().endsWith("x") || model.getDevice_name().endsWith("X")){
+                    if(model.getName().endsWith("x") || model.getName().endsWith("X")){
                         url = "http://img.lovetoshare168.com/bz/v1/user_faq/4";
                     }
                     intent.putExtra(WebViewActivity.URL_KEY,url);
                     intent.putExtra(WebViewActivity.TITLE_KEY,"商品问答");
+                    startActivity(intent);
                 }
             });
 

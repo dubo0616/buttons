@@ -218,6 +218,22 @@ public class UserRequestProxy implements IUserInterface {
     }
 
     @Override
+    public void requestModPass(IUserListener observer, String oldpa, String newpass, String confirm) {
+        JSONObject mJsonObject = new JSONObject();
+        try {
+            mJsonObject.put("old_password",oldpa);
+            mJsonObject.put("password",newpass);
+            mJsonObject.put("ture_password",confirm);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mCurrentRequestId = NetManager.getHttpConnect().sendRequest(
+                ConstantUtil.NEW_BAPI_URL+ ConstantUtil.SERVER_URL_NAME_LOGINPW_UPDATE,
+                ConstantUtil.Net_Tag_User_UpdatePassword, mJsonObject.toString(), iNetListener);
+        addObserver(observer, mCurrentRequestId);
+    }
+
+    @Override
     public void requestgetDiscover(IUserListener observer, int page, String title) {
         JSONObject mJsonObject = new JSONObject();
         try {

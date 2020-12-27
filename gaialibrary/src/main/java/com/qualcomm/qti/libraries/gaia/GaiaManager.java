@@ -84,7 +84,7 @@ public abstract class GaiaManager {
     /**
      * <p>To show the debug logs indicating when a method had been reached.</p>
      */
-    private boolean mShowDebugLogs = false;
+    private boolean mShowDebugLogs = true;
 
 
     // ====== CONSTRUCTOR ==========================================================================
@@ -151,7 +151,7 @@ public abstract class GaiaManager {
      *          True to show the debug logs, false otherwise.
      */
     protected void showDebugLogs(boolean show) {
-        mShowDebugLogs = show;
+//        mShowDebugLogs = show;
         Log.i(TAG, "Debug logs are now " + (show ? "activated" : "deactivated") + ".");
     }
 
@@ -245,6 +245,7 @@ public abstract class GaiaManager {
 
             // acknowledgement was expected: it is dispatched to the child
             @GAIA.Status int status = packet.getStatus();
+
             if (mShowDebugLogs) {
                 Log.d(TAG, "Received GAIA ACK packet for command "
                         + GaiaUtils.getGAIACommandToString(packet.getCommand())
