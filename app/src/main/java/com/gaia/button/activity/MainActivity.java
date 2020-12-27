@@ -7,7 +7,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -49,13 +52,39 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private TextView mEditText;
     private ImageView mPersonal;
     private int mTab = 0;
-
+    public final static String ACTION_PLAY_PAUSE = "play_pause";
+    public final static String ACTION_PLAY_PRE = "play_pre";
+    public final static String ACTION_PLAY_NEXT= "play_next";
+    public final static String ACTION_PLAY_LARGE= "play_large";
+    public final static String ACTION_PLAY_SMALLL= "play_small";
+    private BroadcastReceiver mReceiverPlayCOntorl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mTab = getIntent().getIntExtra("Tab",0);
         initView();
+        registerReceiver();
+    }
+
+    private void registerReceiver() {
+        if (mReceiverPlayCOntorl == null) {
+            mReceiverPlayCOntorl = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    String action = intent.getAction();
+                    if (action.equals(ACTION_PLAY_PAUSE)) {
+                    }
+                }
+            };
+            final IntentFilter filter = new IntentFilter();
+            filter.addAction(ACTION_PLAY_PAUSE);
+            filter.addAction(ACTION_PLAY_PRE);
+            filter.addAction(ACTION_PLAY_NEXT);
+            filter.addAction(ACTION_PLAY_LARGE);
+            filter.addAction(ACTION_PLAY_SMALLL);
+            registerReceiver(mReceiverPlayCOntorl, filter);
+        }
     }
 
     private void initView() {
@@ -230,6 +259,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mReceiverPlayCOntorl);
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {

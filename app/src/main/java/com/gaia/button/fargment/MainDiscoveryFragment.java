@@ -145,7 +145,7 @@ public class MainDiscoveryFragment extends BaseFragment implements DiscoveryAdap
                 }
             }
         } else if(requestTag == Net_Tag_User_ArticleCollect){
-            Toast.makeText(getActivity(),"成功",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(),"操作成功",Toast.LENGTH_SHORT).show();
         }
 
 

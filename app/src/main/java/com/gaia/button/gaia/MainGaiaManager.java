@@ -425,10 +425,10 @@ public class MainGaiaManager extends AGaiaManager {
             case 0x02B3:
                 Log.e("TTTT","================"+packet.getStatus()+"==="+packet.getCommand());
                 break;
-            case 0x02B8:
+            case SET_PLAY_STATUS:
                 Log.e("TTTT","================"+packet.getStatus()+"==="+packet.getCommand());
                 break;
-            case 0x02BF:
+            case SET_PLAY_CONTROL:
                 Log.e("TTTT","================"+packet.getStatus()+"==="+packet.getEvent());
                 break;
             case 0x02BD:
@@ -1041,6 +1041,26 @@ public class MainGaiaManager extends AGaiaManager {
         GaiaPacket packet = createPacket(SET_AMBIENT_CONTROL,payload);
         createRequest(packet);
     }
+//    1:backward（上一曲）
+//            2:forward（下一曲）
+//            3:play（播放）
+//            4:pause（暂停）
+    public void sendControlCommand(int control) {
+        final int PAYLOAD_LENGTH = 1;
+        final int CONTROL_OFFSET = 0;
+        byte[] payload = new byte[PAYLOAD_LENGTH];
+        payload[CONTROL_OFFSET] = (byte) control;
+        createRequest(createPacket(SET_PLAY_CONTROL, payload));
+    }
+    public void getControlCommand(int control) {
+        final int PAYLOAD_LENGTH = 1;
+        final int CONTROL_OFFSET = 0;
+        byte[] payload = new byte[PAYLOAD_LENGTH];
+        payload[CONTROL_OFFSET] = (byte) control;
+        createRequest(createPacket(SET_PLAY_STATUS, payload));
+    }
+
+
     private static final class TransferModes {
         /**
          * <p>Sending this value enables the RWCP transfer mode. Receiving it means it is activated.</p>
@@ -1067,4 +1087,6 @@ public class MainGaiaManager extends AGaiaManager {
     }
     public static final int SET_ANC_CONTROL = 0x02B0;
     public static final int SET_AMBIENT_CONTROL = 0x02B2;
+    public static final int SET_PLAY_CONTROL = 0x02BF;
+    public static final int SET_PLAY_STATUS = 0x02C3;
 }

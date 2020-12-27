@@ -83,7 +83,17 @@ public class DeviceDiscoveryActivity extends BluetoothActivity implements
 
     @Override // DevicesListFragmentListener
     public void startScan(DevicesListAdapter adapter) {
+        Log.e("sssssss","11111111");
         mDevicesAdapter = adapter;
+        if(!hasAdd && mDevicesAdapter != null) {
+            mDevicesAdapter.add(null,0);
+            mDevicesAdapter.add(null,0);
+            Log.e("sssssss","222222444"+mDevicesAdapter.getItemCount());
+            hasAdd = true;
+        }
+        if(mDevicesAdapter != null) {
+            getBondedDevices(mDevicesAdapter);
+        }
         scanDevices(true);
     }
 
@@ -121,6 +131,9 @@ public class DeviceDiscoveryActivity extends BluetoothActivity implements
         ArrayList<BluetoothDevice> listBLEDevices = new ArrayList<>();
 
         for (BluetoothDevice device : listDevices) {
+            if(!device.getName().contains("BUTTONS")){
+                continue;
+            }
             if (device.getType() == BluetoothDevice.DEVICE_TYPE_DUAL
                     || device.getType() == BluetoothDevice.DEVICE_TYPE_CLASSIC
                     || device.getType() == BluetoothDevice.DEVICE_TYPE_LE) {
@@ -129,12 +142,17 @@ public class DeviceDiscoveryActivity extends BluetoothActivity implements
         }
         adapter.setListDevices(listBLEDevices);
     }
-
+    boolean hasAdd = false;
     @Override
     public void onDeviceFound(BluetoothDevice device) {
 
+        if(!hasAdd && mDevicesAdapter != null) {
+            mDevicesAdapter.add(null,0);
+            mDevicesAdapter.add(null,0);
+            hasAdd = true;
+        }
         if (mDevicesAdapter != null && device != null
-                && device.getName() != null && device.getName().length() > 0) {
+                && device.getName() != null && device.getName().length() > 0 && device.getName().contains("BUTTONS")) {
             mDevicesAdapter.add(device, 0);
         }
     }
@@ -238,11 +256,15 @@ public class DeviceDiscoveryActivity extends BluetoothActivity implements
 
         @Override
         public void onLeScan(final BluetoothDevice device, final int rssi, final byte[] scanRecord) {
-            if(mDevicesAdapter != null) {
-                getBondedDevices(mDevicesAdapter);
+
+            if(!hasAdd && mDevicesAdapter != null) {
+                mDevicesAdapter.add(null,0);
+                mDevicesAdapter.add(null,0);
+                hasAdd = true;
             }
             if (mDevicesAdapter != null && device != null
                     && device.getName() != null && device.getName().length() > 0 && device.getName().contains("BUTTONS")) {
+
                 mDevicesAdapter.add(device, rssi);
             }
 

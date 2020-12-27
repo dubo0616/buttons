@@ -78,16 +78,18 @@ public class DevicesListFragment extends BaseFragment implements DevicesListAdap
         super.onResume();
         switch (mListType) {
             case DevicesListTabsAdapter.SCANNED_LIST_TYPE:
-                mDevicesListAdapter.reset();
                 mRefreshLayout.setRefreshing(true);
+                mDevicesListAdapter.reset();
+                mDevicesListAdapter.add(null,0);
+                mDevicesListAdapter.add(null,0);
                 mListener.startScan(mDevicesListAdapter);
                 break;
 
-            case DevicesListTabsAdapter.BONDED_LIST_TYPE:
-                mDevicesListAdapter.reset();
-                mRefreshLayout.setRefreshing(true);
-                mListener.getBondedDevices(mDevicesListAdapter);
-                break;
+//            case DevicesListTabsAdapter.BONDED_LIST_TYPE:
+//                mDevicesListAdapter.reset();
+//                mRefreshLayout.setRefreshing(true);
+//                mListener.getBondedDevices(mDevicesListAdapter);
+//                break;
         }
     }
 

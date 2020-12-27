@@ -384,4 +384,56 @@
                 android:layout_height="80dp"/>
         </LinearLayout>
     </com.gaia.button.view.MyScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/play_contorl"
+        android:visibility="gone"
+        android:background="@drawable/bg_play_contorl"
+        android:layout_marginBottom="20dp"
+        android:layout_marginStart="45dp"
+        android:layout_marginEnd="45dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="58dp">
+        <ImageView
+            android:id="@+id/iv_paly_pause"
+            android:src="@drawable/bg_play_pause"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="43dp"
+            android:layout_height="43dp"/>
+        <ImageView
+            android:id="@+id/iv_pre"
+            android:src="@drawable/icon_pre"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/iv_paly_pause"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="31dp"
+            android:layout_height="31dp"/>
+
+        <ImageView
+            android:layout_marginStart="16dp"
+            android:id="@+id/iv_next"
+            android:src="@drawable/icon_next"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_paly_pause"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="31dp"
+            android:layout_height="31dp"/>
+        <ImageView
+            android:id="@+id/iv_small"
+            android:src="@drawable/icon_play_close"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="5dp"
+            android:padding="3dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="15dp"
+            android:layout_height="15dp"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

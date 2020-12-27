@@ -7,6 +7,7 @@ package com.gaia.button.adapter;
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,8 +32,8 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     /**
      * The data managed by this adapter.
      */
-    private final List<BluetoothDevice> mDevices = new ArrayList<>();
-    private final List<BluetoothDevice> mConnect = new ArrayList<>();
+    private  List<BluetoothDevice> mDevices = new ArrayList<>();
+    private  List<BluetoothDevice> mConnect = new ArrayList<>();
     /**
      * When the list has no item selected it is identified by this value.
      */
@@ -117,7 +118,6 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         mListener.onItemSelected(hasSelection());
     }
 
-    boolean hasAdd = false;
     /**
      * <p>To update the list with a new device or update the information of an existing one.</p>
      *
@@ -127,28 +127,28 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
      *          The rssi which corresponds to the device.
      */
     public void add(BluetoothDevice device, int rssi) {
-        synchronized (mDevices) {
-            if(!hasAdd) {
-                mDevices.add(null);
-                mDevices.add(null);
-                hasAdd = true;
+//        synchronized (mDevices) {
+            Log.e("sssssss","2222222==="+mDevices.size());
+            if(device != null) {
+                boolean contained = mDevices.contains(device);
+                if (!contained) {
+                    mDevices.add(device);
+                    notifyItemInserted(mDevices.size() - 1);
+                } else {
+                    int position = mDevices.indexOf(device);
+                    notifyItemChanged(position);
+                }
+            }else{
+                notifyDataSetChanged();
             }
-            boolean contained = mDevices.contains(device);
-            if (!contained) {
-                mDevices.add(device);
-                notifyItemInserted(mDevices.size()-1);
-            } else {
-                int position = mDevices.indexOf(device);
-                notifyItemChanged(position);
-            }
-        }
+//        }
     }
 
     /**
      * To completely reset the data set list and clear it completely.
      */
     public void reset() {
-        mDevices.clear();
+//        mDevices.clear();
         mSelectedItem = ITEM_NULL;
         notifyDataSetChanged();
     }
@@ -185,9 +185,6 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void setListDevices(ArrayList<BluetoothDevice> listDevices) {
         this.mConnect.clear();
         this.mConnect.addAll(listDevices);
-        if (mConnect.size() == 0) {
-            mConnect.add(null);
-        }
         notifyDataSetChanged();
     }
 

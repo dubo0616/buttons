@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gaia.button.R;
-import com.gaia.button.adapter.DevicesListAdapter;
 import com.gaia.button.data.PreferenceManager;
 import com.gaia.button.utils.Consts;
 
@@ -39,6 +38,9 @@ public class TopDeviceViewHolder extends RecyclerView.ViewHolder{
         this.act = context;
         mListener = listener;
         this.mDevices = list;
+        if (mDevices.size() == 0) {
+            mDevices.add(null);
+        }
         Log.e("ddddd","======="+mDevices.size());
         mRecyclerView = itemView.findViewById(R.id.rv_devices_list);
         GridLayoutManager layoutManager = new GridLayoutManager(context,2);
@@ -68,6 +70,7 @@ public class TopDeviceViewHolder extends RecyclerView.ViewHolder{
         public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
             final ItemDeviceViewHolder h = (ItemDeviceViewHolder) holder;
             final BluetoothDevice device = mDevices.get(position);
+            Log.e("HHHHH","mDevices=="+mDevices.size() + device);
             if(device !=null) {
                 h.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override

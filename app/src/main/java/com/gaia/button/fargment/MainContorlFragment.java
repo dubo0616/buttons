@@ -41,6 +41,8 @@ import com.gaia.button.activity.UpgradeActivity;
 import com.gaia.button.adapter.DevicesListAdapter;
 import com.gaia.button.data.PreferenceManager;
 import com.gaia.button.gaia.MainGaiaManager;
+import com.gaia.button.gaia.RemoteGaiaManager;
+import com.gaia.button.model.AccountInfo;
 import com.gaia.button.models.gatt.GATTServices;
 import com.gaia.button.receivers.BREDRDiscoveryReceiver;
 import com.gaia.button.receivers.BluetoothStateReceiver;
@@ -288,6 +290,37 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
             }
         });
+
+        iv_paly_pause = mRootView.findViewById(R.id.iv_paly_pause);
+        iv_pre = mRootView.findViewById(R.id.iv_pre);
+        iv_next = mRootView.findViewById(R.id.iv_next);
+        iv_small = mRootView.findViewById(R.id.iv_small);
+        play_contorl = mRootView.findViewById(R.id.play_contorl);
+        iv_paly_pause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mService != null && mService.isGaiaReady()){
+                    mGaiaManager.sendControlCommand(iv_paly_pause.isSelected() ? 3 : 4);
+                }
+                iv_paly_pause.setSelected(!iv_paly_pause.isSelected());
+            }
+        });
+        iv_pre.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mService != null && mService.isGaiaReady()){
+                    mGaiaManager.sendControlCommand(1);
+                }
+            }
+        });
+        iv_next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mService != null && mService.isGaiaReady()){
+                    mGaiaManager.sendControlCommand(2);
+                }
+            }
+        });
 //        connectDevice();
         scanDevice();
 
@@ -334,8 +367,10 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         mImageViewGrayBg.setVisibility(View.GONE);
         mTvScan.setText("设备未连接…");
         mTvConectDeviceName.setVisibility(View.INVISIBLE);
+        PreferenceManager.getInstance().setStringValue(PreferenceManager.CONNECT_ARRAESS,"");
     }
     private void scanDevice(){
+        play_contorl.setVisibility(View.GONE);
         hasNoDevice();
         mImageViewGrayBg.setVisibility(View.INVISIBLE);
         mTvScan.setText("正在搜索设备…");
@@ -349,6 +384,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         mTvBatty.setVisibility(View.VISIBLE);;
         mTvScan.setVisibility(View.GONE);
         mTvConectDeviceName.setVisibility(View.VISIBLE);
+        play_contorl.setVisibility(View.VISIBLE);
     }
 
     private int maxVoice,minVoice;
@@ -361,7 +397,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             minVoice = mAudioManager.getStreamMinVolume(AudioManager.STREAM_MUSIC);
         }
-
+        myRegisterReceiver();
         init();
     }
 
@@ -437,6 +473,24 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         checkEnableBt();
         if (mService != null) {
             initService();
+        }
+    }
+    private void myRegisterReceiver() {
+        MyVolumeReceiver mVolumeReceiver = new MyVolumeReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.media.VOLUME_CHANGED_ACTION");
+        mContext.registerReceiver(mVolumeReceiver, filter);
+    }
+
+    private class MyVolumeReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals("android.media.VOLUME_CHANGED_ACTION")) {
+                int currVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+                isClick = true;
+                mArcSeekBarInner.setProgress(currVolume);
+                //int currVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+            }
         }
     }
 
@@ -547,6 +601,17 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                 if (DEBUG) Log.d(TAG, handleMessage + "GAIA_READY");
                 mGaiaManager.getInformation(MainGaiaManager.Information.BATTERY);
                 mGaiaManager.getInformation(MainGaiaManager.Information.API_VERSION);
+                AccountInfo info = PreferenceManager.getInstance().getAccountInfo();
+                if(info !=null){
+                    if(info.getAutoplay() == 1){
+                        iv_paly_pause.setSelected(false);
+                        mGaiaManager.sendControlCommand(3);
+                    }else{
+                        iv_paly_pause.setSelected(true);
+                        mGaiaManager.sendControlCommand(4);
+                    }
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,mProgress, 0);
+                }
                 break;
 
             case BluetoothService.Messages.GATT_READY:
@@ -911,5 +976,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             mService.reconnectToDevice();
         }
     }
+    private ImageView iv_paly_pause,iv_pre,iv_next,iv_small;
+    private ConstraintLayout play_contorl;
 
 }
