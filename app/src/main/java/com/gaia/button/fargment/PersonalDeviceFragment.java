@@ -230,11 +230,11 @@ public class PersonalDeviceFragment extends BaseFragment implements DevicesListA
                     holder.mLayouHardUpgrade.setSelected(false);
                     holder.mLayouProductIntro.setSelected(false);
                     holder.mLayouDeviceInfo.setSelected(false);
-                    if(!TextUtils.isEmpty(mMac) && mMac.equals(model.getAddress())) {
-                        getActivity().setResult(Activity.RESULT_OK);
-                        getActivity().finish();
-                        return;
-                    }
+//                    if(!TextUtils.isEmpty(mMac) && mMac.equals(model.getAddress())) {
+//                        getActivity().setResult(Activity.RESULT_OK);
+//                        getActivity().finish();
+//                        return;
+//                    }
                     SharedPreferences sharedPref = mContext.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPref.edit();
                     editor.putInt(Consts.TRANSPORT_KEY, model.getType());
@@ -253,7 +253,7 @@ public class PersonalDeviceFragment extends BaseFragment implements DevicesListA
             holder.mLayouDeviceInfo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(!TextUtils.isEmpty(mMac) && mMac.equals(model.getAddress())) {
+                    if(TextUtils.isEmpty(mMac) || !mMac.equals(model.getAddress())) {
                         displayShortToast("设备未连接");
                         return;
                     }

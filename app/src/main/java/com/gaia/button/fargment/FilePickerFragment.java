@@ -144,7 +144,7 @@ public class FilePickerFragment extends Fragment implements View.OnClickListener
     @Override
     public void onResume() {
         super.onResume();
-        updateFileList(Objects.requireNonNull(getActivity().getExternalFilesDir("")).getPath());
+        updateFileList(Environment.getExternalStorageDirectory().getPath());
 
         // button label depends on app current state
         if (mListener != null && mBtChoose != null) {

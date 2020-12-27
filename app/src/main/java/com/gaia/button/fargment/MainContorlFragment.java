@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -60,6 +61,7 @@ import com.gaia.button.view.GaiaSoundModePop;
 import com.qualcomm.qti.libraries.gaia.GAIA;
 
 import java.lang.ref.WeakReference;
+import java.util.Set;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.BIND_AUTO_CREATE;
@@ -292,10 +294,35 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         });
 
         iv_paly_pause = mRootView.findViewById(R.id.iv_paly_pause);
+        iv_paly_pause_small = mRootView.findViewById(R.id.iv_paly_pause_small);
         iv_pre = mRootView.findViewById(R.id.iv_pre);
         iv_next = mRootView.findViewById(R.id.iv_next);
         iv_small = mRootView.findViewById(R.id.iv_small);
         play_contorl = mRootView.findViewById(R.id.play_contorl);
+        play_contorl_small = mRootView.findViewById(R.id.play_contorl_small);
+        iv_small.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                iv_paly_pause_small.setSelected(iv_paly_pause.isSelected());
+                play_contorl_small.setVisibility(View.VISIBLE);
+                play_contorl.setVisibility(View.GONE);
+            }
+        });
+        play_contorl.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+        iv_paly_pause_small.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mService != null && mService.isGaiaReady()){
+                    mGaiaManager.sendControlCommand(iv_paly_pause_small.isSelected() ? 3 : 4);
+                }
+                iv_paly_pause_small.setSelected(!iv_paly_pause_small.isSelected());
+            }
+        });
         iv_paly_pause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -309,6 +336,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             @Override
             public void onClick(View v) {
                 if(mService != null && mService.isGaiaReady()){
+                    iv_paly_pause.setSelected(false);
                     mGaiaManager.sendControlCommand(1);
                 }
             }
@@ -317,6 +345,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             @Override
             public void onClick(View v) {
                 if(mService != null && mService.isGaiaReady()){
+                    iv_paly_pause.setSelected(false);
                     mGaiaManager.sendControlCommand(2);
                 }
             }
@@ -367,6 +396,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         mImageViewGrayBg.setVisibility(View.GONE);
         mTvScan.setText("设备未连接…");
         mTvConectDeviceName.setVisibility(View.INVISIBLE);
+        play_contorl.setVisibility(View.GONE);
         PreferenceManager.getInstance().setStringValue(PreferenceManager.CONNECT_ARRAESS,"");
     }
     private void scanDevice(){
@@ -403,16 +433,43 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
     @Override
     public void onDeviceFound(BluetoothDevice device) {
+        if(device != null && device.getName() != null &&device.getName().contains("BUTTONS")){
+            if(mBtAdapter != null && mBtAdapter.isEnabled()){
+               Set set = mBtAdapter.getBondedDevices();
+               if(!set.contains(device)){
+                   device.createBond();
+                   return;
+               }
+            }
+//
+        }
+
+
+        if (mService == null) {
+            saveDevice(device);
+            startService();
+        }else{
+            mService.connectToDevice(device.getAddress());
+        }
+
+    }
+    private void saveDevice(BluetoothDevice device){
         SharedPreferences sharedPref = mContext.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putInt(Consts.TRANSPORT_KEY, device.getType());
         editor.putString(Consts.BLUETOOTH_NAME_KEY, device.getName());
         editor.putString(Consts.BLUETOOTH_ADDRESS_KEY, device.getAddress());
         editor.apply();
-        if (mService == null) {
-            startService();
-        }
+    }
 
+    @Override
+    public void onDeviceConnectSuccess(BluetoothDevice device) {
+        if (mService == null) {
+            saveDevice(device);
+            startService();
+        }else{
+            mService.connectToDevice(device.getAddress());
+        }
     }
 
     @Override
@@ -430,6 +487,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
     private void initService() {
         mService.addHandler(mServiceHandler);
+        Log.e("HHHH","=============");
         if (mService.getDevice() == null) {
             // get the bluetooth information
             SharedPreferences sharedPref = mContext.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
@@ -527,6 +585,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
     }
 
     private boolean startService() {
+        Log.e("NNNN","1111111");
         // get the bluetooth information
         SharedPreferences sharedPref = mContext.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
 
@@ -536,10 +595,11 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             // no address, not possible to establish a connection
             return false;
         }
-        if(mService != null && mService.getDevice()!=null && mService.isGaiaReady() && mService.getDevice().getAddress().equals(address)){
-            return false;
-        }
-
+//        Log.e("NNNN","2222222222");
+//        if(mService != null && mService.getDevice()!=null && mService.isGaiaReady() && mService.getDevice().getAddress().equals(address)){
+//            return false;
+//        }
+        Log.e("NNNN","2222222222");
         // get the transport type
         int transport = sharedPref.getInt(Consts.TRANSPORT_KEY, BluetoothService.Transport.UNKNOWN);
         mTransport = transport == BluetoothService.Transport.BLE ? BluetoothService.Transport.BLE :
@@ -549,7 +609,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             // transport unknown, not possible to establish a connection
             return false;
         }
-
+        Log.e("NNNN","2333333333");
         // get the service class to bind
         Class<?> serviceClass = mTransport == BluetoothService.Transport.BLE ? GAIAGATTBLEService.class :
                 GAIABREDRService.class; // mTransport can only be BLE or BR EDR
@@ -566,7 +626,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         switch (msg.what) {
             case BluetoothService.Messages.CONNECTION_STATE_HAS_CHANGED:
                 @BluetoothService.State int connectionState = (int) msg.obj;
-                onConnectionStateChanged(connectionState);
+//                onConnectionStateChanged(connectionState);
                 refreshConnectionState(connectionState);
                 if (DEBUG) {
                     String stateLabel = connectionState == BluetoothService.State.CONNECTED ? "CONNECTED"
@@ -582,7 +642,6 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
             case BluetoothService.Messages.DEVICE_BOND_STATE_HAS_CHANGED:
                 int bondState = (int) msg.obj;
-//                refreshBondState(bondState, true);
                 if (DEBUG) {
                     String bondStateLabel = bondState == BluetoothDevice.BOND_BONDED ? "BONDED"
                             : bondState == BluetoothDevice.BOND_BONDING ? "BONDING"
@@ -599,6 +658,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             case BluetoothService.Messages.GAIA_READY:
                 PreferenceManager.getInstance().setStringValue(PreferenceManager.CONNECT_ARRAESS,mService.getDevice().getAddress());
                 if (DEBUG) Log.d(TAG, handleMessage + "GAIA_READY");
+                mGaiaManager.setRWCPMode(true);
                 mGaiaManager.getInformation(MainGaiaManager.Information.BATTERY);
                 mGaiaManager.getInformation(MainGaiaManager.Information.API_VERSION);
                 AccountInfo info = PreferenceManager.getInstance().getAccountInfo();
@@ -976,7 +1036,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             mService.reconnectToDevice();
         }
     }
-    private ImageView iv_paly_pause,iv_pre,iv_next,iv_small;
-    private ConstraintLayout play_contorl;
+    private ImageView iv_paly_pause,iv_pre,iv_next,iv_small,iv_paly_pause_small;
+    private ConstraintLayout play_contorl,play_contorl_small;
 
 }

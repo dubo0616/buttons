@@ -4,7 +4,9 @@ package com.gaia.button.holders;
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -102,6 +104,13 @@ public class TopDeviceViewHolder extends RecyclerView.ViewHolder{
                 }
 
             }else{
+                h.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent =  new Intent(Settings.ACTION_BLUETOOTH_SETTINGS);
+                        act.startActivity(intent);
+                    }
+                });
                 h.mNodata.setVisibility(View.VISIBLE);
                 h.mLL.setVisibility(View.GONE);
             }

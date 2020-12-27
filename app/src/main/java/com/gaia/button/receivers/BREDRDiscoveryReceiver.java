@@ -33,7 +33,26 @@ public class BREDRDiscoveryReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(BluetoothDevice.ACTION_FOUND)) {
+        if (intent.getAction().equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
+            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+            String name = device.getName();
+            Log.d("aaa", "device name: " + name);
+            int state = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, -1);
+            switch (state) {
+                case BluetoothDevice.BOND_NONE:
+                    Log.d("aaa", "BOND_NONE 删除配对");
+                    break;
+                case BluetoothDevice.BOND_BONDING:
+                    Log.d("aaa", "BOND_BONDING 正在配对");
+                    break;
+                case BluetoothDevice.BOND_BONDED:
+                    if(mListener != null){
+                        mListener.onDeviceConnectSuccess(device);
+                    }
+                    Log.d("aaa", "BOND_BONDED 配对成功");
+                    break;
+            }
+        } else if (intent.getAction().equals(BluetoothDevice.ACTION_FOUND)) {
             BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
             if (device != null) {
                 mListener.onDeviceFound(device);
@@ -52,6 +71,7 @@ public class BREDRDiscoveryReceiver extends BroadcastReceiver {
          *          The device which had been found.
          */
         void onDeviceFound(BluetoothDevice device);
+        void onDeviceConnectSuccess(BluetoothDevice device);
     }
 
 }

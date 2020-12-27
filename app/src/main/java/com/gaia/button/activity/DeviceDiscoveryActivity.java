@@ -157,6 +157,11 @@ public class DeviceDiscoveryActivity extends BluetoothActivity implements
         }
     }
 
+    @Override
+    public void onDeviceConnectSuccess(BluetoothDevice device) {
+
+    }
+
 
     // ------ ACTIVITY METHODS ----------------------------------------------------------------------------------------
 

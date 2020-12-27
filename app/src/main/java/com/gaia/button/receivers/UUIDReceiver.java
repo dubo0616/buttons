@@ -40,7 +40,6 @@ public class UUIDReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
-        Log.e("FUCK","========="+action);
         if (action != null && action.equals(BluetoothDevice.ACTION_UUID)) {
 
             BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
