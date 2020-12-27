@@ -238,7 +238,6 @@ import java.util.UUID;
      */
     @SuppressWarnings("UnusedReturnValue")
     /*package*/ boolean connect(String address, @NonNull Context context) {
-        Log.e("TTTT","11111111connect");
         if (mShowDebugLogs) {
             Log.d(TAG, "Request received to connect to a device with address " + address);
         }

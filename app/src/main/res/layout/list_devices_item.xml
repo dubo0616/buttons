@@ -39,6 +39,7 @@
 
     </RelativeLayout>
     <View
+        android:id="@+id/view_line"
         android:layout_alignParentBottom="true"
         android:background="#E4E4E4"
         android:layout_marginLeft="20dp"

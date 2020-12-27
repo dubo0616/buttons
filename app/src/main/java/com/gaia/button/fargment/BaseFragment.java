@@ -55,6 +55,10 @@ public  class BaseFragment extends Fragment  implements BREDRDiscoveryReceiver.B
 //        init();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
     // ====== PROTECTED METHODS ====================================================================
 
     /**

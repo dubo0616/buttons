@@ -433,24 +433,22 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
     @Override
     public void onDeviceFound(BluetoothDevice device) {
-        if(device != null && device.getName() != null &&device.getName().contains("BUTTONS")){
-            if(mBtAdapter != null && mBtAdapter.isEnabled()){
-               Set set = mBtAdapter.getBondedDevices();
-               if(!set.contains(device)){
-                   device.createBond();
-                   return;
-               }
+
+        if(device != null && device.getAddress() != null && device.getAddress().startsWith("F4:0E")){
+            if(device.getBondState() == BluetoothDevice.BOND_NONE){
+//              device.createBond();
+                Intent intent =  new Intent(Settings.ACTION_BLUETOOTH_SETTINGS);
+                mContext.startActivity(intent);
+              return;
             }
-//
+            if (mService == null) {
+                saveDevice(device);
+                startService();
+            }
         }
 
 
-        if (mService == null) {
-            saveDevice(device);
-            startService();
-        }else{
-            mService.connectToDevice(device.getAddress());
-        }
+
 
     }
     private void saveDevice(BluetoothDevice device){
@@ -464,12 +462,10 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
     @Override
     public void onDeviceConnectSuccess(BluetoothDevice device) {
-        if (mService == null) {
-            saveDevice(device);
-            startService();
-        }else{
-            mService.connectToDevice(device.getAddress());
-        }
+//        if (mService == null) {
+//            saveDevice(device);
+//            startService();
+//        }
     }
 
     @Override
@@ -487,15 +483,15 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
     private void initService() {
         mService.addHandler(mServiceHandler);
-        Log.e("HHHH","=============");
         if (mService.getDevice() == null) {
             // get the bluetooth information
             SharedPreferences sharedPref = mContext.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
             // get the device Bluetooth address
             String address = sharedPref.getString(Consts.BLUETOOTH_ADDRESS_KEY, "");
             String name = sharedPref.getString(Consts.BLUETOOTH_NAME_KEY, "");
+            Log.e("VVVVV","address=ssssssss====="+address);
+            Log.e("VVVVV","address=ssssssss====="+name);
             boolean done = mService.connectToDevice(address);
-        }else{
         }
     }
 
@@ -511,6 +507,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                 break;
             }
             case 1000:
+                Log.e("VVVVV","address=ssssssss=====");
                 if (resultCode == RESULT_OK) {
                     startService();
                 }
@@ -585,7 +582,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
     }
 
     private boolean startService() {
-        Log.e("NNNN","1111111");
+        Log.e("MMMM","=========="+Log.getStackTraceString(new Throwable()));
         // get the bluetooth information
         SharedPreferences sharedPref = mContext.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
 
@@ -595,11 +592,10 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             // no address, not possible to establish a connection
             return false;
         }
-//        Log.e("NNNN","2222222222");
+        Log.e("VVVVV","address======"+address);
 //        if(mService != null && mService.getDevice()!=null && mService.isGaiaReady() && mService.getDevice().getAddress().equals(address)){
 //            return false;
 //        }
-        Log.e("NNNN","2222222222");
         // get the transport type
         int transport = sharedPref.getInt(Consts.TRANSPORT_KEY, BluetoothService.Transport.UNKNOWN);
         mTransport = transport == BluetoothService.Transport.BLE ? BluetoothService.Transport.BLE :
@@ -613,7 +609,6 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         // get the service class to bind
         Class<?> serviceClass = mTransport == BluetoothService.Transport.BLE ? GAIAGATTBLEService.class :
                 GAIABREDRService.class; // mTransport can only be BLE or BR EDR
-
         // bind the service
         Intent gattServiceIntent = new Intent(mContext, serviceClass);
         gattServiceIntent.putExtra(Consts.BLUETOOTH_ADDRESS_KEY, address); // give address to the service
@@ -647,6 +642,18 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                             : bondState == BluetoothDevice.BOND_BONDING ? "BONDING"
                             : "BOND NONE";
                     Log.d(TAG, handleMessage + "DEVICE_BOND_STATE_HAS_CHANGED: " + bondStateLabel);
+                }
+                if(bondState == BluetoothDevice.BOND_BONDED ){
+                    SharedPreferences sharedPref = mContext.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
+                    // get the device Bluetooth address
+                    String address = sharedPref.getString(Consts.BLUETOOTH_ADDRESS_KEY, "");
+                    String name = sharedPref.getString(Consts.BLUETOOTH_NAME_KEY, "");
+                    boolean done = mService.connectToDevice(address);
+                    Log.e("VVVVV","address===sss==="+address);
+                    if (mService == null) {
+                        startService();
+                    }
+
                 }
                 break;
 
@@ -703,7 +710,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         SharedPreferences sharedPref = mContext.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
 
         String name = sharedPref.getString(Consts.BLUETOOTH_NAME_KEY, "");
-
+        Log.e("NNNN","23333333wwwwww33"+mService.getConnectionState());
         if (mService!= null && mService.getConnectionState() == BluetoothService.State.CONNECTED) {
             if (mTvConectDeviceName != null) {
                 mTvConectDeviceName.setText(name);

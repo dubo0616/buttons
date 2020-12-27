@@ -30,6 +30,8 @@ public class DeviceViewHolder extends RecyclerView.ViewHolder implements View.On
      */
     private final TextView textViewDeviceName;
     private  ImageView image_item_selected;
+    private  View view_line;
+    private int count;
     /**
      * The text view to display the device address.
      */
@@ -56,11 +58,13 @@ public class DeviceViewHolder extends RecyclerView.ViewHolder implements View.On
      * @param listener
      *          The instance of the parent to interact with it as a listener.
      */
-    public DeviceViewHolder(View rowView, IDeviceViewHolder listener) {
+    public DeviceViewHolder(View rowView, IDeviceViewHolder listener,int count) {
         super(rowView);
         textViewDeviceName = (TextView) rowView.findViewById(R.id.tv_device_name);
         image_item_selected = (ImageView) rowView.findViewById(R.id.image_item_selected);
+        view_line = (View) rowView.findViewById(R.id.view_line);
         mListener = listener;
+        this.count =count;
         itemView.setOnClickListener(this);
     }
 
@@ -70,8 +74,13 @@ public class DeviceViewHolder extends RecyclerView.ViewHolder implements View.On
     }
 
     public void refreshValues(String name, String address,boolean isSelected,
-                              Context context) {
+                              Context context,int position) {
         textViewDeviceName.setText(name);
+        if(position == count){
+            view_line.setVisibility(View.GONE);
+        }else{
+            view_line.setVisibility(View.VISIBLE);
+        }
         if(name.contains("BUTTONS")) {
             if (name.endsWith("X") || name.endsWith("x")) {
                 image_item_selected.setBackgroundResource(R.drawable.icon_airx);

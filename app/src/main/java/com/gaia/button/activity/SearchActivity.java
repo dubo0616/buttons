@@ -230,16 +230,34 @@ public class SearchActivity extends BaseActivity implements IUserListener {
         public void onBindViewHolder(@NonNull Searchdapter.ViewHolder holder, int position) {
             final Object model = mList.get(position);
             if(mtype == 0){
-                DiscoveryModel dis = (DiscoveryModel) model;
+                final DiscoveryModel dis = (DiscoveryModel) model;
                 Glide.with(mContext).load(dis.getList_img()).into(holder.detailImg);
                 holder.detailContent.setText(dis.getCate_name());
                 holder.mTvLink.setVisibility(View.GONE);
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(mContext,WebViewActivity.class);
+                        intent.putExtra(WebViewActivity.URL_KEY,dis.getDetailUrl());
+                        intent.putExtra(WebViewActivity.TITLE_KEY,"文章详情");
+                        startActivity(intent);
+                    }
+                });
             }else{
-                ProductModel dis = (ProductModel) model;
+                final ProductModel dis = (ProductModel) model;
                 Glide.with(mContext).load(dis.getList_img()).into(holder.detailImg);
                 holder.detailContent.setText(dis.getTitle());
                 holder.mTvLink.setText(dis.getPrice());
                 holder.mTvLink.setVisibility(View.VISIBLE);
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(mContext, WebViewActivity.class);
+                        intent.putExtra(WebViewActivity.URL_KEY,dis.getDetailUrl());
+                        intent.putExtra(WebViewActivity.TITLE_KEY,"产品详情");
+                        startActivity(intent);
+                    }
+                });
             }
 
         }
@@ -253,10 +271,12 @@ public class SearchActivity extends BaseActivity implements IUserListener {
             private ImageView detailImg;
             private TextView detailContent;
             private TextView mTvLink;
+            private View itemView;
 
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
+                this.itemView = itemView;
                 detailImg = itemView.findViewById(R.id.iv_detail_img);
                 detailContent = itemView.findViewById(R.id.tv_detail_content);
                 mTvLink = itemView.findViewById(R.id.tv_detail_link);

@@ -121,7 +121,7 @@ public class PersonalDeviceFragment extends BaseFragment implements DevicesListA
         ArrayList<BluetoothDevice> listBLEDevices = new ArrayList<>();
 
         for (BluetoothDevice device : listDevices) {
-            if(!device.getName().contains("BUTTONS")){
+            if(device == null || device.getAddress() == null || !device.getAddress().startsWith("F4:0E")){
                 continue;
             }
             if (device.getType() == BluetoothDevice.DEVICE_TYPE_DUAL
@@ -205,7 +205,7 @@ public class PersonalDeviceFragment extends BaseFragment implements DevicesListA
             final BluetoothDevice model = mList.get(position);
 //            Glide.with(mContext).load(model.getDevice_img()).into(holder.mDeviceIcon);
             holder.mDeviceName.setText(model.getName());
-            holder.mArrow.setOnClickListener(new View.OnClickListener() {
+            holder.view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     boolean show = holder.mBottomInfo.getVisibility() == View.GONE;
@@ -319,8 +319,10 @@ public class PersonalDeviceFragment extends BaseFragment implements DevicesListA
             private View mLine;
             private TextView mDeviceName;
             private ImageView mDeviceIcon;
+            private View view;
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
+                view = itemView;
                 mBottomInfo = itemView.findViewById(R.id.layout_control);
                 mArrow = itemView.findViewById(R.id.iv_arrow);
                 mLayoutLink = itemView.findViewById(R.id.ll_link);

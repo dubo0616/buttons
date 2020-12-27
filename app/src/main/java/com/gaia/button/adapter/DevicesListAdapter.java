@@ -67,7 +67,7 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             return new TextViewHolder(view);
         } else {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_devices_item, parent, false);
-            return new DeviceViewHolder(view, this);
+            return new DeviceViewHolder(view, this,mDevices.size());
         }
 
     }
@@ -81,7 +81,7 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             String deviceName = device.getName();
             deviceName = (deviceName == null || deviceName.length() < 1) ? "Unknown" : deviceName;
             boolean isSelected = mSelectedItem == position;
-            h.refreshValues(deviceName, device.getAddress(), isSelected, mListener.getContext());
+            h.refreshValues(deviceName, device.getAddress(), isSelected, mListener.getContext(),position);
         }else if(holder instanceof TextViewHolder){
             TextViewHolder h = (TextViewHolder) holder;
         }else{
@@ -126,9 +126,14 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
      * @param rssi
      *          The rssi which corresponds to the device.
      */
+    boolean hasAdd = false;
     public void add(BluetoothDevice device, int rssi) {
-//        synchronized (mDevices) {
-            Log.e("sssssss","2222222==="+mDevices.size());
+        if(!hasAdd) {
+            mDevices.add(null);
+            mDevices.add(null);
+            hasAdd = true;
+        }
+        synchronized (mDevices) {
             if(device != null) {
                 boolean contained = mDevices.contains(device);
                 if (!contained) {
@@ -141,7 +146,7 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }else{
                 notifyDataSetChanged();
             }
-//        }
+        }
     }
 
     /**
