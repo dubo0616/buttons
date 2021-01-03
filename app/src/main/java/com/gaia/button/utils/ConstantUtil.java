@@ -34,6 +34,7 @@ public class ConstantUtil {
 	public static final String SERVER_URL_NAME_WechatBindphone= "wechatBindPhone";
 	public static final String SERVER_URL_NAME_SetAutoplay= "setAutoplay";
 	public static final String SERVER_URL_NAME_GetVersion= "getVersion";
+	public static final String SERVER_URL_NAME_GetFirmwareVersion= "getFirmwareVersion";
 
 	public static final String SERVER_URL_NAME_LOGINPW_UPDATE = "updatePassword";
 
@@ -73,6 +74,7 @@ public class ConstantUtil {
 	public static final int Net_Tag_User_AUTOPLAY= 123;
 	public static final int Net_Tag_User_GetVersion= 124;
 	public static final int Net_Tag_User_UpdatePassword= 125;
+	public static final int Net_Tag_User_GetFirmwareVersion= 126;
 
 
 

@@ -44,6 +44,7 @@ public interface IUserInterface {
 	void requestLoginBindPhone (IUserListener observer,String openid,String access_token,String nickname,String avatar,String phone,String code);
 	void requestSetAutoPlay (IUserListener observer,int auto);
 	void requestUpdate (IUserListener observer,String version);
+	void requestAirUpdate(IUserListener observer,String name,String version);
 
 
 

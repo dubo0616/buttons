@@ -29,6 +29,7 @@ public interface JsonParserInterface {
 	BaseResult parserWeixinLoginBindphone(String responseStr) throws Exception;
 	BaseResult parserAutoPlay(String responseStr) throws Exception;
 	BaseResult parserUpdate(String responseStr) throws Exception;
+	BaseResult parserAirUpdate(String responseStr) throws Exception;
 
 
 }

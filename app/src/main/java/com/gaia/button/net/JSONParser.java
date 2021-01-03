@@ -407,6 +407,31 @@ public class JSONParser implements JsonParserInterface {
         return res;
     }
 
+    @Override
+    public BaseResult parserAirUpdate(String responseStr) throws Exception {
+        BaseResult res = new BaseResult();
+        String url = "";
+        try {
+
+            JSONObject obj = new JSONObject(responseStr);
+            parserHeader(obj, res);
+            int errorCode = res.getErrorCode();
+            if (errorCode == DcError.DC_OK) {
+                String dataStr = obj.optString(StringConstant.JSON_DATA);
+                if (!TextUtils.isEmpty(dataStr)) {
+                    Gson gson = new Gson();
+                    res = gson.fromJson(dataStr, UpdateModel.class);
+                }
+
+                res.setErrorCode(0);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception(e);
+        }
+        return res;
+    }
+
 
     /**
      * 表头数据解析

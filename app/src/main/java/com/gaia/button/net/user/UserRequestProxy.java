@@ -373,5 +373,20 @@ public class UserRequestProxy implements IUserInterface {
         addObserver(observer, mCurrentRequestId);
     }
 
+    @Override
+    public void requestAirUpdate(IUserListener observer, String name, String version) {
+        JSONObject mJsonObject = new JSONObject();
+        try {
+            mJsonObject.put("version",version);
+            mJsonObject.put("device_name",name);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mCurrentRequestId = NetManager.getHttpConnect().sendRequest(
+                ConstantUtil.NEW_BAPI_URL+ ConstantUtil.SERVER_URL_NAME_GetFirmwareVersion,
+                ConstantUtil.Net_Tag_User_GetFirmwareVersion, mJsonObject.toString(), iNetListener);
+        addObserver(observer, mCurrentRequestId);
+    }
+
 
 }
