@@ -308,14 +308,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
         layout.show();
     }
     public void setPlayContorlLay(boolean show){
-        requestOverlayPermission();
-//        if(show) {
-//            requestOverlayPermission();
-//        }else{
-//            if (layout != null) {
-//                layout.destory();
-//            }
-//        }
+        if(show) {
+            requestOverlayPermission();
+        }else{
+            if (layout != null) {
+                layout.destory();
+            }
+        }
     }
     public void setPlayContorl(boolean show){
         layout.setPause(show);

@@ -455,8 +455,6 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             // get the device Bluetooth address
             String address = sharedPref.getString(Consts.BLUETOOTH_ADDRESS_KEY, "");
             String name = sharedPref.getString(Consts.BLUETOOTH_NAME_KEY, "");
-            Log.e("VVVVV","address=ssssssss====="+address);
-            Log.e("VVVVV","address=ssssssss====="+name);
             boolean done = mService.connectToDevice(address);
         }
     }
@@ -473,7 +471,6 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                 break;
             }
             case 1000:
-                Log.e("VVVVV","address=ssssssss=====");
                 if (resultCode == RESULT_OK) {
                     startService();
                 }
@@ -577,7 +574,6 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
     }
 
     private boolean startService() {
-        Log.e("MMMM","=========="+Log.getStackTraceString(new Throwable()));
         // get the bluetooth information
         SharedPreferences sharedPref = mContext.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
 
@@ -587,7 +583,6 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             // no address, not possible to establish a connection
             return false;
         }
-        Log.e("VVVVV","address======"+address);
 //        if(mService != null && mService.getDevice()!=null && mService.isGaiaReady() && mService.getDevice().getAddress().equals(address)){
 //            return false;
 //        }
