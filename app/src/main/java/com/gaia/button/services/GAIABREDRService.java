@@ -499,7 +499,7 @@ public class GAIABREDRService extends Service implements BluetoothService, BondS
                 message = R.string.toast_connection_error_lost;
                 break;
         }
-
+        sendMessageToListener(Messages.CONNECTION_STATE_HAS_CHANGED,  BluetoothService.State.DISCONNECTED);
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
