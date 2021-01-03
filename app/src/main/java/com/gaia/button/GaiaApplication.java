@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 
+import com.gaia.button.utils.FileHelper;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
@@ -45,6 +46,7 @@ public class GaiaApplication extends Application {
     public void onCreate() {
         super.onCreate();
         init(this);
+        FileHelper.createFolder();
     }
     private static void init(Context context){
         if (WEIXINAPI == null) {

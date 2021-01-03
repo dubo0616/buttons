@@ -373,7 +373,7 @@ public class ArcSeekBarInner extends View {
         int action = event.getActionMasked();
         switch (action) {
             case ACTION_DOWN:
-                getParent().requestDisallowInterceptTouchEvent(false);
+                getParent().getParent().getParent().requestDisallowInterceptTouchEvent(true);
                 moved = false;
                 judgeCanDrag(event);
                 if (null != mOnProgressChangeListener) {
@@ -404,7 +404,7 @@ public class ArcSeekBarInner extends View {
                 break;
             case ACTION_UP:
             case ACTION_CANCEL:
-                getParent().requestDisallowInterceptTouchEvent(true);
+                getParent().getParent().getParent().requestDisallowInterceptTouchEvent(false);
 //                isTouch= false;
                 if (null != mOnProgressChangeListener && moved) {
                     mOnProgressChangeListener.onStopTrackingTouch(this);
@@ -423,7 +423,7 @@ public class ArcSeekBarInner extends View {
     private void judgeCanDrag(MotionEvent event) {
         float[] pos = {event.getX(), event.getY()};
         mInvertMatrix.mapPoints(pos);
-        if (getDistance(pos[0], pos[1]) <= mThumbRadius * 1.5) {
+        if (getDistance(pos[0], pos[1]) <= mThumbRadius * 5.5) {
             mCanDrag = true;
         } else {
             mCanDrag = false;

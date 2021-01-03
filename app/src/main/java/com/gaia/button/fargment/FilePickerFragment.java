@@ -7,6 +7,7 @@ package com.gaia.button.fargment;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -200,7 +201,7 @@ public class FilePickerFragment extends Fragment implements View.OnClickListener
         if(mFile == null || !mFile.equals(mFilesAdapter.getSelectedItem())) {
             mFile = mFilesAdapter.getSelectedItem();
         }
-
+        Log.e("GGGG","======"+mFile.getAbsolutePath());
         if (mFile != null) {
             String[] fileNameSplit = mFile.getName().split("\\.");
             String extension = fileNameSplit[fileNameSplit.length-1];

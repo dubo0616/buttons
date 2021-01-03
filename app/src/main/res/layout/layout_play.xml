@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/play_contorl"
+        android:visibility="visible"
+        android:background="@drawable/bg_play_contorl"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="58dp">
+        <ImageView
+            android:id="@+id/iv_paly_pause"
+            android:src="@drawable/bg_play_pause"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="43dp"
+            android:layout_height="43dp"/>
+        <ImageView
+            android:id="@+id/iv_pre"
+            android:src="@drawable/icon_pre"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/iv_paly_pause"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="31dp"
+            android:layout_height="31dp"/>
+
+        <ImageView
+            android:layout_marginStart="16dp"
+            android:id="@+id/iv_next"
+            android:src="@drawable/icon_next"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_paly_pause"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="31dp"
+            android:layout_height="31dp"/>
+        <ImageView
+            android:id="@+id/iv_small"
+            android:src="@drawable/icon_play_close"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="5dp"
+            android:padding="3dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="20dp"
+            android:layout_height="20dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/play_contorl_small"
+        android:visibility="gone"
+        android:background="@drawable/bg_play_contorl_small"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="80dp"
+        android:layout_height="45dp">
+
+        <ImageView
+            android:id="@+id/iv_paly_pause_small"
+            android:src="@drawable/bg_play_pause"
+            android:layout_marginStart="15dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="35dp"
+            android:layout_height="35dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

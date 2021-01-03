@@ -1,5 +1,6 @@
 package com.gaia.button.fargment;
 
+import android.app.DownloadManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -10,9 +11,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.graphics.PixelFormat;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -24,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -34,9 +39,11 @@ import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.widget.NestedScrollView;
 
+import com.gaia.button.GaiaApplication;
 import com.gaia.button.R;
 import com.gaia.button.activity.DeviceDiscoveryActivity;
 import com.gaia.button.activity.InformationActivity;
+import com.gaia.button.activity.MainActivity;
 import com.gaia.button.activity.ServiceActivity;
 import com.gaia.button.activity.UpgradeActivity;
 import com.gaia.button.adapter.DevicesListAdapter;
@@ -44,12 +51,16 @@ import com.gaia.button.data.PreferenceManager;
 import com.gaia.button.gaia.MainGaiaManager;
 import com.gaia.button.gaia.RemoteGaiaManager;
 import com.gaia.button.model.AccountInfo;
+import com.gaia.button.model.UpdateModel;
 import com.gaia.button.models.gatt.GATTServices;
+import com.gaia.button.net.user.IUserListener;
+import com.gaia.button.net.user.UserManager;
 import com.gaia.button.receivers.BREDRDiscoveryReceiver;
 import com.gaia.button.receivers.BluetoothStateReceiver;
 import com.gaia.button.services.BluetoothService;
 import com.gaia.button.services.GAIABREDRService;
 import com.gaia.button.services.GAIAGATTBLEService;
+import com.gaia.button.utils.Config;
 import com.gaia.button.utils.Consts;
 import com.gaia.button.utils.DensityUtil;
 import com.gaia.button.utils.Utils;
@@ -60,13 +71,15 @@ import com.gaia.button.view.GaiaPop;
 import com.gaia.button.view.GaiaSoundModePop;
 import com.qualcomm.qti.libraries.gaia.GAIA;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.Set;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.BIND_AUTO_CREATE;
+import static com.gaia.button.utils.ConstantUtil.Net_Tag_User_GetFirmwareVersion;
 
-public class MainContorlFragment extends BaseFragment implements MainGaiaManager.MainGaiaManagerListener {
+public class MainContorlFragment extends BaseFragment implements MainGaiaManager.MainGaiaManagerListener , IUserListener {
     private View mRootView;
     private ArcSeekBarInner mArcSeekBarInner;
     private ArcSeekBarOutter mArcSeekBarOutter;
@@ -124,6 +137,8 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
     private AudioManager mAudioManager;
     private boolean isClick =false;
+    private MainActivity mAct;
+
 
     @Nullable
     @Override
@@ -230,7 +245,14 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             @Override
             public void onClick(View v) {
                 if(mService != null && mService.isGaiaReady()){
-                    startActivity(new Intent(mContext, UpgradeActivity.class));
+                    UserManager.getRequestHandler().requestAirUpdate(MainContorlFragment.this,mService.getDevice().getName(),getVersion());
+                    File file = new File("/storage/emulated/0/Download/WeiXin/ButtonsAirX_BT_FW_V1.2.9_20201214.bin");
+                    if(file.exists()){
+                        mService.enableUpgrade(true);
+                        mService.startUpgrade(file);
+                    }
+
+//                    startActivity(new Intent(mContext, UpgradeActivity.class));
                 }else{
                     displayShortToast("设备未连接");
                 }
@@ -293,63 +315,6 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             }
         });
 
-        iv_paly_pause = mRootView.findViewById(R.id.iv_paly_pause);
-        iv_paly_pause_small = mRootView.findViewById(R.id.iv_paly_pause_small);
-        iv_pre = mRootView.findViewById(R.id.iv_pre);
-        iv_next = mRootView.findViewById(R.id.iv_next);
-        iv_small = mRootView.findViewById(R.id.iv_small);
-        play_contorl = mRootView.findViewById(R.id.play_contorl);
-        play_contorl_small = mRootView.findViewById(R.id.play_contorl_small);
-        iv_small.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                iv_paly_pause_small.setSelected(iv_paly_pause.isSelected());
-                play_contorl_small.setVisibility(View.VISIBLE);
-                play_contorl.setVisibility(View.GONE);
-            }
-        });
-        play_contorl.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
-        iv_paly_pause_small.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mService != null && mService.isGaiaReady()){
-                    mGaiaManager.sendControlCommand(iv_paly_pause_small.isSelected() ? 3 : 4);
-                }
-                iv_paly_pause_small.setSelected(!iv_paly_pause_small.isSelected());
-            }
-        });
-        iv_paly_pause.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mService != null && mService.isGaiaReady()){
-                    mGaiaManager.sendControlCommand(iv_paly_pause.isSelected() ? 3 : 4);
-                }
-                iv_paly_pause.setSelected(!iv_paly_pause.isSelected());
-            }
-        });
-        iv_pre.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mService != null && mService.isGaiaReady()){
-                    iv_paly_pause.setSelected(false);
-                    mGaiaManager.sendControlCommand(1);
-                }
-            }
-        });
-        iv_next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mService != null && mService.isGaiaReady()){
-                    iv_paly_pause.setSelected(false);
-                    mGaiaManager.sendControlCommand(2);
-                }
-            }
-        });
 //        connectDevice();
         scanDevice();
 
@@ -396,11 +361,11 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         mImageViewGrayBg.setVisibility(View.GONE);
         mTvScan.setText("设备未连接…");
         mTvConectDeviceName.setVisibility(View.INVISIBLE);
-        play_contorl.setVisibility(View.GONE);
+        mAct.setPlayContorlLay(false);
         PreferenceManager.getInstance().setStringValue(PreferenceManager.CONNECT_ARRAESS,"");
     }
     private void scanDevice(){
-        play_contorl.setVisibility(View.GONE);
+        mAct.setPlayContorlLay(false);
         hasNoDevice();
         mImageViewGrayBg.setVisibility(View.INVISIBLE);
         mTvScan.setText("正在搜索设备…");
@@ -414,13 +379,14 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         mTvBatty.setVisibility(View.VISIBLE);;
         mTvScan.setVisibility(View.GONE);
         mTvConectDeviceName.setVisibility(View.VISIBLE);
-        play_contorl.setVisibility(View.VISIBLE);
+        mAct.setPlayContorlLay(true);
     }
 
     private int maxVoice,minVoice;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mAct =  (MainActivity) getActivity();
         mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
         maxVoice = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         mProgress = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
@@ -535,6 +501,35 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.media.VOLUME_CHANGED_ACTION");
         mContext.registerReceiver(mVolumeReceiver, filter);
+    }
+
+    @Override
+    public void onRequestSuccess(int requestTag, Object data) {
+        if(requestTag == Net_Tag_User_GetFirmwareVersion){
+            if(data instanceof UpdateModel){
+                UpdateModel model = (UpdateModel) data;
+//                if(model.getIsUpdate() == 1 && !TextUtils.isEmpty(model.getUrl())){
+                    checkUpdate("http://buttons.oss-cn-zhangjiakou.aliyuncs.com/app-apk/buttons-1608556167852700.apk");
+//                }
+            }
+
+        }
+
+    }
+
+    @Override
+    public void onRequestError(int requestTag, int errorCode, String errorMsg, Object data) {
+
+    }
+
+    @Override
+    public void startProgressDialog(int requestTag) {
+
+    }
+
+    @Override
+    public void endProgressDialog(int requestTag) {
+
     }
 
     private class MyVolumeReceiver extends BroadcastReceiver {
@@ -665,16 +660,16 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             case BluetoothService.Messages.GAIA_READY:
                 PreferenceManager.getInstance().setStringValue(PreferenceManager.CONNECT_ARRAESS,mService.getDevice().getAddress());
                 if (DEBUG) Log.d(TAG, handleMessage + "GAIA_READY");
-                mGaiaManager.setRWCPMode(true);
+//                mGaiaManager.setRWCPMode(true);
                 mGaiaManager.getInformation(MainGaiaManager.Information.BATTERY);
                 mGaiaManager.getInformation(MainGaiaManager.Information.API_VERSION);
                 AccountInfo info = PreferenceManager.getInstance().getAccountInfo();
                 if(info !=null){
                     if(info.getAutoplay() == 1){
-                        iv_paly_pause.setSelected(false);
+                        mAct.setPlayContorl(false);
                         mGaiaManager.sendControlCommand(3);
                     }else{
-                        iv_paly_pause.setSelected(true);
+                        mAct.setPlayContorl(true);
                         mGaiaManager.sendControlCommand(4);
                     }
                     mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,mProgress, 0);
@@ -697,6 +692,13 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                     Log.d(TAG, handleMessage + "UNKNOWN MESSAGE: " + msg.what);
                 break;
         }
+    }
+    public boolean sendControlCommand(int model){
+        if(mService != null && mService.isGaiaReady()){
+            mGaiaManager.sendControlCommand(model);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -1043,7 +1045,46 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             mService.reconnectToDevice();
         }
     }
-    private ImageView iv_paly_pause,iv_pre,iv_next,iv_small,iv_paly_pause_small;
-    private ConstraintLayout play_contorl,play_contorl_small;
+    private boolean isLoading = false;
+    private void checkUpdate(String url){
+        if (!isLoading) {
+            isLoading = true;
 
+            String apkName = Config.splitFilePath(url);
+            int apkIndex = apkName.indexOf(".bin");
+            if(apkIndex < 0){
+                displayShortToast("文件格式错误");
+                return;
+            }
+            final String fileName = apkName.substring(0, apkIndex) + ".bin";
+
+            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+            request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
+            request.setAllowedOverRoaming(false);
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName); // Environment.getExternalStoragePublicDirectory(String)
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
+            // in order for this if to run, you must use the android 3.2 to
+            // compile your app
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                request.allowScanningByMediaScanner();
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+            }
+
+            DownloadManager  mDownloadManager = (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
+
+            final long enqueue = mDownloadManager.enqueue(request);
+            BroadcastReceiver onComplete = new BroadcastReceiver() {
+                public void onReceive(Context ctxt, Intent intent) {
+                    isLoading = false;
+
+                    File file = new File(Environment.DIRECTORY_DOWNLOADS + "/" + fileName);
+                    mService.enableUpgrade(true);
+                    mService.startUpgrade(file);
+                }
+            };
+            mContext.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+        } else {
+            displayShortToast("正在下载...");
+        }
+    }
 }

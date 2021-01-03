@@ -11,15 +11,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.PixelFormat;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -27,14 +32,16 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gaia.button.GaiaApplication;
 import com.gaia.button.R;
 import com.gaia.button.fargment.MainContorlFragment;
 import com.gaia.button.fargment.MainDiscoveryFragment;
 import com.gaia.button.fargment.MainProductFragment;
+import com.gaia.button.view.PlayMoveLayout;
 
 import javax.xml.transform.Result;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener , PlayMoveLayout.MainContorlListener {
 
     private static final int STATE_DISCOVERY = 0;
     private static final int STATE_CONTORL = 1;
@@ -58,6 +65,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public final static String ACTION_PLAY_LARGE= "play_large";
     public final static String ACTION_PLAY_SMALLL= "play_small";
     private BroadcastReceiver mReceiverPlayCOntorl;
+    private PlayMoveLayout layout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +73,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mTab = getIntent().getIntExtra("Tab",0);
         initView();
         registerReceiver();
+
+//        initWindow();
+
+
+
     }
 
     private void registerReceiver() {
@@ -148,17 +161,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mTabCenter.setSelected(false);
         mTabRight.setSelected(false);
     }
-
-    private void search(String key) {
-        if(!TextUtils.isEmpty(key)) {
-            if (mCurFragment == mainProductFragment) {
-                mainProductFragment.searchKey(key);
-            }else if(mCurFragment == mainDiscoveryFragment){
-                mainDiscoveryFragment.searchKey(key);
-            }
-        }
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -292,16 +294,28 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 mainContorlFragment.onActivityResult(requestCode,resultCode,data);
             }
             break;
-//            case 1001:
-//                if(resultCode == RESULT_OK && mCurFragment == mainProductFragment){
-//                    if(data != null){
-//                        String key = data.getStringExtra("key");
-//                        mainProductFragment.searchKey(key);
-//                    }
-//
-//                }
-//                break;
         }
 
+    }
+    public void setPlayContorlLay(boolean show){
+        if(show) {
+            if (layout == null) {
+                layout = new PlayMoveLayout(this);
+                layout.setListener(this);
+            }
+            layout.show();
+        }else {
+            if(layout != null) {
+                layout.destory();
+            }
+        }
+    }
+    public void setPlayContorl(boolean show){
+        layout.setPause(show);
+    }
+
+    @Override
+    public boolean sendControlCommand(int comm) {
+        return mainContorlFragment.sendControlCommand(comm);
     }
 }

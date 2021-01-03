@@ -6,6 +6,7 @@ import android.view.MotionEvent;
 import android.widget.ScrollView;
 
 class MyScrollView  extends ScrollView {
+
     public MyScrollView(Context context) {
         super(context);
     }
@@ -16,10 +17,5 @@ class MyScrollView  extends ScrollView {
 
     public MyScrollView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-    }
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-
-        return false;
     }
 }

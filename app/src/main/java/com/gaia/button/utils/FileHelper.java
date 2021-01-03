@@ -700,10 +700,6 @@ public final class FileHelper {
 		return sb.toString();
 	}
 	public static void createFolder(){
-		createDirectory(Config.downloadDir);
-		createDirectory(Config.userDir);
-		createDirectory(Config.cacheDir);
-		createDirectory(Config.log_Dir);
-		createDirectory(Config.CRASH_LOG);
+		createDirectory(Environment.DIRECTORY_DOWNLOADS+"/Gaia");
 	}
 }

@@ -15,6 +15,7 @@ import android.graphics.SweepGradient;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -350,8 +351,7 @@ public class ArcSeekBarOutter extends View {
         canvas.rotate(mRotateAngle, mCenterX, mCenterY);
         mShadowPaint.setColor(Color.parseColor("#88e4e4e4"));
         canvas.drawPath(mBorderPath, mShadowPaint);
-        mShadowPaint.setColor(Color.parseColor("#00ff00"));
-//        canvas.drawPath(mBorderPathNew, mShadowPaint);
+        canvas.drawCircle(mCenterX,mCenterY,10,mShadowPaint);
         canvas.restore();
     }
 
@@ -456,9 +456,6 @@ public class ArcSeekBarOutter extends View {
         if (progress < mMinValue) progress = mMinValue;
         mProgressPresent = (progress - mMinValue) * 1.0f / (mMaxValue - mMinValue);
         System.out.println("setProgress present = " + mProgressPresent);
-        if (null != mOnProgressChangeListener) {
-            mOnProgressChangeListener.onProgressChanged(this, progress, false);
-        }
         computeThumbPos(mProgressPresent);
         postInvalidate();
     }
