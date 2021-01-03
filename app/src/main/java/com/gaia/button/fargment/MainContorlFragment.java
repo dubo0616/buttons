@@ -1004,6 +1004,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
     public void onDestroy() {
         super.onDestroy();
         if (mService != null) {
+            mService.disconnectDevice();
             mService.removeHandler(mHandler);
             mService = null;
             mContext.unbindService(mServiceConnection);

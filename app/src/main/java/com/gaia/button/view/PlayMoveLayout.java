@@ -3,6 +3,7 @@ package com.gaia.button.view;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -143,9 +144,13 @@ public class PlayMoveLayout extends ConstraintLayout {
     public interface MainContorlListener {
         boolean sendControlCommand(int comm);
     }
-
+    private boolean allow;
     public PlayMoveLayout(@NonNull Context context) {
         this(context, null);
+    }
+
+    public void setAllow(boolean allow) {
+        this.allow = allow;
     }
 
     public PlayMoveLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -227,13 +232,18 @@ public class PlayMoveLayout extends ConstraintLayout {
                 }
             }
         });
-        initWindow(view);
     }
 
     //屏高
     private void initWindow(View view) {
         mWindowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
         mLayoutParams = new WindowManager.LayoutParams();
+        Log.e("MMM","=========allow"+allow+"mmmm"+Log.getStackTraceString(new Throwable()));
+        if(allow) {
+            mLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        }else{
+            mLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION;
+        }
         mLayoutParams.format = PixelFormat.RGBA_8888; // 设置图片格式，效果为背景透明
         mLayoutParams.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
         mLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
@@ -253,22 +263,22 @@ public class PlayMoveLayout extends ConstraintLayout {
     }
 
     public void show() {
-        updateViewPosition(BUTTOM);
         if (isShown()) {
             return;
         }
+        initWindow(view);
+        updateViewPosition(BUTTOM);
         setVisibility(View.VISIBLE);
     }
-
 
     public void hide() {
         setVisibility(View.GONE);
     }
-
     public void destory() {
         hide();
-        if (null != mWindowManager)
+        if (null != mWindowManager) {
             mWindowManager.removeViewImmediate(this);
+        }
     }
 
     // 悬浮栏位置

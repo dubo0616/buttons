@@ -1,7 +1,6 @@
 package com.gaia.button.activity;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -11,35 +10,25 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.PixelFormat;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.gaia.button.GaiaApplication;
 import com.gaia.button.R;
 import com.gaia.button.fargment.MainContorlFragment;
 import com.gaia.button.fargment.MainDiscoveryFragment;
 import com.gaia.button.fargment.MainProductFragment;
 import com.gaia.button.view.PlayMoveLayout;
-
-import javax.xml.transform.Result;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener , PlayMoveLayout.MainContorlListener {
 
@@ -73,10 +62,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
         mTab = getIntent().getIntExtra("Tab",0);
         initView();
         registerReceiver();
-
-//        initWindow();
-
-
 
     }
 
@@ -264,8 +249,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
 
     @Override
     protected void onDestroy() {
+        if (layout != null) {
+            layout.destory();
+        }
         super.onDestroy();
         unregisterReceiver(mReceiverPlayCOntorl);
+
     }
 
     @Override
@@ -289,26 +278,44 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode){
             case 1000:
-            if(resultCode == RESULT_OK && mCurFragment != mainContorlFragment){
-              switchToContorl();
-                mainContorlFragment.onActivityResult(requestCode,resultCode,data);
-            }
+                if (resultCode == RESULT_OK && mCurFragment != mainContorlFragment) {
+                    switchToContorl();
+                    mainContorlFragment.onActivityResult(requestCode, resultCode, data);
+                }
             break;
+            case 1111:
+                Log.e("HHHH","111111111111");
+                if(Build.VERSION.SDK_INT >= 23){
+                    if(Settings.canDrawOverlays(MainActivity.this)){
+                        initPlayLayout(true);
+                    }else{
+                        initPlayLayout(false);
+                    }
+                }
+
+
+                break;
         }
 
     }
-    public void setPlayContorlLay(boolean show){
-        if(show) {
-            if (layout == null) {
-                layout = new PlayMoveLayout(this);
-                layout.setListener(this);
-            }
-            layout.show();
-        }else {
-            if(layout != null) {
-                layout.destory();
-            }
+    private void initPlayLayout(boolean pers){
+        if (layout == null) {
+            hasAllow = true;
+            layout = new PlayMoveLayout(this);
+            layout.setListener(this);
         }
+        layout.setAllow(pers);
+        layout.show();
+    }
+    public void setPlayContorlLay(boolean show){
+        requestOverlayPermission();
+//        if(show) {
+//            requestOverlayPermission();
+//        }else{
+//            if (layout != null) {
+//                layout.destory();
+//            }
+//        }
     }
     public void setPlayContorl(boolean show){
         layout.setPause(show);
@@ -316,6 +323,39 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
 
     @Override
     public boolean sendControlCommand(int comm) {
+        Log.e("JJJJ","========="+comm);
         return mainContorlFragment.sendControlCommand(comm);
+    }
+    private boolean hasAllow = false;
+    private void requestOverlayPermission() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (!Settings.canDrawOverlays(MainActivity.this)) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:" + getPackageName()));
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivityForResult(intent, 1111);
+            } else {
+                initPlayLayout(true);
+            }
+        }else{
+            initPlayLayout(true);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        if(hasAllow){
+//            if (Build.VERSION.SDK_INT >= 23) {
+//                if (!Settings.canDrawOverlays(MainActivity.this)) {
+//                    initPlayLayout(false);
+//                } else {
+//                    initPlayLayout(true);
+//                }
+//            }else{
+//                initPlayLayout(true);
+//            }
+//        }
+
     }
 }
