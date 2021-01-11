@@ -13,7 +13,6 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_width="0dp"
         app:layout_constraintEnd_toEndOf="parent"
-        android:background="@drawable/product_bg"
         android:layout_height="164dp" />
 
     <TextView

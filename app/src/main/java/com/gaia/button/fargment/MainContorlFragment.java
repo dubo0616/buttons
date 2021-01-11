@@ -266,10 +266,13 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             public void onClick(View v) {
                 isClick = true;
 //                if(mService != null && mService.isGaiaReady()) {
-                    mProgress = mArcSeekBarInner.getProgress() + 1;
-                    mArcSeekBarInner.setProgress(mProgress == maxVoice ? maxVoice : mProgress);
-                    mArcSeekBarOutter.setProgress(mProgress == maxVoice ? maxVoice : mProgress);
-                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,mProgress, 0);
+                if (mProgress >= maxVoice) {
+                    mProgress = maxVoice;
+                }
+                mProgress = mArcSeekBarInner.getProgress() + 1;
+                mArcSeekBarInner.setProgress(mProgress == maxVoice ? maxVoice : mProgress);
+                mArcSeekBarOutter.setProgress(mProgress == maxVoice ? maxVoice : mProgress);
+                mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mProgress, 0);
 //                }else{
 //                    displayShortToast("设备未连接");
 //                }
@@ -281,6 +284,9 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             public void onClick(View v) {
                 isClick = true;
                 if(mService != null && mService.isGaiaReady()) {
+                    if (mProgress <= minVoice) {
+                        mProgress = minVoice;
+                    }
                     mProgress = mArcSeekBarInner.getProgress() - 1;
                     mArcSeekBarInner.setProgress(mProgress == minVoice ? minVoice : mProgress);
                     mArcSeekBarOutter.setProgress(mProgress == minVoice ? minVoice : mProgress);
@@ -299,8 +305,15 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                         mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,mProgress, 0);
                     }
                 }
+
                 mProgress = progress;
-                mArcSeekBarOutter.setProgress(progress);
+                if (mProgress >= maxVoice) {
+                    mProgress = maxVoice;
+                }
+                if (mProgress <= minVoice) {
+                    mProgress = minVoice;
+                }
+                mArcSeekBarOutter.setProgress(mArcSeekBarInner.getProgress());
                 isClick = false;
             }
 
@@ -311,7 +324,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
             @Override
             public void onStopTrackingTouch(ArcSeekBarInner seekBar) {
-
+                mArcSeekBarOutter.setProgress(mArcSeekBarInner.getProgress());
             }
         });
 
@@ -713,7 +726,9 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                 mTvConectDeviceName.setText(name);
             }
             mArcSeekBarInner.setMaxValue(maxVoice);
+            mArcSeekBarOutter.setMaxValue(maxVoice);
             mArcSeekBarInner.setProgress(maxVoice/2);
+            mArcSeekBarOutter.setProgress(maxVoice/2);
             String text = PreferenceManager.getInstance().getPlaySoundMode(PreferenceManager.getInstance().getAccountInfo().getUserID()+mService.getDevice().getAddress());
             if(!TextUtils.isEmpty(text)) {
                 mTvContorlName.setText(text);
@@ -724,7 +739,10 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                 mTvConectDeviceName.setText("");
             }
             mArcSeekBarInner.setMaxValue(maxVoice);
+            mArcSeekBarOutter.setMaxValue(maxVoice);
             mArcSeekBarInner.setProgress(0);
+            mArcSeekBarOutter.setProgress(0);
+//            connectDevice();
             hasNoDevice();
         }
 
@@ -742,6 +760,8 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             }
             mArcSeekBarInner.setMaxValue(maxVoice);
             mArcSeekBarInner.setProgress(maxVoice/2);
+            mArcSeekBarOutter.setMaxValue(maxVoice);
+            mArcSeekBarOutter.setMaxValue(maxVoice/2);
             String text = PreferenceManager.getInstance().getPlaySoundMode(PreferenceManager.getInstance().getAccountInfo().getUserID()+mService.getDevice().getAddress());
             if(!TextUtils.isEmpty(text)) {
                 mTvContorlName.setText(text);
@@ -752,7 +772,9 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                 mTvConectDeviceName.setText("");
             }
             mArcSeekBarInner.setMaxValue(maxVoice);
+            mArcSeekBarOutter.setMaxValue(maxVoice);
             mArcSeekBarInner.setProgress(0);
+            mArcSeekBarOutter.setProgress(0);
             hasNoDevice();
         }
     }

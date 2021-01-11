@@ -59,16 +59,11 @@ public class ArcSeekBarOutter extends View {
     private int[] mArcColors;       // Seek 颜色
     private float mArcWidth;        // Seek 宽度
     private float mOpenAngle;       // 开口的角度大小 0 - 360
+    private float mSweepAngle;       // 开口的角度大小 0 - 360
     private float mRotateAngle;     // 旋转角度
     private int mBorderWidth;       // 描边宽度
     private int mBorderColor;       // 描边颜色
 
-    private int mThumbColor;        // 拖动按钮颜色
-    private float mThumbWidth;      // 拖动按钮宽度
-    private float mThumbRadius;     // 拖动按钮半径
-    private float mThumbShadowRadius;// 拖动按钮阴影半径
-    private int mThumbShadowColor;// 拖动按钮阴影颜色
-    private int mThumbMode;         // 拖动按钮模式
 
     private int mShadowRadius;      // 阴影半径
 
@@ -78,23 +73,18 @@ public class ArcSeekBarOutter extends View {
     private float mCenterX;         // 圆弧 SeekBar 中心点 X
     private float mCenterY;         // 圆弧 SeekBar 中心点 Y
 
-    private float mThumbX;         // 拖动按钮 中心点 X
-    private float mThumbY;         // 拖动按钮 中心点 Y
 
-    private Path mSeekPath;
+    private Path mSeekPath,mSeekPathNew;
     private Path mBorderPath,mBorderPathNew;
     private Paint mArcPaint;
-    private Paint mThumbPaint;
     private Paint mBorderPaint;
     private Paint mShadowPaint;
 
-    private float[] mTempPos;
-    private float[] mTempTan;
     private PathMeasure mSeekPathMeasure;
+    private PathMeasure mSeekPathMeasureNew;
 
     private float mProgressPresent = 0;         // 当前进度百分比
     private Matrix mInvertMatrix;               // 逆向 Matrix, 用于计算触摸坐标和绘制坐标的转换
-    private Region mArcRegion;                  // ArcPath的实际区域大小,用于判定单击事件
 
 
     public ArcSeekBarOutter(Context context) {
@@ -135,13 +125,6 @@ public class ArcSeekBarOutter extends View {
         mBorderWidth = ta.getDimensionPixelSize(R.styleable.ArcSeekBarInner_arc_border_width, dp2px(DEFAULT_BORDER_WIDTH));
         mBorderColor = ta.getColor(R.styleable.ArcSeekBarInner_arc_border_color, DEFAULT_BORDER_COLOR);
 
-        mThumbColor = ta.getColor(R.styleable.ArcSeekBarInner_arc_thumb_color, DEFAULT_THUMB_COLOR);
-        mThumbRadius = ta.getDimensionPixelSize(R.styleable.ArcSeekBarInner_arc_thumb_radius, dp2px(DEFAULT_THUMB_RADIUS));
-        mThumbShadowRadius = ta.getDimensionPixelSize(R.styleable.ArcSeekBarInner_arc_thumb_shadow_radius, dp2px(DEFAULT_THUMB_SHADOW_RADIUS));
-        mThumbShadowColor = ta.getColor(R.styleable.ArcSeekBarInner_arc_thumb_shadow_color, DEFAULT_THUMB_SHADOW_COLOR);
-        mThumbWidth = ta.getDimensionPixelSize(R.styleable.ArcSeekBarInner_arc_thumb_width, dp2px(DEFAULT_THUMB_WIDTH));
-        mThumbMode = ta.getInt(R.styleable.ArcSeekBarInner_arc_thumb_mode, THUMB_MODE_STROKE);
-
         mShadowRadius = ta.getDimensionPixelSize(R.styleable.ArcSeekBarInner_arc_shadow_radius, dp2px(DEFAULT_SHADOW_RADIUS));
         ta.recycle();
     }
@@ -171,19 +154,17 @@ public class ArcSeekBarOutter extends View {
     // 初始化数据
     private void initData() {
         mSeekPath = new Path();
+        mSeekPathNew = new Path();
         mBorderPath = new Path();
         mBorderPathNew = new Path();
         mSeekPathMeasure = new PathMeasure();
-        mTempPos = new float[2];
-        mTempTan = new float[2];
+        mSeekPathMeasureNew = new PathMeasure();
         mInvertMatrix = new Matrix();
-        mArcRegion = new Region();
     }
 
     // 初始化画笔
     private void initPaint() {
         initArcPaint();
-        initThumbPaint();
         initBorderPaint();
         initShadowPaint();
     }
@@ -198,22 +179,6 @@ public class ArcSeekBarOutter extends View {
         mArcPaint.setColor(Color.parseColor("#88e4e4e4"));
     }
 
-    // 初始化拖动按钮画笔
-    private void initThumbPaint() {
-        mThumbPaint = new Paint();
-        mThumbPaint.setAntiAlias(true);
-        mThumbPaint.setColor(mThumbColor);
-        mThumbPaint.setStrokeWidth(mThumbWidth);
-        mThumbPaint.setStrokeCap(Paint.Cap.ROUND);
-        if (mThumbMode == THUMB_MODE_FILL) {
-            mThumbPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        } else if (mThumbMode == THUMB_MODE_FILL_STROKE) {
-            mThumbPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        } else {
-            mThumbPaint.setStyle(Paint.Style.STROKE);
-        }
-        mThumbPaint.setTextSize(56);
-    }
 
     // 初始化拖动按钮画笔
     private void initBorderPaint() {
@@ -283,10 +248,11 @@ public class ArcSeekBarOutter extends View {
         }
         setMeasuredDimension(MeasureSpec.makeMeasureSpec(ws, wm), MeasureSpec.makeMeasureSpec(hs, hm));
     }
-
+    RectF content;
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        Log.e("TTTT","onSizeChanged ===="+mOpenAngle);
         // 计算在当前大小下,内容应该显示的大小和起始位置
         int safeW = w - getPaddingLeft() - getPaddingRight();
         int safeH = h - getPaddingTop() - getPaddingBottom();
@@ -305,15 +271,17 @@ public class ArcSeekBarOutter extends View {
         }
 
         // 得到显示区域和中心的
-        RectF content = new RectF(startX + fix, startY + fix, startX + edgeLength, startY + edgeLength);
+        content = new RectF(startX + fix, startY + fix, startX + edgeLength, startY + edgeLength);
         mCenterX = content.centerX();
         mCenterY = content.centerY();
+        // 得到路径
+        mSeekPathNew.reset();
+        mSeekPathNew.addArc(content, mOpenAngle / 2,  mSweepAngle);
 
         // 得到路径
         mSeekPath.reset();
         mSeekPath.addArc(content, mOpenAngle / 2, CIRCLE_ANGLE - mOpenAngle);
         mSeekPathMeasure.setPath(mSeekPath, false);
-        computeThumbPos(mProgressPresent);
 
         resetShaderColor();
 
@@ -321,11 +289,9 @@ public class ArcSeekBarOutter extends View {
         mInvertMatrix.preRotate(-mRotateAngle, mCenterX, mCenterY);
 
         mArcPaint.getFillPath(mSeekPath, mBorderPath);
-        mArcPaint.getFillPath(mSeekPath, mBorderPathNew);
+        mArcPaint.getFillPath(mSeekPathNew, mBorderPathNew);
         mBorderPath.close();
         mBorderPathNew.close();
-        mArcRegion.setPath(mBorderPath, new Region(0, 0, w, h));
-        mArcRegion.setPath(mBorderPathNew, new Region(0, 0, w, h));
     }
 
     // 重置 shader 颜色
@@ -351,23 +317,13 @@ public class ArcSeekBarOutter extends View {
         canvas.rotate(mRotateAngle, mCenterX, mCenterY);
         mShadowPaint.setColor(Color.parseColor("#88e4e4e4"));
         canvas.drawPath(mBorderPath, mShadowPaint);
-        canvas.drawCircle(mCenterX,mCenterY,10,mShadowPaint);
+        mShadowPaint.setColor(Color.parseColor("#FF7256"));
+        canvas.drawPath(mBorderPathNew, mShadowPaint);
         canvas.restore();
     }
 
     private int dp2px(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getContext().getResources().getDisplayMetrics());
-    }
-
-    // 计算拖动块应该显示的位置
-    private void computeThumbPos(float present) {
-        if (present < 0) present = 0;
-        if (present > 1) present = 1;
-        if (null == mSeekPathMeasure) return;
-        float distance = mSeekPathMeasure.getLength() * present;
-        mSeekPathMeasure.getPosTan(distance, mTempPos, mTempTan);
-        mThumbX = mTempPos[0];
-        mThumbY = mTempPos[1];
     }
 
     //--- 线性取色 ---------------------------------------------------------------------------------
@@ -455,9 +411,15 @@ public class ArcSeekBarOutter extends View {
         if (progress > mMaxValue) progress = mMaxValue;
         if (progress < mMinValue) progress = mMinValue;
         mProgressPresent = (progress - mMinValue) * 1.0f / (mMaxValue - mMinValue);
-        System.out.println("setProgress present = " + mProgressPresent);
-        computeThumbPos(mProgressPresent);
-        postInvalidate();
+        mSweepAngle = (270 / mMaxValue) * (progress);
+        Log.e("TTTT","mSweepAngle============="+mSweepAngle);
+        if(mSeekPathNew != null) {
+            mSeekPathNew.reset();
+            mSeekPathNew.addArc(content, mOpenAngle / 2, mSweepAngle);
+            mArcPaint.getFillPath(mSeekPathNew, mBorderPathNew);
+            mBorderPathNew.close();
+            postInvalidate();
+        }
     }
 
     /**
