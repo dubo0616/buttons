@@ -69,6 +69,7 @@ public final class Consts {
      */
     public static final String BLUETOOTH_ADDRESS_KEY = "Device Bluetooth address";
     public static final String BLUETOOTH_NAME_KEY = "Device Bluetooth name";
+    public static final String BLUETOOTH_NAME_BOND_NONE = "Device Bluetooth name BOND_NONE";
     /**
      * The key to use for the shared preferences to store the type of transport which is used.
      */

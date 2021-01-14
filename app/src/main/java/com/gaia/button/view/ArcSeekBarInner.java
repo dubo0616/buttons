@@ -14,6 +14,7 @@ import android.graphics.Region;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -585,7 +586,7 @@ public class ArcSeekBarInner extends View {
      * @param progress 进度值
      */
     public void setProgress(int progress) {
-        System.out.println("setProgress = " + progress);
+        Log.e("TTTTT","===="+progress+"=="+Log.getStackTraceString(new Throwable()));
         if (progress > mMaxValue) progress = mMaxValue;
         if (progress < mMinValue) progress = mMinValue;
         mProgressPresent = (progress - mMinValue) * 1.0f / (mMaxValue - mMinValue);

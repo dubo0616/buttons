@@ -256,7 +256,13 @@ public class PlayMoveLayout extends ConstraintLayout {
         int m = DensityUtil.dip2px(mContext, 90);
         mLayoutParams.width = DensityUtil.getScreenWidth(mContext)-m;
         mLayoutParams.height = dpi;
-        mWindowManager.addView(view, mLayoutParams);
+        try{
+            if(view.getWindowToken() != null){
+                mWindowManager.removeView(view);
+            }
+            mWindowManager.addView(view, mLayoutParams);
+        }catch(IllegalArgumentException e){
+        }
     }
     public void setPause(boolean show) {
         iv_paly_pause.setSelected(show);
@@ -275,10 +281,15 @@ public class PlayMoveLayout extends ConstraintLayout {
         setVisibility(View.GONE);
     }
     public void destory() {
-        hide();
-        if (null != mWindowManager) {
-            mWindowManager.removeViewImmediate(this);
+        try{
+            hide();
+            if(view.getWindowToken() != null){
+                mWindowManager.removeView(view);
+            }
+        }catch(IllegalArgumentException e){
         }
+
+
     }
 
     // 悬浮栏位置

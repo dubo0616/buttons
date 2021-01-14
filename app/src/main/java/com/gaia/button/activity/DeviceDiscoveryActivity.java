@@ -7,6 +7,7 @@ package com.gaia.button.activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -96,7 +97,7 @@ public class DeviceDiscoveryActivity extends BluetoothActivity implements
     }
 
     @Override // DevicesListFragmentListener
-    public void onItemSelected(boolean selected) {
+    public void onItemSelected(boolean selected,BluetoothDevice device) {
         onConnectButtonClicked();
     }
     private void onConnectButtonClicked() {
@@ -105,15 +106,21 @@ public class DeviceDiscoveryActivity extends BluetoothActivity implements
         if(device == null){
             return;
         }
-        // keep information
         SharedPreferences sharedPref = getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putInt(Consts.TRANSPORT_KEY, device.getType());
         editor.putString(Consts.BLUETOOTH_NAME_KEY, device.getName());
         editor.putString(Consts.BLUETOOTH_ADDRESS_KEY, device.getAddress());
+        editor.putInt(Consts.BLUETOOTH_NAME_BOND_NONE, device.getBondState());
         editor.apply();
         setResult(RESULT_OK);
         finish();
+        if(device.getBondState() == BluetoothDevice.BOND_NONE) {
+            device.createBond();
+        }
+
+        // keep information
+
     }
 
     @Override // DevicesListFragmentListener

@@ -144,8 +144,9 @@ public class PersonalDeviceFragment extends BaseFragment implements DevicesListA
 
     }
 
+
     @Override
-    public void onItemSelected(boolean itemSelected) {
+    public void onItemSelected(boolean itemSelected, BluetoothDevice device) {
 
     }
 

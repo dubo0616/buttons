@@ -410,12 +410,13 @@ public class ArcSeekBarOutter extends View {
         System.out.println("setProgress = " + progress);
         if (progress > mMaxValue) progress = mMaxValue;
         if (progress < mMinValue) progress = mMinValue;
-        mProgressPresent = (progress - mMinValue) * 1.0f / (mMaxValue - mMinValue);
         mSweepAngle = (270 / mMaxValue) * (progress);
         Log.e("TTTT","mSweepAngle============="+mSweepAngle);
-        if(mSeekPathNew != null) {
+        if(mSeekPathNew != null ) {
             mSeekPathNew.reset();
-            mSeekPathNew.addArc(content, mOpenAngle / 2, mSweepAngle);
+            if(content != null) {
+                mSeekPathNew.addArc(content, mOpenAngle / 2, mSweepAngle);
+            }
             mArcPaint.getFillPath(mSeekPathNew, mBorderPathNew);
             mBorderPathNew.close();
             postInvalidate();

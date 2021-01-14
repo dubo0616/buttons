@@ -130,8 +130,8 @@ public class DevicesListFragment extends BaseFragment implements DevicesListAdap
     }
 
     @Override // DevicesListAdapter.IDevicesListAdapterListener
-    public void onItemSelected(boolean itemSelected) {
-        mListener.onItemSelected(itemSelected);
+    public void onItemSelected(boolean itemSelected,BluetoothDevice device) {
+        mListener.onItemSelected(itemSelected,device);
     }
 
     /**
@@ -205,6 +205,6 @@ public class DevicesListFragment extends BaseFragment implements DevicesListAdap
          * @param selected
          *          true if a device had been selected, false otherwise.
          */
-        void onItemSelected(boolean selected);
+        void onItemSelected(boolean selected,BluetoothDevice device);
     }
 }

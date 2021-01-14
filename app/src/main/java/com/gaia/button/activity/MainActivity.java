@@ -284,7 +284,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
                 }
             break;
             case 1111:
-                Log.e("HHHH","111111111111");
                 if(Build.VERSION.SDK_INT >= 23){
                     if(Settings.canDrawOverlays(MainActivity.this)){
                         initPlayLayout(true);
@@ -317,7 +316,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
         }
     }
     public void setPlayContorl(boolean show){
-        layout.setPause(show);
+        if(layout != null) {
+            layout.setPause(show);
+        }
     }
 
     @Override
@@ -344,17 +345,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
     @Override
     protected void onResume() {
         super.onResume();
-//        if(hasAllow){
-//            if (Build.VERSION.SDK_INT >= 23) {
-//                if (!Settings.canDrawOverlays(MainActivity.this)) {
-//                    initPlayLayout(false);
-//                } else {
-//                    initPlayLayout(true);
-//                }
-//            }else{
-//                initPlayLayout(true);
-//            }
-//        }
+        if(hasAllow){
+            if (Build.VERSION.SDK_INT >= 23) {
+                if (!Settings.canDrawOverlays(MainActivity.this)) {
+                    initPlayLayout(false);
+                } else {
+                    initPlayLayout(true);
+                }
+            }else{
+                initPlayLayout(true);
+            }
+        }
 
     }
 }

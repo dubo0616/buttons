@@ -364,6 +364,7 @@ public class UserRequestProxy implements IUserInterface {
         JSONObject mJsonObject = new JSONObject();
         try {
             mJsonObject.put("version",version);
+            mJsonObject.put("type","ANDROID");
         } catch (JSONException e) {
             e.printStackTrace();
         }

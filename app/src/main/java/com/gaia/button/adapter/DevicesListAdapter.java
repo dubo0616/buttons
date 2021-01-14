@@ -67,7 +67,7 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             return new TextViewHolder(view);
         } else {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_devices_item, parent, false);
-            return new DeviceViewHolder(view, this,mDevices.size());
+            return new DeviceViewHolder(view, this,mDevices);
         }
 
     }
@@ -106,7 +106,7 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     @Override // DeviceViewHolder.IDeviceViewHolder
-    public void onClickItem(int position) {
+    public void onClickItem(int position,BluetoothDevice device) {
         if (mSelectedItem == position) {
             mSelectedItem = ITEM_NULL;
         } else {
@@ -115,7 +115,7 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             notifyItemChanged(previousItem);
         }
         notifyItemChanged(position);
-        mListener.onItemSelected(hasSelection());
+        mListener.onItemSelected(hasSelection(),device);
     }
 
     /**
@@ -198,7 +198,7 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
      * fragment or an activity.
      */
     public interface IDevicesListAdapterListener {
-        void onItemSelected(boolean itemSelected);
+        void onItemSelected(boolean itemSelected,BluetoothDevice device);
 
         Context getContext();
     }

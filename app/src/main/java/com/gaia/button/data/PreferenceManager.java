@@ -29,6 +29,7 @@ public class PreferenceManager {
     private static final String SEARCH_HISTORY = "search_history";
     public static final String ACC_AUTO_PLAY = "acc_auto_play";
     public static final String CONNECT_ARRAESS = "connect_ardss";
+    public static final String CONNECT_VOICE = "connect_Voice";
 
     private PreferenceManager(){
         mySharedPreferences = GaiaApplication.getInstance().getSharedPreferences(PreferenceManager.KEY,MODE_PRIVATE);

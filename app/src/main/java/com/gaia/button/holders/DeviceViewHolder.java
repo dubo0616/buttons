@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.gaia.button.R;
 import com.gaia.button.utils.Utils;
 
+import java.util.List;
 import java.util.Locale;
 
 ///**
@@ -50,6 +51,7 @@ public class DeviceViewHolder extends RecyclerView.ViewHolder implements View.On
      */
     private final IDeviceViewHolder mListener;
 
+    List<BluetoothDevice> mDevices;
     /**
      * <p>The constructor which will instantiate the views to use for this holder.</p>
      *
@@ -58,25 +60,25 @@ public class DeviceViewHolder extends RecyclerView.ViewHolder implements View.On
      * @param listener
      *          The instance of the parent to interact with it as a listener.
      */
-    public DeviceViewHolder(View rowView, IDeviceViewHolder listener,int count) {
+    public DeviceViewHolder(View rowView, IDeviceViewHolder listener, List<BluetoothDevice> mDevices) {
         super(rowView);
         textViewDeviceName = (TextView) rowView.findViewById(R.id.tv_device_name);
         image_item_selected = (ImageView) rowView.findViewById(R.id.image_item_selected);
         view_line = (View) rowView.findViewById(R.id.view_line);
         mListener = listener;
-        this.count =count;
+        this.mDevices =mDevices;
         itemView.setOnClickListener(this);
     }
 
     @Override // View.OnClickListener
     public void onClick(View v) {
-        mListener.onClickItem(this.getAdapterPosition());
+        mListener.onClickItem(getAdapterPosition(),mDevices.get(getAdapterPosition()));
     }
 
     public void refreshValues(String name, String address,boolean isSelected,
                               Context context,int position) {
         textViewDeviceName.setText(name);
-        if(position == count){
+        if(position == mDevices.size()){
             view_line.setVisibility(View.GONE);
         }else{
             view_line.setVisibility(View.VISIBLE);
@@ -99,9 +101,9 @@ public class DeviceViewHolder extends RecyclerView.ViewHolder implements View.On
         /**
          * This method is called when the user clicks on the main view of an item.
          *
-         * @param position
+         * @param device
          *              The position of the item in the list.
          */
-        void onClickItem(int position);
+        void onClickItem(int possiton,BluetoothDevice device);
     }
 }
