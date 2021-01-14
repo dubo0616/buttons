@@ -418,7 +418,15 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
     @Override
     public void onDeviceFound(BluetoothDevice device) {
-
+        SharedPreferences sharedPref = mContext.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
+        // get the device Bluetooth address
+        String address = sharedPref.getString(Consts.BLUETOOTH_ADDRESS_KEY, "");
+        if(TextUtils.isEmpty(address)){
+            Intent intent = new Intent(mContext, DeviceDiscoveryActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivityForResult(intent,1000);
+            return;
+        }
         if(device != null && device.getAddress() != null && device.getAddress().startsWith("F4:0E")){
             if(device.getBondState() == BluetoothDevice.BOND_NONE){
                 Intent intent = new Intent(mContext, DeviceDiscoveryActivity.class);
