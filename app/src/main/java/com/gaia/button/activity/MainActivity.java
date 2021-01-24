@@ -25,12 +25,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gaia.button.R;
+import com.gaia.button.data.PreferenceManager;
 import com.gaia.button.fargment.MainContorlFragment;
 import com.gaia.button.fargment.MainDiscoveryFragment;
 import com.gaia.button.fargment.MainProductFragment;
+import com.gaia.button.model.AccountInfo;
+import com.gaia.button.net.user.IUserListener;
+import com.gaia.button.net.user.UserManager;
 import com.gaia.button.view.PlayMoveLayout;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener , PlayMoveLayout.MainContorlListener {
+import static com.gaia.button.utils.ConstantUtil.Net_Tag_User_GetUserInfo;
+import static com.gaia.button.utils.ConstantUtil.Net_Tag_User_WechatLogin;
+
+public class MainActivity extends BaseActivity implements View.OnClickListener , PlayMoveLayout.MainContorlListener, IUserListener {
 
     private static final int STATE_DISCOVERY = 0;
     private static final int STATE_CONTORL = 1;
@@ -62,6 +69,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
         mTab = getIntent().getIntExtra("Tab",0);
         initView();
         registerReceiver();
+        initData();
+
+    }
+    private void initData(){
+        UserManager.getRequestHandler().requestGetUserInfo(this, PreferenceManager.getInstance().getAccountInfo().getToken());
 
     }
 
@@ -356,6 +368,31 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
                 initPlayLayout(true);
             }
         }
+
+    }
+
+    @Override
+    public void onRequestSuccess(int requestTag, Object data) {
+        if(requestTag == Net_Tag_User_GetUserInfo) {
+            if (data != null && data instanceof AccountInfo) {
+                AccountInfo info = (AccountInfo) data;
+                PreferenceManager.getInstance().save(info);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestError(int requestTag, int errorCode, String errorMsg, Object data) {
+
+    }
+
+    @Override
+    public void startProgressDialog(int requestTag) {
+
+    }
+
+    @Override
+    public void endProgressDialog(int requestTag) {
 
     }
 }

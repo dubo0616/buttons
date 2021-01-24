@@ -54,9 +54,6 @@ import com.gaia.button.model.AccountInfo;
 import com.gaia.button.model.UpdateModel;
 import com.gaia.button.models.gatt.GATTServices;
 import com.gaia.button.net.user.IUserListener;
-import com.gaia.button.net.user.UserManager;
-import com.gaia.button.receivers.BREDRDiscoveryReceiver;
-import com.gaia.button.receivers.BluetoothStateReceiver;
 import com.gaia.button.services.BluetoothService;
 import com.gaia.button.services.GAIABREDRService;
 import com.gaia.button.services.GAIAGATTBLEService;
@@ -210,6 +207,9 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                     mPop = new GaiaPop(mContext, new GaiaPop.onItemClickListener() {
                         @Override
                         public void onItemClick(int position,String text) {
+                            if(mService != null && mService.isGaiaReady()){
+                                mGaiaManager.sendPlayModeCommand(position+1);
+                            }
                             mTvContorlName.setText(text);
                             if(mSoundPop == null){
                                 mSoundPop = new GaiaSoundModePop(getActivity());
@@ -223,7 +223,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                                         mSoundPop.disMiss();
                                     }
                                 }
-                            },3000) ;
+                            },5000) ;
                         }
                     });
                 }
@@ -245,15 +245,15 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             @Override
             public void onClick(View v) {
                 if(mService != null && mService.isGaiaReady()){
-                    UserManager.getRequestHandler().requestAirUpdate(MainContorlFragment.this,mService.getDevice().getName(),getVersion());
-                    File file = new File("/storage/emulated/0/Download/WeiXin/ButtonsAirX_BT_FW_V1.2.9_20201214.bin");
-                    if(file.exists()){
-                        GAIA.VENDOR_QUALCOMM = 0x000A;
-                        mService.enableUpgrade(true);
-                        mService.startUpgrade(file);
-                    }
+                    GAIA.VENDOR_QUALCOMM = 0x000A;
+//                    UserManager.getRequestHandler().requestAirUpdate(MainContorlFragment.this,mService.getDevice().getName(),getVersion());
+//                    File file = new File("/storage/emulated/0/Download/WeiXin/ButtonsAirX_BT_FW_V1.2.7_20201022.bin");
+//                    if(file.exists()){
+//                        mService.enableUpgrade(true);
+//                        mService.startUpgrade(file);
+//                    }
 
-//                    startActivity(new Intent(mContext, UpgradeActivity.class));
+                    startActivity(new Intent(mContext, UpgradeActivity.class));
                 }else{
                     displayShortToast("设备未连接");
                 }
@@ -301,7 +301,6 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         mArcSeekBarInner.setOnProgressChangeListener(new ArcSeekBarInner.OnProgressChangeListener() {
             @Override
             public void onProgressChanged(ArcSeekBarInner seekBar, int progress, boolean isUser) {
-                Log.e("UUUUU","111111111111");
                 if(!isClick) {
                     if (mProgress >= progress) {
                         mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,mProgress, 0);
@@ -485,9 +484,8 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             String name = sharedPref.getString(Consts.BLUETOOTH_NAME_KEY, "");
             boolean done = mService.connectToDevice(address);
         }else{
-           if(mService.getConnectionState() == BluetoothService.State.CONNECTED && mService.isGaiaReady()){
-               mGaiaManager.getInformation(MainGaiaManager.Information.BATTERY);
-           }
+            getInformationFromDevice();
+
         }
     }
 
@@ -763,7 +761,6 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         SharedPreferences sharedPref = mContext.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
 
         String name = sharedPref.getString(Consts.BLUETOOTH_NAME_KEY, "");
-        Log.e("NNNN","23333333wwwwww33"+mService.getConnectionState());
         if (mService!= null && mService.getConnectionState() == BluetoothService.State.CONNECTED) {
             if (mTvConectDeviceName != null) {
                 mTvConectDeviceName.setText(name);
@@ -836,6 +833,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
     private void getInformationFromDevice() {
         if (mService != null && mService.getConnectionState() == BluetoothService.State.CONNECTED
                 && mService.isGaiaReady()) {
+            mGaiaManager.getInformation(MainGaiaManager.Information.BATTERY);
             mGaiaManager.getInformation(MainGaiaManager.Information.API_VERSION);
         }
     }

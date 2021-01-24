@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,7 +91,7 @@ public class TopDeviceViewHolder extends RecyclerView.ViewHolder{
                 h.mLL.setVisibility(View.VISIBLE);
                 h.mNodata.setVisibility(View.GONE);
                 h.textViewDeviceName.setText(device.getName());
-                if (device.getName().endsWith("X") || device.getName().endsWith("x")) {
+                if (!TextUtils.isEmpty(device.getName())&&(device.getName().endsWith("X") || device.getName().endsWith("x"))) {
                     h.imageView.setBackgroundResource(R.drawable.icon_airx);
                 }else{
                     h.imageView.setBackgroundResource(R.drawable.icon_air);

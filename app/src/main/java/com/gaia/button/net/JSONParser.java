@@ -432,6 +432,32 @@ public class JSONParser implements JsonParserInterface {
         return res;
     }
 
+    @Override
+    public BaseResult parserGetUserinfo(String responseStr) throws Exception {
+        BaseResult res = new BaseResult();
+        String url = "";
+        try {
+
+            JSONObject obj = new JSONObject(responseStr);
+            parserHeader(obj, res);
+            int errorCode = res.getErrorCode();
+            if (errorCode == DcError.DC_OK) {
+
+                String dataStr = obj.optString(StringConstant.JSON_DATA);
+                if (!TextUtils.isEmpty(dataStr)) {
+                    Gson gson = new Gson();
+                    res = gson.fromJson(dataStr, AccountInfo.class);
+                }
+
+                res.setErrorCode(0);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception(e);
+        }
+        return res;
+    }
+
 
     /**
      * 表头数据解析
@@ -465,10 +491,10 @@ public class JSONParser implements JsonParserInterface {
                 errorcode = jsonObj.optInt(StringConstant.JSON_ERROR_CODE);
                 errormsg = jsonObj.optString(StringConstant.JSON_ERROR_MESSAGE);
                 if (errorcode != DcError.DC_OK) {
-                    if(errorcode == 1100){
+                    if (errorcode == 1100) {
                         GaiaApplication.getInstance().clearActivities();
                         Intent intent = new Intent(GaiaApplication.getInstance().getApplicationContext(), LoginMainActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         GaiaApplication.getInstance().getApplicationContext().startActivity(intent);
                     }
                     JSONObject data = jsonObj

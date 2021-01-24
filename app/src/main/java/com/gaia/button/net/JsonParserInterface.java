@@ -30,6 +30,7 @@ public interface JsonParserInterface {
 	BaseResult parserAutoPlay(String responseStr) throws Exception;
 	BaseResult parserUpdate(String responseStr) throws Exception;
 	BaseResult parserAirUpdate(String responseStr) throws Exception;
+	BaseResult parserGetUserinfo(String responseStr) throws Exception;
 
 
 }

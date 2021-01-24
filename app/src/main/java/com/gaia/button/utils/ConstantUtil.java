@@ -37,6 +37,7 @@ public class ConstantUtil {
 	public static final String SERVER_URL_NAME_GetFirmwareVersion= "getFirmwareVersion";
 
 	public static final String SERVER_URL_NAME_LOGINPW_UPDATE = "updatePassword";
+	public static final String SERVER_URL_NAME_GetUserInfo = "getUserInfo";
 
 	public static final String SERVER_URL_NAME_PAYPWD_RESET = "reset_pay_password";
 
@@ -75,6 +76,7 @@ public class ConstantUtil {
 	public static final int Net_Tag_User_GetVersion= 124;
 	public static final int Net_Tag_User_UpdatePassword= 125;
 	public static final int Net_Tag_User_GetFirmwareVersion= 126;
+	public static final int Net_Tag_User_GetUserInfo= 127;
 
 
 

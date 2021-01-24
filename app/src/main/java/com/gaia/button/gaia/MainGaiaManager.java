@@ -1052,6 +1052,19 @@ public class MainGaiaManager extends AGaiaManager {
         payload[CONTROL_OFFSET] = (byte) control;
         createRequest(createPacket(SET_PLAY_CONTROL, payload));
     }
+    //0:defualt
+    //1:classic
+    //2:jass
+    //3.pop
+    //4.rock
+    public void sendPlayModeCommand(int control) {
+        final int PAYLOAD_LENGTH = 1;
+        final int CONTROL_OFFSET = 0;
+        byte[] payload = new byte[PAYLOAD_LENGTH];
+        payload[CONTROL_OFFSET] = (byte) control;
+        createRequest(createPacket(SET_PLAY_MODE, payload));
+    }
+
     public void getControlCommand(int control) {
         final int PAYLOAD_LENGTH = 1;
         final int CONTROL_OFFSET = 0;
@@ -1089,4 +1102,5 @@ public class MainGaiaManager extends AGaiaManager {
     public static final int SET_AMBIENT_CONTROL = 0x02B2;
     public static final int SET_PLAY_CONTROL = 0x02BF;
     public static final int SET_PLAY_STATUS = 0x02C3;
+    public static final int SET_PLAY_MODE = 0x02B8;
 }

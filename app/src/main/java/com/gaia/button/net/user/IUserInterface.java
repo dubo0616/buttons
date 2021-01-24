@@ -45,6 +45,7 @@ public interface IUserInterface {
 	void requestSetAutoPlay (IUserListener observer,int auto);
 	void requestUpdate (IUserListener observer,String version);
 	void requestAirUpdate(IUserListener observer,String name,String version);
+	void requestGetUserInfo(IUserListener observer,String token);
 
 
 

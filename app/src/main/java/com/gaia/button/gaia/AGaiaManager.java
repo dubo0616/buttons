@@ -27,7 +27,7 @@ import com.qualcomm.qti.libraries.gaia.packets.GaiaPacketBREDR;
     /**
      * The vendor to use to create packets
      */
-    private final int mVendor = GAIA.VENDOR_QUALCOMM;
+    private  int mVendor = GAIA.VENDOR_QUALCOMM;
 
     /**
      * <p>Constructor of the class.</p>

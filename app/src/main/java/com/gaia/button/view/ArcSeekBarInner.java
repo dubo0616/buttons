@@ -586,7 +586,6 @@ public class ArcSeekBarInner extends View {
      * @param progress 进度值
      */
     public void setProgress(int progress) {
-        Log.e("TTTTT","===="+progress+"=="+Log.getStackTraceString(new Throwable()));
         if (progress > mMaxValue) progress = mMaxValue;
         if (progress < mMinValue) progress = mMinValue;
         mProgressPresent = (progress - mMinValue) * 1.0f / (mMaxValue - mMinValue);
