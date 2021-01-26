@@ -249,7 +249,7 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
         if(requestTag == ConstantUtil.Net_Tag_UserLogin_Sms) {
             if(data instanceof AccountInfo){
                 AccountInfo info = (AccountInfo) data;
-//                PreferenceManager.getInstance().save(info);
+                PreferenceManager.getInstance().save(info);
                 if(info.isSetPassword()) {
                     Intent intent = new Intent(PhoneLoginActivity.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_CLEAR_TASK);
