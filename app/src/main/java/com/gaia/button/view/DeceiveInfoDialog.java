@@ -52,9 +52,9 @@ public class DeceiveInfoDialog extends Dialog {
         initView();
     }
     private void initView(){
-        mTvName = findViewById(R.id.tv_name);
-        mTvArddess = findViewById(R.id.tv_address);
-        mTvVersion = findViewById(R.id.tv_version);
+        mTvName = findViewById(R.id.tv_name_value);
+        mTvArddess = findViewById(R.id.tv_address_value);
+        mTvVersion = findViewById(R.id.tv_version_value);
         findViewById(R.id.img_close).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,8 +69,8 @@ public class DeceiveInfoDialog extends Dialog {
         });
     }
     public void setData(String name,String adress,String version){
-        mTvName.setText("耳机名称："+name);
-        mTvArddess.setText("mac地址："+adress);
-        mTvVersion.setText("系统版本："+version);
+        mTvName.setText(name);
+        mTvArddess.setText(adress);
+        mTvVersion.setText(version);
     }
 }

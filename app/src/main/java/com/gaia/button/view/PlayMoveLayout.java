@@ -84,6 +84,17 @@ public class PlayMoveLayout extends ConstraintLayout {
 
                 if (Math.abs(Math.abs(currentX) - Math.abs(mLayoutParams.x)) > 10 || (Math.abs(Math.abs(currentY) - Math.abs(mLayoutParams.y)) > 10)) {
                     isMove = true;
+                }else{
+                    if(isSmallShow) {
+                        mLayoutParams.width = DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext, 90);
+                        mLayoutParams.height = dpi;
+                        mWindowManager.removeView(view);
+                        mWindowManager.addView(view, mLayoutParams);
+                        iv_paly_pause.setSelected(iv_paly_pause_small.isSelected());
+                        play_contorl_small.setVisibility(View.GONE);
+                        play_contorl.setVisibility(View.VISIBLE);
+                    }
+                    isSmallShow = false;
                 }
                 mTouchStartX = mTouchStartY = 0;
                 break;
@@ -202,6 +213,20 @@ public class PlayMoveLayout extends ConstraintLayout {
 
             }
         });
+//        play_contorl_small.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                isSmallShow = false;
+//                    mLayoutParams.width = DensityUtil.getScreenWidth(mContext)-DensityUtil.dip2px(mContext, 90);
+//                    mLayoutParams.height = dpi;
+//                    mWindowManager.removeView(view);
+//                    mWindowManager.addView(view, mLayoutParams);
+//
+//                iv_paly_pause.setSelected(iv_paly_pause_small.isSelected());
+//                play_contorl_small.setVisibility(View.GONE);
+//                play_contorl.setVisibility(View.VISIBLE);
+//            }
+//        });
         iv_paly_pause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
