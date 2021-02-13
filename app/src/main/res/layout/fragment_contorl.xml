@@ -388,4 +388,8 @@
                 android:layout_height="80dp"/>
         </LinearLayout>
     </com.gaia.button.view.MyScrollView>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/id_device"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
