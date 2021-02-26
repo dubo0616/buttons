@@ -126,6 +126,8 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
     private final BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
         @Override
         public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+                Log.e("HHH","==========="+ scanRecord.length);
+
 
             if (mDevicesAdapter != null && device != null
                     && device.getName() != null && device.getName().length() > 0 && device.getName().contains("BUTTONS")) {
