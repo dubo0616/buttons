@@ -43,9 +43,12 @@ public interface IUserInterface {
 	void requestLoginWeixin (IUserListener observer,String openid,String access_token,String nickname,String avatar);
 	void requestLoginBindPhone (IUserListener observer,String openid,String access_token,String nickname,String avatar,String phone,String code);
 	void requestSetAutoPlay (IUserListener observer,int auto);
+	void requestSetAllowDown (IUserListener observer,int auto);
 	void requestUpdate (IUserListener observer,String version);
 	void requestAirUpdate(IUserListener observer,String name,String version);
 	void requestGetUserInfo(IUserListener observer,String token);
+	void setNameSgin(IUserListener observer,int type,String text);
+
 
 
 

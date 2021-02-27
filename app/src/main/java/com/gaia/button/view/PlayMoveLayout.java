@@ -21,8 +21,9 @@ import com.gaia.button.utils.DensityUtil;
 
 public class PlayMoveLayout extends ConstraintLayout {
     private Context mContext;
-    private ImageView iv_paly_pause, iv_pre, iv_next, iv_small, iv_paly_pause_small;
-    private ConstraintLayout play_contorl, play_contorl_small;
+    private ImageView iv_paly_pause, iv_pre, iv_next, iv_small;
+    private ConstraintLayout play_contorl;
+    private ImageView play_contorl_small;
     private WindowManager mWindowManager;
     private WindowManager.LayoutParams mLayoutParams;
     private MainContorlListener mListener;
@@ -90,7 +91,6 @@ public class PlayMoveLayout extends ConstraintLayout {
                         mLayoutParams.height = dpi;
                         mWindowManager.removeView(view);
                         mWindowManager.addView(view, mLayoutParams);
-                        iv_paly_pause.setSelected(iv_paly_pause_small.isSelected());
                         play_contorl_small.setVisibility(View.GONE);
                         play_contorl.setVisibility(View.VISIBLE);
                     }
@@ -114,11 +114,15 @@ public class PlayMoveLayout extends ConstraintLayout {
         int[] location = new int[2];
         getLocationOnScreen(location);
         //左侧
-//        if (location[0] < screenWidth / 2 - getWidth() / 2) {
-//            updateViewPosition(LEFT);
-//        } else {
+        if(isSmallShow) {
+            if (location[0] < screenWidth / 2 - getWidth() / 2) {
+                updateViewPosition(LEFT);
+            } else {
+                updateViewPosition(RIGHT);
+            }
+        }else{
             updateViewPosition(RIGHT);
-//        }
+        }
     }
 
     /**
@@ -181,52 +185,26 @@ public class PlayMoveLayout extends ConstraintLayout {
     private void initView() {
          view = LayoutInflater.from(mContext).inflate(R.layout.layout_play, this);
         iv_paly_pause = findViewById(R.id.iv_paly_pause);
-        iv_paly_pause_small = findViewById(R.id.iv_paly_pause_small);
         iv_pre = findViewById(R.id.iv_pre);
         iv_next = findViewById(R.id.iv_next);
         iv_small = findViewById(R.id.iv_small);
         play_contorl = findViewById(R.id.play_contorl);
-        play_contorl_small = findViewById(R.id.play_contorl_small);
+        play_contorl_small = findViewById(R.id.iv_paly_pause_small);
         iv_small.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 isSmallShow = true;
                 if(isSmallShow){
-                    mLayoutParams.width = DensityUtil.getScreenWidth(mContext);
-                    mLayoutParams.height = dpi;
+                    mLayoutParams.width = DensityUtil.dip2px(mContext, 46);
+                    mLayoutParams.height = DensityUtil.dip2px(mContext, 46);
                     mWindowManager.removeView(view);
                     mWindowManager.addView(view, mLayoutParams);
                 }
-                iv_paly_pause_small.setSelected(iv_paly_pause.isSelected());
                 play_contorl_small.setVisibility(View.VISIBLE);
                 play_contorl.setVisibility(View.GONE);
+                updateViewPosition(RIGHT);
             }
         });
-        iv_paly_pause_small.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mListener != null) {
-                    if (mListener.sendControlCommand(iv_paly_pause_small.isSelected() ? 3 : 4)) {
-                        iv_paly_pause_small.setSelected(!iv_paly_pause_small.isSelected());
-                    }
-                }
-
-            }
-        });
-//        play_contorl_small.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                isSmallShow = false;
-//                    mLayoutParams.width = DensityUtil.getScreenWidth(mContext)-DensityUtil.dip2px(mContext, 90);
-//                    mLayoutParams.height = dpi;
-//                    mWindowManager.removeView(view);
-//                    mWindowManager.addView(view, mLayoutParams);
-//
-//                iv_paly_pause.setSelected(iv_paly_pause_small.isSelected());
-//                play_contorl_small.setVisibility(View.GONE);
-//                play_contorl.setVisibility(View.VISIBLE);
-//            }
-//        });
         iv_paly_pause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -263,7 +241,6 @@ public class PlayMoveLayout extends ConstraintLayout {
     private void initWindow(View view) {
         mWindowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
         mLayoutParams = new WindowManager.LayoutParams();
-        Log.e("MMM","=========allow"+allow+"mmmm"+Log.getStackTraceString(new Throwable()));
         if(allow) {
             mLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
         }else{

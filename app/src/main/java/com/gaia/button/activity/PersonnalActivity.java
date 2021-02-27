@@ -39,7 +39,7 @@ public class PersonnalActivity extends BaseActivity {
     private List<Fragment> mFragmentList = new ArrayList<>();
     private List<String> mTitleList = new ArrayList();
     private ImageView mBackView;
-    private ImageView mHead;
+    private ImageView mHead,mIvSigin;
     private TextView mTvSigin,mTvName;
     private String mVersion,mName,mMac;
     @Override
@@ -70,6 +70,12 @@ public class PersonnalActivity extends BaseActivity {
                     Glide.with(this).load(Uri.fromFile(new File(filePath))).apply(requestOptions1).into(mHead);
                 }
                 break;
+            case 10000:
+                mTvSigin.setText(PreferenceManager.getInstance().getAccountInfo().getPerson_sign());
+                break;
+            case 10001:
+                mTvName.setText(PreferenceManager.getInstance().getAccountInfo().getPerson_name());
+                break;
         }
     }
     private void initView(){
@@ -83,6 +89,25 @@ public class PersonnalActivity extends BaseActivity {
         });
         mTvName = findViewById(R.id.tv_name);
         mTvSigin = findViewById(R.id.tv_sgin);
+        mIvSigin = findViewById(R.id.iv_sigin_mody);
+        mIvSigin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PersonnalActivity.this,SetNameSginActivity.class);
+                intent.putExtra(SetNameSginActivity.TYPE,0);
+                startActivityForResult(intent,10000);
+            }
+        });
+
+        mTvName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PersonnalActivity.this,SetNameSginActivity.class);
+                intent.putExtra(SetNameSginActivity.TYPE,1);
+                startActivityForResult(intent,10001);
+            }
+        });
+
         mBackView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,6 +127,9 @@ public class PersonnalActivity extends BaseActivity {
             if(!TextUtils.isEmpty(accountInfo.isPerson_sign())){
                 mTvSigin.setText(accountInfo.isPerson_sign());
             }
+            if(!TextUtils.isEmpty(accountInfo.getPerson_name())){
+                mTvName.setText(accountInfo.getPerson_name());
+            }
         }
     }
     private void initData(){
@@ -116,7 +144,9 @@ public class PersonnalActivity extends BaseActivity {
         initView();
 
     }
+
 }
+
 
  class PersonalPagerAdapter extends FragmentPagerAdapter {
     private Context context;

@@ -72,9 +72,9 @@ public class MainProductFragment extends BaseFragment implements ProductAdater.P
             }
         });
         mRecyclerView = (RecyclerView) mRootView.findViewById(R.id.list_msg);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),2));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),1));
         mRecyclerView.setItemAnimator(null);
-        mRecyclerView.addItemDecoration(new GridSpaceItemDecoration(2, 0,0));
+        mRecyclerView.addItemDecoration(new GridSpaceItemDecoration(1, 0,0));
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {

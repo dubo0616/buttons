@@ -360,6 +360,20 @@ public class UserRequestProxy implements IUserInterface {
     }
 
     @Override
+    public void requestSetAllowDown(IUserListener observer, int auto) {
+        JSONObject mJsonObject = new JSONObject();
+        try {
+            mJsonObject.put("autoplay",auto);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mCurrentRequestId = NetManager.getHttpConnect().sendRequest(
+                ConstantUtil.NEW_BAPI_URL+ ConstantUtil.SERVER_URL_NAME_SetAutoDown,
+                ConstantUtil.Net_Tag_User_AUTODown, mJsonObject.toString(), iNetListener);
+        addObserver(observer, mCurrentRequestId);
+    }
+
+    @Override
     public void requestUpdate(IUserListener observer, String version) {
         JSONObject mJsonObject = new JSONObject();
         try {
@@ -398,8 +412,36 @@ public class UserRequestProxy implements IUserInterface {
             e.printStackTrace();
         }
         mCurrentRequestId = NetManager.getHttpConnect().sendRequest(
-                ConstantUtil.NEW_BAPI_URL+ ConstantUtil.SERVER_URL_NAME_GetVersion,
+                ConstantUtil.NEW_BAPI_URL+ ConstantUtil.SERVER_URL_NAME_GetUserInfo,
                 ConstantUtil.Net_Tag_User_GetUserInfo, mJsonObject.toString(), iNetListener);
+        addObserver(observer, mCurrentRequestId);
+    }
+
+    @Override
+    public void setNameSgin(IUserListener observer, int type,String text) {
+        JSONObject mJsonObject = new JSONObject();
+        String function = "";
+        int tag = 0;
+        try {
+            if(type ==0) {
+                mJsonObject.put("person_sign", text);
+                function = ConstantUtil.SERVER_URL_NAME_setPersonSign;
+                tag = ConstantUtil.Net_Tag_User_SetSgin;
+
+            }else{
+                mJsonObject.put("person_name", text);
+                function = ConstantUtil.SERVER_URL_NAME_ssetNickName;
+                tag = ConstantUtil.Net_Tag_User_GSetName;
+
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        mCurrentRequestId = NetManager.getHttpConnect().sendRequest(
+                ConstantUtil.NEW_BAPI_URL+ function,
+                tag, mJsonObject.toString(), iNetListener);
         addObserver(observer, mCurrentRequestId);
     }
 

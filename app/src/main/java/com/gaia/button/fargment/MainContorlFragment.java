@@ -41,11 +41,15 @@ import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.gaia.button.GaiaApplication;
 import com.gaia.button.R;
 import com.gaia.button.activity.DeviceDiscoveryActivity;
 import com.gaia.button.activity.InformationActivity;
 import com.gaia.button.activity.MainActivity;
+import com.gaia.button.activity.PersonnalActivity;
 import com.gaia.button.activity.ServiceActivity;
 import com.gaia.button.activity.UpgradeActivity;
 import com.gaia.button.adapter.DevicesListAdapter;
@@ -115,7 +119,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
     private TextView mNoise;
     private TextView mAmbient;
     private ImageView mImageButtonIcon;
-    private ImageView mImageViewWhiteBg,mImageViewGrayBg;
+    private ImageView mImageViewWhiteBg,mImageViewGrayBg,mPersonal;
     private TextView mTvBatty,mTvScan,mTvConectDeviceName;
     private ImageView mIvSwitch;
 
@@ -174,7 +178,26 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         mTvBatty = mRootView.findViewById(R.id.tv_bttary);
         mTvScan = mRootView.findViewById(R.id.tv_scan);
         mTvConectDeviceName = mRootView.findViewById(R.id.tv_switch);
+        mPersonal = mRootView.findViewById(R.id.iv_persion);
+        mPersonal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), PersonnalActivity.class);
+                if(!TextUtils.isEmpty(getVersion())){
+                    intent.putExtra("version",getVersion());
+                }
+                if(getConnectDevice() != null){
+                    intent.putExtra("name",getConnectDevice().getName());
+                    intent.putExtra("mac",getConnectDevice().getAddress());
+                }
+                startActivityForResult(intent,1000);
+            }
+        });
         mIvSwitch = mRootView.findViewById(R.id.iv_switch);
+        if(PreferenceManager.getInstance().getAccountInfo() != null && !TextUtils.isEmpty(PreferenceManager.getInstance().getAccountInfo().getAvtorURL())){
+            Glide.with(this).load(PreferenceManager.getInstance().getAccountInfo().getAvtorURL()).
+                    apply(RequestOptions.bitmapTransform(new CircleCrop())).into(mPersonal);
+        }
         mIvSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -456,7 +479,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         // get the device Bluetooth address
         String address = sharedPref.getString(Consts.BLUETOOTH_ADDRESS_KEY, "");
         if(TextUtils.isEmpty(address)){
-            initDevice();
+//            initDevice();
             return;
         }
         if(device != null && device.getAddress() != null && device.getAddress().startsWith("F4:0E")){

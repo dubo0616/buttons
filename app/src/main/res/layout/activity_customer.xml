@@ -100,7 +100,7 @@
             android:layout_marginEnd="26dp"
             android:layout_marginStart="37dp"
             android:padding="5dp"
-            android:background="@drawable/icon_email_call"
+            android:background="@drawable/icon_time"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -208,7 +208,7 @@
             android:layout_marginEnd="26dp"
             android:layout_marginStart="37dp"
             android:padding="5dp"
-            android:background="@drawable/icon_email_call"
+            android:background="@drawable/icon_we"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

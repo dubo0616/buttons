@@ -19,9 +19,26 @@
                 android:id="@+id/list_msg"
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:background="#fff"
                 android:scrollbars="vertical" />
+
+            <TextView
+                android:id="@+id/tv_add_device"
+                android:text="添加新设备"
+                android:textSize="20sp"
+                android:textColor="@drawable/phone_login_btn_text_color"
+                android:layout_marginStart="46dp"
+                android:layout_marginEnd="46dp"
+                android:gravity="center"
+                android:enabled="true"
+                android:background="@drawable/phone_login_bg"
+                app:layout_constraintTop_toBottomOf="@+id/layout_new_bottom"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="70dp"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"/>
         </LinearLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     <FrameLayout
@@ -48,4 +65,6 @@
         android:textSize="18sp"
         android:textColor="@android:color/black"
         android:layout_height="wrap_content"/>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

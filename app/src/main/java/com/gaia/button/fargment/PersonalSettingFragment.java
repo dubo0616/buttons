@@ -47,8 +47,8 @@ public class PersonalSettingFragment extends BaseFragment implements PersonalSet
 //    private List<PersonalSettingModel> mList = new ArrayList<>();
 //    private PersonalSettingAdapter mSettingAdapter;
     private TextView mTvLoginout;
-    private ConstraintLayout mCLAbout,mClCustomer,mClAccount,mClUpdate,mClPrivate,mClUser;
-    private ImageView mAutoPlay;
+    private ConstraintLayout mCLAbout,mClCustomer,mClAccount,mClUpdate,mClPrivate,mClUser ,mClDownLoad,mClFeedBack;
+    private ImageView mAutoPlay,mDownLoad;
     public static final int UPDATE_WRITE_EXTERNAL_STORAGE_PERMISSION_CODE = 11001;
     public static final int UPDATE_INSTALL_THIRD_PLATFORM_APK_PERMISSION_CODE = 11002;
 
@@ -135,6 +135,29 @@ public class PersonalSettingFragment extends BaseFragment implements PersonalSet
                 startActivity(intent);
             }
         });
+        mDownLoad = mRootView.findViewById(R.id.iv_download_play);
+        mDownLoad.setSelected(PreferenceManager.getInstance().getAccountInfo().getDownLoad() ==1);
+        mDownLoad.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mDownLoad.isSelected()){
+                    mDownLoad.setSelected(false);
+                }else{
+                    mDownLoad.setSelected(true);
+
+                }
+                UserManager.getRequestHandler().requestSetAllowDown(PersonalSettingFragment.this,mDownLoad.isSelected()?1:2);
+
+            }
+        });
+        mClFeedBack = mRootView.findViewById(R.id.cl_feddback);
+        mClFeedBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
     }
     private void checkAPP(){
         if(isHasPermission()) {
@@ -183,7 +206,14 @@ public class PersonalSettingFragment extends BaseFragment implements PersonalSet
                 PreferenceManager.getInstance().setIntValue(PreferenceManager.ACC_AUTO_PLAY,model.getAutoplay());
             }
             displayShortToast("设置成功");
-        }else if(requestTag == ConstantUtil.Net_Tag_User_GetVersion){
+        }else if(requestTag == ConstantUtil.Net_Tag_User_AUTODown){
+            AutoplayModel model = (AutoplayModel) data;
+            if(model != null){
+                PreferenceManager.getInstance().getAccountInfo().setDownLoad(model.getAutoplay());
+                PreferenceManager.getInstance().setIntValue(PreferenceManager.ACC_AUTO_DOWNLOAD,model.getAutoplay());
+            }
+            displayShortToast("设置成功");
+        } else if(requestTag == ConstantUtil.Net_Tag_User_GetVersion){
             UpdateModel model = (UpdateModel) data;
 //            checkUpdate("http://buttons.oss-cn-zhangjiakou.aliyuncs.com/app-apk/buttons-1608556167852700.apk");
             if(model.getIsUpdate() == 1 && !TextUtils.isEmpty(model.getUrl())){

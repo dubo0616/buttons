@@ -8,7 +8,13 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -25,6 +31,7 @@ import com.gaia.button.model.AccountInfo;
 import com.gaia.button.net.user.IUserListener;
 import com.gaia.button.net.user.UserManager;
 import com.gaia.button.net.user.UserRequestProxy;
+import com.gaia.button.utils.ConstantUtil;
 import com.gaia.button.view.LoginBtn;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
@@ -38,8 +45,8 @@ import static com.gaia.button.utils.ConstantUtil.Net_Tag_User_WechatLogin;
 public class LoginMainActivity extends BaseActivity implements View.OnClickListener,IUserListener {
     private LoginBtn mWechatLoginBtn;
     private LoginBtn mPhoneLoginBtn;
-    private ConstraintLayout mClLayout;
-    private TextView mTvKnow;
+    private ConstraintLayout mClLayout,ClAllow;
+    private TextView mTvKnow,tv_add_allow,tv_add_exit,tv_content;
     private ImageView mIvClose;
     /**
      * 微信授权结果的广播
@@ -54,6 +61,10 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
     }
     private void initView(){
         mClLayout = findViewById(R.id.cl_per);
+        tv_add_allow = findViewById(R.id.tv_add_allow);
+        tv_content = findViewById(R.id.tv_content);
+        tv_add_exit = findViewById(R.id.tv_add_exit);
+        ClAllow = findViewById(R.id.cl_allow);
         mTvKnow = findViewById(R.id.tv_know);
         mIvClose = findViewById(R.id.iv_close);
         mWechatLoginBtn = findViewById(R.id.btn_login_wechat);
@@ -71,11 +82,22 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
             finish();
             return;
         }
+
         if(!PreferenceManager.getInstance().getFristInstall()){
-            mClLayout.setVisibility(View.VISIBLE);
+            ClAllow.setVisibility(View.VISIBLE);
         }else{
             mClLayout.setVisibility(View.GONE);
+            ClAllow.setVisibility(View.GONE);
         }
+        init(tv_content);
+        tv_add_allow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ClAllow.setVisibility(View.GONE);
+                mClLayout.setVisibility(View.VISIBLE);
+
+            }
+        });
         mTvKnow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,12 +106,68 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
                 mClLayout.setVisibility(View.GONE);
             }
         });
+        tv_add_exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         mIvClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+    }
+    private void init(TextView textView){
+        ForegroundColorSpan defaultTextColorSpan = new ForegroundColorSpan(Color.parseColor("#1E1E1E")); // 默认文本颜色
+        final String termsOfUse = getResources().getString(R.string.login_server_one);
+        final String privacyPolicy =getResources().getString(R.string.login_server_two);
+        String tips = getResources().getString(R.string.start_app);
+        SpannableString spannableStr = new SpannableString(tips);
+        spannableStr.setSpan(defaultTextColorSpan, 0, tips.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        int indexOfTermsOfUse = tips.indexOf(termsOfUse);
+        if (indexOfTermsOfUse >= 0) {
+            spannableStr.setSpan(new ClickableSpan() {
+                @Override
+                public void updateDrawState(TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setColor(Color.parseColor("#FA4421"));
+                    ds.setUnderlineText(false);
+                }
+                @Override
+                public void onClick(View widget) {
+                    Intent intent = new Intent(LoginMainActivity.this, WebViewActivity.class);
+                    intent.putExtra(WebViewActivity.URL_KEY, ConstantUtil.USER_URL);
+                    intent.putExtra(WebViewActivity.TITLE_KEY,termsOfUse);
+                    startActivity(intent);
+                }
+            }, indexOfTermsOfUse-1, indexOfTermsOfUse + termsOfUse.length()+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        int indexOfPrivacyPolicy = tips.indexOf(privacyPolicy);
+        if (indexOfPrivacyPolicy >= 0) {
+            spannableStr.setSpan(new ClickableSpan() {
+                @Override
+                public void updateDrawState(TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setColor(Color.parseColor("#FA4421"));
+                    ds.setUnderlineText(false);
+                }
+
+                @Override
+                public void onClick(View widget) {
+                    Intent intent = new Intent(LoginMainActivity.this, WebViewActivity.class);
+                    intent.putExtra(WebViewActivity.URL_KEY,ConstantUtil.PRIVATE_URL);
+                    intent.putExtra(WebViewActivity.TITLE_KEY,privacyPolicy);
+                    startActivity(intent);
+                }
+            }, indexOfPrivacyPolicy-1, indexOfPrivacyPolicy + privacyPolicy.length()+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+        textView.setHighlightColor(Color.TRANSPARENT);
+        textView.setText(spannableStr);
     }
     private void registerReceiver() {
         if (mReceiverWeixinLogin == null) {

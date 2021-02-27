@@ -20,14 +20,15 @@ public class PreferenceManager {
     private static final String ACC_LOGIN_AVTOR_URL = "acc_login_avtor_url";
     private static final String ACC_LOGIN_USER_ID = "acc_login_user_ID";
     private static final String ACC_LOGIN_PASSWORD = "acc_login_password";
-    private static final String ACC_LOGIN_PERSON_SGIN = "acc_login_person_sgin";
-    private static final String ACC_LOGIN_PERSON_NAME = "acc_login_person_name";
+    public static final String ACC_LOGIN_PERSON_SGIN = "acc_login_person_sgin";
+    public static final String ACC_LOGIN_PERSON_NAME = "acc_login_person_name";
 
     private static final String FRIST_INSTALL = "first_install";
     private static final String PLAY_MODE = "paly_mode";
     private static final String PLAY_SOUND_MODE = "paly_sound_mode";
     private static final String SEARCH_HISTORY = "search_history";
     public static final String ACC_AUTO_PLAY = "acc_auto_play";
+    public static final String ACC_AUTO_DOWNLOAD = "acc_auto_downLoad";
     public static final String CONNECT_ARRAESS = "connect_ardss";
     public static final String CONNECT_VOICE = "connect_Voice";
 

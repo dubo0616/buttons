@@ -24,6 +24,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.gaia.button.R;
 import com.gaia.button.data.PreferenceManager;
 import com.gaia.button.fargment.MainContorlFragment;
@@ -39,6 +42,7 @@ import static com.gaia.button.utils.ConstantUtil.Net_Tag_User_WechatLogin;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener , PlayMoveLayout.MainContorlListener, IUserListener {
 
+    public static final String FORM_KEY = "form_key";
     private static final int STATE_DISCOVERY = 0;
     private static final int STATE_CONTORL = 1;
     private static final int STATE_PRODUCT = 2;
@@ -107,6 +111,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
         mSearchLayout = findViewById(R.id.layout_search);
         mEditText = findViewById(R.id.et_search);
         mPersonal = findViewById(R.id.iv_personal);
+        if(PreferenceManager.getInstance().getAccountInfo() != null && !TextUtils.isEmpty(PreferenceManager.getInstance().getAccountInfo().getAvtorURL())){
+            Glide.with(this).load(PreferenceManager.getInstance().getAccountInfo().getAvtorURL()).
+                    apply(RequestOptions.bitmapTransform(new CircleCrop())).into(mPersonal);
+        }
         mPersonal.setOnClickListener(this);
         mEditText.setOnTouchListener(new View.OnTouchListener() {
             @Override

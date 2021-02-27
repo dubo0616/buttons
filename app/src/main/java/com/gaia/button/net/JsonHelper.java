@@ -63,6 +63,10 @@ public final class JsonHelper {
 			case ConstantUtil.Net_Tag_User_AUTOPLAY:
 				res = JsonManager.getJsonParser().parserAutoPlay(resData);
 				break;
+			case ConstantUtil.Net_Tag_User_AUTODown:
+				res = JsonManager.getJsonParser().parserAutoDownLoad(resData);
+				break;
+
 			case ConstantUtil.Net_Tag_User_GetVersion:
 				res = JsonManager.getJsonParser().parserUpdate(resData);
 				break;
@@ -74,6 +78,10 @@ public final class JsonHelper {
 				break;
 			case ConstantUtil.Net_Tag_User_GetUserInfo:
 				res = JsonManager.getJsonParser().parserGetUserinfo(resData);
+				break;
+			case ConstantUtil.Net_Tag_User_SetSgin:
+			case ConstantUtil.Net_Tag_User_GSetName:
+				res = JsonManager.getJsonParser().parserSetPwd(resData);
 				break;
 
 			default:

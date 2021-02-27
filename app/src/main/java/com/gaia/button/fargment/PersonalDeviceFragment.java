@@ -27,6 +27,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.gaia.button.R;
+import com.gaia.button.activity.MainActivity;
 import com.gaia.button.activity.WebViewActivity;
 import com.gaia.button.adapter.DevicesListAdapter;
 import com.gaia.button.model.DeviceList;
@@ -55,7 +56,7 @@ public class PersonalDeviceFragment extends BaseFragment implements DevicesListA
     private List<BluetoothDevice> mList = new ArrayList<>();
     private PersonalDeviceAdapter mDeviceAdapter;
     private boolean mRefreshFlag = false;
-    private TextView mTvNodata;
+    private TextView mTvNodata,mTvAddDevice;
     private String mVersion,mName,mMac;
 
     @Nullable
@@ -98,6 +99,20 @@ public class PersonalDeviceFragment extends BaseFragment implements DevicesListA
             }
         });
         mRecyclerView = (RecyclerView) mRootView.findViewById(R.id.list_msg);
+        mTvAddDevice = mRootView.findViewById(R.id.tv_add_device);
+        mTvAddDevice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(getActivity() != null) {
+                    Intent intent = new Intent(getActivity(),MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.putExtra("Tab", 1);
+                    intent.putExtra(MainActivity.FORM_KEY,1);
+                    startActivity(intent);
+                    getActivity().finish();
+                }
+            }
+        });
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setItemAnimator(null);
         mDeviceAdapter = new PersonalDeviceAdapter(mList);

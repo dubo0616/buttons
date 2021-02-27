@@ -17,6 +17,16 @@ public class AccountInfo extends BaseResult implements Serializable {
     private boolean setPassword;
     private String person_sign;
 
+    public String getPerson_name() {
+        return nickname;
+    }
+
+    public void setPerson_name(String person_name) {
+        this.nickname = person_name;
+    }
+
+    private String nickname;
+
     public String getPerson_sign() {
         return person_sign;
     }
@@ -30,6 +40,16 @@ public class AccountInfo extends BaseResult implements Serializable {
     }
 
     private int  autoplay;
+
+    public int getDownLoad() {
+        return downLoad;
+    }
+
+    public void setDownLoad(int downLoad) {
+        this.downLoad = downLoad;
+    }
+
+    private int  downLoad;
 
     public String getToken() {
         return token;
@@ -94,6 +114,7 @@ public class AccountInfo extends BaseResult implements Serializable {
             String userID = jdata.optString("userID");
             boolean setPassword = jdata.optBoolean("setPassword");
             String person_sign = jdata.optString("person_sign");
+            String person_name = jdata.optString("nickname");
             int autoplay = jdata.optInt("autoplay");
             ainfo.setToken(token);
             ainfo.setMobile(mobile);
@@ -102,6 +123,7 @@ public class AccountInfo extends BaseResult implements Serializable {
             ainfo.setPerson_sign(person_sign);
             ainfo.setUserID(userID);
             ainfo.setAutoplay(autoplay);
+            ainfo.setPerson_name(person_name);
         } catch (JSONException e) {
             e.printStackTrace();
         }

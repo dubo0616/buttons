@@ -112,7 +112,7 @@ public class BaseActivity extends AppCompatActivity {
         return true;
     }
 
-    private void requestPermissions(final String[] permissions, boolean needsMessage) {
+    protected void requestPermissions(final String[] permissions, boolean needsMessage) {
         // the permissions management has only to be performed for Android 6 (API 23) and above
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (needsMessage) {

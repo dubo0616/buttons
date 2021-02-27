@@ -411,7 +411,6 @@ public class ArcSeekBarOutter extends View {
         if (progress > mMaxValue) progress = mMaxValue;
         if (progress < mMinValue) progress = mMinValue;
         mSweepAngle = (270 / mMaxValue) * (progress);
-        Log.e("TTTT","mSweepAngle============="+mSweepAngle);
         if(mSeekPathNew != null ) {
             mSeekPathNew.reset();
             if(content != null) {
