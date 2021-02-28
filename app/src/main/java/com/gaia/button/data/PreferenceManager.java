@@ -135,7 +135,7 @@ public class PreferenceManager {
             setBlooeanValue(ACC_LOGIN_PASSWORD,info.isSetPassword());
             setIntValue(ACC_AUTO_PLAY,info.getAutoplay());
             setIntValue(ACC_LOGIN_MOBILE_NETWORK,info.getMobile_network());
-            setStringValue(ACC_LOGIN_OPENID,info.getOpenid());
+            setStringValue(ACC_LOGIN_OPENID,info.getOpenid() );
             mAccountInfo = info;
         }
     }
