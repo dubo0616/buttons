@@ -1017,7 +1017,7 @@ public class MainGaiaManager extends AGaiaManager {
 //        createRequest(createPacket(GAIA.COMMAND_FIND_MY_REMOTE, payload));
 ////        int aa = 0x02B0;
 ////        byte[] payload = activate ? PAYLOAD_BOOLEAN_TRUE : PAYLOAD_BOOLEAN_FALSE;
-        GaiaPacket packet = createPacket(0x02BD);
+        GaiaPacket packet = createPacket(GET_ANC_CONTROL);
         createRequest(packet);
     }
 
@@ -1065,6 +1065,13 @@ public class MainGaiaManager extends AGaiaManager {
         createRequest(createPacket(SET_PLAY_MODE, payload));
     }
 
+    public void getPlayModeCommand(int control) {
+        final int PAYLOAD_LENGTH = 1;
+        final int CONTROL_OFFSET = 0;
+        byte[] payload = new byte[PAYLOAD_LENGTH];
+        payload[CONTROL_OFFSET] = (byte) control;
+        createRequest(createPacket(GET_PLAY_MODE, payload));
+    }
     public void getControlCommand(int control) {
         final int PAYLOAD_LENGTH = 1;
         final int CONTROL_OFFSET = 0;
@@ -1077,7 +1084,8 @@ public class MainGaiaManager extends AGaiaManager {
      * 设备重置
      */
     public void setDeviceReset(){
-        createRequest(createPacket(SET_DEVICE_RESET, null));
+        byte[] payload = new byte[0];
+        createRequest(createPacket(SET_DEVICE_RESET, payload));
     }
 
 
@@ -1106,9 +1114,12 @@ public class MainGaiaManager extends AGaiaManager {
         super.showDebugLogs(show);
     }
     public static final int SET_ANC_CONTROL = 0x02B0;
+    public static final int GET_ANC_CONTROL = 0x02B1;
     public static final int SET_AMBIENT_CONTROL = 0x02B2;
+    public static final int GET_AMBIENT_CONTROL = 0x02B3;
     public static final int SET_PLAY_CONTROL = 0x02BF;
     public static final int SET_PLAY_STATUS = 0x02C3;
     public static final int SET_PLAY_MODE = 0x02B8;
+    public static final int GET_PLAY_MODE = 0x02B9;
     public static final int SET_DEVICE_RESET = 0x02BE;
 }

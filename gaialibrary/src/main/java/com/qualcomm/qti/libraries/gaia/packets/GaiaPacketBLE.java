@@ -93,7 +93,12 @@ public class GaiaPacketBLE extends GaiaPacket {
      *            the command ID of the packet.
      */
     public GaiaPacketBLE(int vendorId, int commandId) {
-        this.mVendorId = vendorId;
+        if ((commandId == COMMAND_VM_UPGRADE_CONNECT) || (commandId == COMMAND_VM_UPGRADE_DISCONNECT || (commandId == COMMAND_VM_UPGRADE_CONTROL) ||
+                commandId == COMMAND_VM_UPGRADE_DATA)) {
+            this.mVendorId = 0x000A;
+        } else {
+            this.mVendorId = vendorId;
+        }
         this.mCommandId = commandId;
         this.mPayload = new byte[0];
         this.mBytes = null;

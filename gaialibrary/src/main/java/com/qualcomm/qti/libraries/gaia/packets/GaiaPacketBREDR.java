@@ -167,7 +167,12 @@ public class GaiaPacketBREDR extends GaiaPacket {
      *              A boolean to know if a flag should be applied to this packet.
      */
     public GaiaPacketBREDR(int vendorId, int commandId, boolean hasChecksum) {
-        this.mVendorId = vendorId;
+        if ((commandId == COMMAND_VM_UPGRADE_CONNECT) || (commandId == COMMAND_VM_UPGRADE_DISCONNECT || (commandId == COMMAND_VM_UPGRADE_CONTROL) ||
+                commandId == COMMAND_VM_UPGRADE_DATA)) {
+            this.mVendorId = 0x000A;
+        } else {
+            this.mVendorId = vendorId;
+        }
         this.mCommandId = commandId;
         this.mPayload = new byte[0];
         this.mHasChecksum = hasChecksum;
@@ -184,7 +189,12 @@ public class GaiaPacketBREDR extends GaiaPacket {
      *              The packet command ID.
      */
     public GaiaPacketBREDR(int vendorId, int commandId) {
-        this.mVendorId = vendorId;
+        if ((commandId == COMMAND_VM_UPGRADE_CONNECT) || (commandId == COMMAND_VM_UPGRADE_DISCONNECT || (commandId == COMMAND_VM_UPGRADE_CONTROL) ||
+                commandId == COMMAND_VM_UPGRADE_DATA)) {
+            this.mVendorId = 0x000A;
+        } else {
+            this.mVendorId = vendorId;
+        }
         this.mCommandId = commandId;
         this.mPayload = new byte[0];
         this.mHasChecksum = false;
@@ -204,7 +214,12 @@ public class GaiaPacketBREDR extends GaiaPacket {
      *              A boolean to know if a flag should be applied to this packet.
      */
     public GaiaPacketBREDR(int vendorId, int commandId, byte[] payload, boolean hasChecksum) {
-        this.mVendorId = vendorId;
+        if ((commandId == COMMAND_VM_UPGRADE_CONNECT) || (commandId == COMMAND_VM_UPGRADE_DISCONNECT || (commandId == COMMAND_VM_UPGRADE_CONTROL) ||
+                commandId == COMMAND_VM_UPGRADE_DATA)) {
+            this.mVendorId = 0x000A;
+        } else {
+            this.mVendorId = vendorId;
+        }
         this.mCommandId = commandId;
         this.mPayload = payload;
         this.mHasChecksum = hasChecksum;

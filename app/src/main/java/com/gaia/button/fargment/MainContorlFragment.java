@@ -77,6 +77,7 @@ import com.gaia.button.view.UpdateInfoDialog;
 import com.qualcomm.qti.libraries.gaia.GAIA;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.util.Set;
 
@@ -129,14 +130,27 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
     private DevicesListAdapter mDevicesAdapter;
 
+    private  String bytetoString(byte[] bytearray) {
+        String result = "";
+        char temp;
+
+        int length = bytearray.length;
+        for (int i = 0; i < length; i++) {
+            temp = (char) bytearray[i];
+            result += temp;
+        }
+        return result;
+    }
     private final BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
         @Override
         public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-                Log.e("HHH","==========="+ scanRecord.length);
-
 
             if (mDevicesAdapter != null && device != null
                     && device.getName() != null && device.getName().length() > 0 && device.getName().contains("BUTTONS")) {
+
+                for(int i=0;i<scanRecord.length;i++){
+                    Log.e("HHH","==========="+ scanRecord[i]);
+                }
 
                 mDevicesAdapter.add(device, rssi);
             }
@@ -293,6 +307,8 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                         }
                     });
                     infoDialog.show();
+                    infoDialog.setData("设备重置","设备的所有设置将初始化,是否确认","");
+
                 }else{
                     displayShortToast("设备未连接");
                 }
@@ -302,16 +318,21 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             @Override
             public void onClick(View v) {
                 if(isDeviceReady()){
-                    UpdateInfoDialog infoDialog = UpdateInfoDialog.getInstance(getActivity(),null);
+                    UpdateInfoDialog infoDialog = UpdateInfoDialog.getInstance(getActivity(), new UpdateInfoDialog.OnConfirmClickListener() {
+                        @Override
+                        public void onConfirm() {
+                            //                    UserManager.getRequestHandler().requestAirUpdate(MainContorlFragment.this,mService.getDevice().getName(),getVersion());
+//                            File file = new File("/storage/emulated/0/Download/WeiXin/ButtonsAirX_BT_FW_V1.3.1_20210204.bin");
+//                            if(file.exists()){
+//                                mService.enableUpgrade(true);
+//                                mService.startUpgrade(file);
+//                            }
+                            startActivity(new Intent(mContext, UpgradeActivity.class));
+                        }
+                    });
                     infoDialog.show();
-//                    UserManager.getRequestHandler().requestAirUpdate(MainContorlFragment.this,mService.getDevice().getName(),getVersion());
-//                    File file = new File("/storage/emulated/0/Download/WeiXin/ButtonsAirX_BT_FW_V1.2.7_20201022.bin");
-//                    if(file.exists()){
-//                        mService.enableUpgrade(true);
-//                        mService.startUpgrade(file);
-//                    }
 
-                    startActivity(new Intent(mContext, UpgradeActivity.class));
+//                    startActivity(new Intent(mContext, UpgradeActivity.class));
                 }else{
                     displayShortToast("设备未连接");
                 }

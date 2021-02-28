@@ -86,8 +86,14 @@ public class UpdateInfoDialog extends Dialog {
     }
 
     public void setData(String title, String content, String subcontent) {
-        mTvtitle.setText(title);
-        mTvContent.setText(content);
-        mTvSubContent.setText(subcontent);
+        if(mTvtitle != null) {
+            mTvtitle.setText(title);
+        }
+        if(mTvContent != null) {
+            mTvContent.setText(content);
+        }
+        if(mTvSubContent != null) {
+            mTvSubContent.setText(subcontent);
+        }
     }
 }

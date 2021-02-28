@@ -65,17 +65,17 @@
           android:text="取消"
           android:gravity="center"
           android:textColor="@android:color/white"
-          android:textSize="18sp" />
+          android:textSize="14sp" />
         <TextView
             android:layout_marginStart="45dp"
             android:background="@drawable/phone_login_able"
             android:id="@+id/tv_confirm"
             android:layout_width="72dp"
             android:layout_height="33dp"
-            android:text="确定"
+            android:text="确认"
             android:gravity="center"
             android:textColor="@android:color/white"
-            android:textSize="18sp" />
+            android:textSize="14sp" />
   </LinearLayout>
 
     </LinearLayout>
