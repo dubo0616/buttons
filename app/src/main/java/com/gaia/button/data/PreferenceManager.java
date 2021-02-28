@@ -61,6 +61,7 @@ public class PreferenceManager {
         if(mAccountInfo == null){
             mAccountInfo = new AccountInfo();
             mAccountInfo.setUserID(getStringValue(ACC_LOGIN_USER_ID));
+            mAccountInfo.setPerson_name(getStringValue(ACC_LOGIN_PERSON_NAME));
             mAccountInfo.setToken(getStringValue(ACC_LOGIN_INFO_TOKEN));
             mAccountInfo.setMobile(getStringValue(ACC_LOGIN_MOBILE));
             mAccountInfo.setAvtorURL(getStringValue(ACC_LOGIN_AVTOR_URL));
@@ -68,6 +69,7 @@ public class PreferenceManager {
             mAccountInfo.setSetPassword(getBlooeanValue(ACC_LOGIN_PASSWORD));
             mAccountInfo.setAutoplay(getIntValue(ACC_AUTO_PLAY));
             mAccountInfo.setMobile_network(getIntValue(ACC_LOGIN_MOBILE_NETWORK));
+
 
         }
        return  mAccountInfo;
@@ -126,7 +128,7 @@ public class PreferenceManager {
             setStringValue(ACC_LOGIN_AVTOR_URL,info.getAvtorURL());
             setStringValue(ACC_LOGIN_USER_ID,info.getUserID());
             setStringValue(ACC_LOGIN_PERSON_SGIN,info.isPerson_sign());
-            setStringValue(ACC_LOGIN_PERSON_NAME,"");
+            setStringValue(ACC_LOGIN_PERSON_NAME,info.getPerson_name());
             setBlooeanValue(ACC_LOGIN_PASSWORD,info.isSetPassword());
             setIntValue(ACC_AUTO_PLAY,info.getAutoplay());
             setIntValue(ACC_LOGIN_MOBILE_NETWORK,info.getMobile_network());

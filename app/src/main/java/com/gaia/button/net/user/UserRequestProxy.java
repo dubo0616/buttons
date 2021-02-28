@@ -429,7 +429,7 @@ public class UserRequestProxy implements IUserInterface {
                 tag = ConstantUtil.Net_Tag_User_SetSgin;
 
             }else{
-                mJsonObject.put("person_name", text);
+                mJsonObject.put("nickname", text);
                 function = ConstantUtil.SERVER_URL_NAME_ssetNickName;
                 tag = ConstantUtil.Net_Tag_User_GSetName;
 
