@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/ll_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="180dp"
+        android:background="@drawable/admin_dialog_bg"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:textSize="18sp"
+            android:textColor="#1E1E1E"
+            android:id="@+id/tv_title"
+            android:layout_marginTop="30dp"
+            android:layout_width="wrap_content"
+            android:text="固件升级"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal" /><!--card_close com_close-->
+
+            <TextView
+                android:layout_marginTop="20dp"
+                android:id="@+id/tv_content"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:text="发现新的设备固件版本"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#ff171717"
+                android:textSize="14sp" />
+            <TextView
+                android:id="@+id/tv_sub_content"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:text=""
+                android:layout_marginTop="5dp"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#ff171717"
+                android:textSize="14sp" />
+
+  <LinearLayout
+      android:layout_marginTop="30dp"
+      android:orientation="horizontal"
+      android:layout_marginBottom="30dp"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content">
+
+      <TextView
+          android:background="@drawable/phone_login_enable"
+          android:id="@+id/tv_cancle"
+          android:layout_width="72dp"
+          android:layout_height="33dp"
+          android:text="取消"
+          android:gravity="center"
+          android:textColor="@android:color/white"
+          android:textSize="18sp" />
+        <TextView
+            android:layout_marginStart="45dp"
+            android:background="@drawable/phone_login_able"
+            android:id="@+id/tv_confirm"
+            android:layout_width="72dp"
+            android:layout_height="33dp"
+            android:text="确定"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+  </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

@@ -73,6 +73,7 @@ import com.gaia.button.view.ArcSeekBarOutter;
 import com.gaia.button.view.DeceiveInfoDialog;
 import com.gaia.button.view.GaiaPop;
 import com.gaia.button.view.GaiaSoundModePop;
+import com.gaia.button.view.UpdateInfoDialog;
 import com.qualcomm.qti.libraries.gaia.GAIA;
 
 import java.io.File;
@@ -114,6 +115,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
     private ConstraintLayout mDeviceUpdate;
     private ConstraintLayout mDeviceInfo;
     private ConstraintLayout mDeviceContorl;
+    private ConstraintLayout mDeviceReset;
     private TextView mTvContorlName;
     private TextView mStandard;
     private TextView mNoise;
@@ -170,6 +172,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         mDeviceUpdate = mRootView.findViewById(R.id.cl_device_update);
         mDeviceInfo = mRootView.findViewById(R.id.cl_device_info);
         mDeviceContorl = mRootView.findViewById(R.id.cl_contorl_bottom);
+        mDeviceReset = mRootView.findViewById(R.id.cl_device_reset);
         mTvContorlName = mRootView.findViewById(R.id.tv_contorl_name);
         mStandard = mRootView.findViewById(R.id.tv_standard);
         mImageButtonIcon = mRootView.findViewById(R.id.iv_device);
@@ -243,7 +246,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                     mPop = new GaiaPop(mContext, new GaiaPop.onItemClickListener() {
                         @Override
                         public void onItemClick(int position,String text) {
-                            if(mService != null && mService.isGaiaReady()){
+                            if(isDeviceReady()){
                                 mGaiaManager.sendPlayModeCommand(position+1);
                             }
                             mTvContorlName.setText(text);
@@ -269,9 +272,27 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         mDeviceInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mService != null && mService.getConnectionState() == BluetoothService.State.CONNECTED && mService.isGaiaReady()) {
+                if (isDeviceReady()) {
                     showDialog = true;
                    getInformationFromDevice();
+                }else{
+                    displayShortToast("设备未连接");
+                }
+            }
+        });
+        mDeviceReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isDeviceReady()) {
+                    UpdateInfoDialog infoDialog = UpdateInfoDialog.getInstance(getActivity(), new UpdateInfoDialog.OnConfirmClickListener() {
+                        @Override
+                        public void onConfirm() {
+                                if(isDeviceReady()) {
+                                    mGaiaManager.setDeviceReset();
+                                }
+                        }
+                    });
+                    infoDialog.show();
                 }else{
                     displayShortToast("设备未连接");
                 }
@@ -280,8 +301,9 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         mDeviceUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mService != null && mService.isGaiaReady()){
-                    GAIA.VENDOR_QUALCOMM = 0x000A;
+                if(isDeviceReady()){
+                    UpdateInfoDialog infoDialog = UpdateInfoDialog.getInstance(getActivity(),null);
+                    infoDialog.show();
 //                    UserManager.getRequestHandler().requestAirUpdate(MainContorlFragment.this,mService.getDevice().getName(),getVersion());
 //                    File file = new File("/storage/emulated/0/Download/WeiXin/ButtonsAirX_BT_FW_V1.2.7_20201022.bin");
 //                    if(file.exists()){
@@ -302,7 +324,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             @Override
             public void onClick(View v) {
                 isClick = true;
-                if(mService != null && mService.isGaiaReady()) {
+                if(isDeviceReady()) {
                     if (mProgress >= maxVoice) {
                         mProgress = maxVoice;
                     }
@@ -321,7 +343,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             @Override
             public void onClick(View v) {
                 isClick = true;
-                if(mService != null && mService.isGaiaReady()) {
+                if(isDeviceReady()) {
                     if (mProgress <= minVoice) {
                         mProgress = minVoice;
                     }
@@ -373,13 +395,18 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         scanDevice();
 
     }
-
+    private boolean isDeviceReady(){
+        if(mService != null && mService.isGaiaReady()) {
+            return true;
+        }
+        return false;
+    }
     /****
      * 设置耳机模式降噪 环境音等
      * @param type
      */
     private void setPlayMode(String type){
-        if(mService== null || !mService.isGaiaReady()){
+        if(!isDeviceReady()){
 //            displayShortToast("设备未连接");
             return;
         }
@@ -925,8 +952,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
      * levels, the API version, etc.</p>
      */
     private void getInformationFromDevice() {
-        if (mService != null && mService.getConnectionState() == BluetoothService.State.CONNECTED
-                && mService.isGaiaReady()) {
+        if (isDeviceReady()) {
             mGaiaManager.getInformation(MainGaiaManager.Information.BATTERY);
             mGaiaManager.getInformation(MainGaiaManager.Information.API_VERSION);
         }

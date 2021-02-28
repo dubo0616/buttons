@@ -48,6 +48,7 @@ public interface IUserInterface {
 	void requestAirUpdate(IUserListener observer,String name,String version);
 	void requestGetUserInfo(IUserListener observer,String token);
 	void setNameSgin(IUserListener observer,int type,String text);
+	void setNameMobileNetwork(IUserListener observer,int type);
 
 
 

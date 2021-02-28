@@ -222,8 +222,26 @@ public class GaiaPacketBREDR extends GaiaPacket {
      * @param payload
      *              The packet payload.
      */
+    public static final int COMMAND_VM_UPGRADE_CONNECT = 0x0640;
+    /**
+     * <p>Ends a VM Upgrade session over GAIA.</p>
+     */
+    public static final int COMMAND_VM_UPGRADE_DISCONNECT = 0x0641;
+    /**
+     * <p>Tunnels a VM Upgrade Protocol packet.</p>
+     */
+    public static final int COMMAND_VM_UPGRADE_CONTROL = 0x0642;
+    /**
+     * <p>Introduces VM Upgrade Protocol data.</p>
+     */
+    public static final int COMMAND_VM_UPGRADE_DATA = 0x0643;
     public GaiaPacketBREDR(int vendorId, int commandId, byte[] payload) {
-        this.mVendorId = vendorId;
+        if ((commandId == COMMAND_VM_UPGRADE_CONNECT) || (commandId == COMMAND_VM_UPGRADE_DISCONNECT || (commandId == COMMAND_VM_UPGRADE_CONTROL) ||
+                commandId == COMMAND_VM_UPGRADE_DATA)) {
+            this.mVendorId = 0x000A;
+        } else {
+            this.mVendorId = vendorId;
+        }
         this.mCommandId = commandId;
         this.mPayload = payload;
         this.mHasChecksum = false;

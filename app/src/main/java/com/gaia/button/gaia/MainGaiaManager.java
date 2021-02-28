@@ -1073,6 +1073,13 @@ public class MainGaiaManager extends AGaiaManager {
         createRequest(createPacket(SET_PLAY_STATUS, payload));
     }
 
+    /***
+     * 设备重置
+     */
+    public void setDeviceReset(){
+        createRequest(createPacket(SET_DEVICE_RESET, null));
+    }
+
 
     private static final class TransferModes {
         /**
@@ -1103,4 +1110,5 @@ public class MainGaiaManager extends AGaiaManager {
     public static final int SET_PLAY_CONTROL = 0x02BF;
     public static final int SET_PLAY_STATUS = 0x02C3;
     public static final int SET_PLAY_MODE = 0x02B8;
+    public static final int SET_DEVICE_RESET = 0x02BE;
 }

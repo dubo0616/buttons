@@ -363,7 +363,7 @@ public class UserRequestProxy implements IUserInterface {
     public void requestSetAllowDown(IUserListener observer, int auto) {
         JSONObject mJsonObject = new JSONObject();
         try {
-            mJsonObject.put("autoplay",auto);
+            mJsonObject.put("mobile_network",auto);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -443,6 +443,20 @@ public class UserRequestProxy implements IUserInterface {
                 ConstantUtil.NEW_BAPI_URL+ function,
                 tag, mJsonObject.toString(), iNetListener);
         addObserver(observer, mCurrentRequestId);
+    }
+
+    @Override
+    public void setNameMobileNetwork(IUserListener observer, int type) {
+        JSONObject mJsonObject = new JSONObject();
+//        try {
+//            mJsonObject.put("mobile_network",type);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        mCurrentRequestId = NetManager.getHttpConnect().sendRequest(
+//                ConstantUtil.NEW_BAPI_URL+ ConstantUtil.SERVER_URL_NAME_MobileNetwork,
+//                ConstantUtil.Net_Tag_User_setMobileNetwork, mJsonObject.toString(), iNetListener);
+//        addObserver(observer, mCurrentRequestId);
     }
 
 

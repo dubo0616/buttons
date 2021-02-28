@@ -33,11 +33,11 @@ public class ConstantUtil {
 	public static final String SERVER_URL_NAME_WechatLogin = "wechatLogin";
 	public static final String SERVER_URL_NAME_WechatBindphone= "wechatBindPhone";
 	public static final String SERVER_URL_NAME_SetAutoplay= "setAutoplay";
-	public static final String SERVER_URL_NAME_SetAutoDown= "setAutoplay";
+	public static final String SERVER_URL_NAME_SetAutoDown= "setMobileNetwork";
 	public static final String SERVER_URL_NAME_GetVersion= "getVersion";
 	public static final String SERVER_URL_NAME_GetFirmwareVersion= "getFirmwareVersion";
 	public static final String SERVER_URL_NAME_setPersonSign= "setPersonSign";
-	public static final String SERVER_URL_NAME_ssetNickName= "setNickName";
+	public static final String SERVER_URL_NAME_ssetNickName= "setNickname";
 
 	public static final String SERVER_URL_NAME_LOGINPW_UPDATE = "updatePassword";
 	public static final String SERVER_URL_NAME_GetUserInfo = "getUserInfo";

@@ -136,7 +136,7 @@ public class PersonalSettingFragment extends BaseFragment implements PersonalSet
             }
         });
         mDownLoad = mRootView.findViewById(R.id.iv_download_play);
-        mDownLoad.setSelected(PreferenceManager.getInstance().getAccountInfo().getDownLoad() ==1);
+        mDownLoad.setSelected(PreferenceManager.getInstance().getAccountInfo().getMobile_network() ==1);
         mDownLoad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -209,8 +209,8 @@ public class PersonalSettingFragment extends BaseFragment implements PersonalSet
         }else if(requestTag == ConstantUtil.Net_Tag_User_AUTODown){
             AutoplayModel model = (AutoplayModel) data;
             if(model != null){
-                PreferenceManager.getInstance().getAccountInfo().setDownLoad(model.getAutoplay());
-                PreferenceManager.getInstance().setIntValue(PreferenceManager.ACC_AUTO_DOWNLOAD,model.getAutoplay());
+                PreferenceManager.getInstance().getAccountInfo().setMobile_network(model.getMobile_network());
+                PreferenceManager.getInstance().setIntValue(PreferenceManager.ACC_LOGIN_MOBILE_NETWORK,model.getMobile_network());
             }
             displayShortToast("设置成功");
         } else if(requestTag == ConstantUtil.Net_Tag_User_GetVersion){

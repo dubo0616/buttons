@@ -17,6 +17,15 @@ public class AccountInfo extends BaseResult implements Serializable {
     private boolean setPassword;
     private String person_sign;
 
+    public int getMobile_network() {
+        return mobile_network;
+    }
+
+    public void setMobile_network(int mobile_network) {
+        this.mobile_network = mobile_network;
+    }
+
+    private int mobile_network;
     public String getPerson_name() {
         return nickname;
     }
@@ -40,16 +49,6 @@ public class AccountInfo extends BaseResult implements Serializable {
     }
 
     private int  autoplay;
-
-    public int getDownLoad() {
-        return downLoad;
-    }
-
-    public void setDownLoad(int downLoad) {
-        this.downLoad = downLoad;
-    }
-
-    private int  downLoad;
 
     public String getToken() {
         return token;

@@ -2,6 +2,7 @@ package com.gaia.button.net;
 
 import android.content.Intent;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.gaia.button.GaiaApplication;
 import com.gaia.button.activity.LoginMainActivity;
@@ -467,7 +468,7 @@ public class JSONParser implements JsonParserInterface {
             parserHeader(obj, res);
             int errorCode = res.getErrorCode();
             if (errorCode == DcError.DC_OK) {
-
+                Log.e("HHHHH","========="+responseStr);
                 String dataStr = obj.optString(StringConstant.JSON_DATA);
                 if (!TextUtils.isEmpty(dataStr)) {
                     Gson gson = new Gson();
