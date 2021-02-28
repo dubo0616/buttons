@@ -86,7 +86,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/bind_weichat"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="48dp"
+            android:layout_marginEnd="35dp"
+            android:layout_height="22dp"
+            android:text="已绑定"
+            android:visibility="gone"
+            android:textColor="#fffa4421"
+            android:textSize="16sp"
+            />
         <ImageView
+            android:visibility="gone"
+            android:id="@+id/bind__into"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="26dp"

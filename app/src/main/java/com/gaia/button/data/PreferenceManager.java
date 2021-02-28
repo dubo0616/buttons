@@ -23,6 +23,7 @@ public class PreferenceManager {
     public static final String ACC_LOGIN_PERSON_SGIN = "acc_login_person_sgin";
     public static final String ACC_LOGIN_PERSON_NAME = "acc_login_person_name";
     public static final String ACC_LOGIN_MOBILE_NETWORK = "acc_login_mobile_network";
+    public static final String ACC_LOGIN_OPENID = "acc_login_openid";
 
     private static final String FRIST_INSTALL = "first_install";
     private static final String PLAY_MODE = "paly_mode";
@@ -69,6 +70,7 @@ public class PreferenceManager {
             mAccountInfo.setSetPassword(getBlooeanValue(ACC_LOGIN_PASSWORD));
             mAccountInfo.setAutoplay(getIntValue(ACC_AUTO_PLAY));
             mAccountInfo.setMobile_network(getIntValue(ACC_LOGIN_MOBILE_NETWORK));
+            mAccountInfo.setOpenid(getStringValue(ACC_LOGIN_OPENID));
 
 
         }
@@ -85,6 +87,7 @@ public class PreferenceManager {
         setBlooeanValue(ACC_LOGIN_PASSWORD,false);
         setIntValue(ACC_AUTO_PLAY,-1);
         setIntValue(ACC_LOGIN_MOBILE_NETWORK,-1);
+        setStringValue(ACC_LOGIN_OPENID,"");
         mAccountInfo=null;
     }
 
@@ -132,6 +135,7 @@ public class PreferenceManager {
             setBlooeanValue(ACC_LOGIN_PASSWORD,info.isSetPassword());
             setIntValue(ACC_AUTO_PLAY,info.getAutoplay());
             setIntValue(ACC_LOGIN_MOBILE_NETWORK,info.getMobile_network());
+            setStringValue(ACC_LOGIN_OPENID,info.getOpenid());
             mAccountInfo = info;
         }
     }

@@ -17,6 +17,16 @@ public class AccountInfo extends BaseResult implements Serializable {
     private boolean setPassword;
     private String person_sign;
 
+    public String getOpenid() {
+        return openid;
+    }
+
+    public void setOpenid(String openid) {
+        this.openid = openid;
+    }
+
+    private String openid;
+
     public int getMobile_network() {
         return mobile_network;
     }

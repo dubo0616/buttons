@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -46,9 +48,19 @@ public class AccountActivity extends BaseActivity implements IUserListener {
             }
         });
         mClWeixin = findViewById(R.id.cl_account_weixin);
+        final boolean isBind = PreferenceManager.getInstance().getAccountInfo() != null &&
+                !TextUtils.isEmpty(PreferenceManager.getInstance().getAccountInfo().getOpenid());
+        if(isBind){
+            findViewById(R.id.bind_weichat).setVisibility(View.VISIBLE);
+        }else{
+            findViewById(R.id.bind__into).setVisibility(View.VISIBLE);
+        }
         mClWeixin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(isBind){
+                    return;
+                }
                 handleWechatLogin();
             }
         });
