@@ -51,6 +51,11 @@ android {
         abortOnError false
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
 }
 
 dependencies {
@@ -69,6 +74,10 @@ dependencies {
     implementation project(':blelibrary')
     implementation project(':gaialibrary')
     implementation project(':vmupgradelibrary')
+
+    implementation 'com.qiniu:qiniu-android-sdk:7.3.+'
+    implementation 'com.qiniu:qiniu-java-sdk:7.2.+'
+    implementation 'com.aliyun.dpa:oss-android-sdk:+'
 
 
 }

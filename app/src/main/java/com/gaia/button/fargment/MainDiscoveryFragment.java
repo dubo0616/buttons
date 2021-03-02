@@ -1,11 +1,15 @@
 package com.gaia.button.fargment;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,15 +20,32 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
+import com.gaia.button.GaiaApplication;
 import com.gaia.button.R;
 import com.gaia.button.activity.PhoneSetPassActivity;
 import com.gaia.button.activity.WebViewActivity;
 import com.gaia.button.adapter.DiscoveryAdapter;
+import com.gaia.button.data.PreferenceManager;
 import com.gaia.button.model.DiscoverList;
 import com.gaia.button.model.DiscoveryModel;
 import com.gaia.button.net.user.IUserListener;
 import com.gaia.button.net.user.UserManager;
+import com.gaia.button.view.ShareDialog;
+import com.squareup.okhttp.internal.Util;
+import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.opensdk.modelmsg.WXImageObject;
+import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.opensdk.modelmsg.WXTextObject;
+import com.tencent.mm.opensdk.modelmsg.WXWebpageObject;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +61,7 @@ public class MainDiscoveryFragment extends BaseFragment implements DiscoveryAdap
     private List<DiscoveryModel> mList = new ArrayList<>();
     private int mPage =1;
     private TextView mTvNodata;
+    private ShareDialog mShareDialog;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -110,8 +132,48 @@ public class MainDiscoveryFragment extends BaseFragment implements DiscoveryAdap
     }
 
     @Override
-    public void onClickForward(DiscoveryModel model) {
-//        Toast.makeText(getActivity(),"转发",Toast.LENGTH_SHORT).show();
+    public void onClickForward(final DiscoveryModel model) {
+        if(mShareDialog == null){
+            mShareDialog = ShareDialog.getInstance(getActivity(), new ShareDialog.ShareDialogListener() {
+                @Override
+                public void onItemClick(int type) {
+                    share(model,type);
+                }
+            });
+        }
+        mShareDialog.show();
+    }
+    private void share(DiscoveryModel model ,int type){
+        WXWebpageObject webpage = new WXWebpageObject();
+        webpage.webpageUrl =model.getDetailUrl();
+        final WXMediaMessage msg = new WXMediaMessage(webpage);
+        msg.title =model.getTitle();
+        msg.description = model.getTitle();
+        final SendMessageToWX.Req req = new SendMessageToWX.Req();
+        req.transaction = "webpage";
+        req.message = msg;
+        req.scene = type == 0 ? SendMessageToWX.Req.WXSceneSession : SendMessageToWX.Req.WXSceneTimeline;
+//
+//        Glide.with(getActivity()).asBitmap().load(model.getList_img()).into(new SimpleTarget<Bitmap>(64, 64) {
+//            @Override
+//            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+////                ( (ImageView)mRootView.findViewById(R.id.test)).setImageBitmap(resource);
+////                int bytes = resource.getByteCount();
+////                ByteBuffer buf = ByteBuffer.allocate(bytes);
+////                resource.copyPixelsToBuffer(buf);
+////                byte[] byteArray = buf.array();
+////                Log.e("HHHH","111111111111d"+byteArray.length);
+////                msg.thumbData = byteArray;
+//                GaiaApplication.getWeinAPIHandler(getActivity()).sendReq(req);
+//            }
+//
+//            @Override
+//            public void onLoadFailed(@Nullable Drawable errorDrawable) {
+//                super.onLoadFailed(errorDrawable);
+//                GaiaApplication.getWeinAPIHandler(getActivity()).sendReq(req);
+//            }
+//        });
+        GaiaApplication.getWeinAPIHandler(getActivity()).sendReq(req);
     }
 
     @Override

@@ -459,5 +459,27 @@ public class UserRequestProxy implements IUserInterface {
 //        addObserver(observer, mCurrentRequestId);
     }
 
+    @Override
+    public void requestGetUploadToken(IUserListener observer) {
+        mCurrentRequestId = NetManager.getHttpConnect().sendRequest(
+                ConstantUtil.NEW_BAPI_URL+ ConstantUtil.SERVER_URL_NAME_getOSSConfig,
+                ConstantUtil.Net_Tag_User_GETOSS, null, iNetListener);
+        addObserver(observer, mCurrentRequestId);
+    }
+
+    @Override
+    public void requestUploadAvatar(IUserListener observer, String uploadAvatar) {
+        JSONObject mJsonObject = new JSONObject();
+        try {
+            mJsonObject.put("avatar",uploadAvatar);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mCurrentRequestId = NetManager.getHttpConnect().sendRequest(
+                ConstantUtil.NEW_BAPI_URL+ ConstantUtil.SERVER_URL_NAME_UploadAvatar,
+                ConstantUtil.Net_Tag_User_UploadAvatar, mJsonObject.toString(), iNetListener);
+        addObserver(observer, mCurrentRequestId);
+    }
+
 
 }

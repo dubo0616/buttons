@@ -32,6 +32,7 @@ public interface JsonParserInterface {
 	BaseResult parserUpdate(String responseStr) throws Exception;
 	BaseResult parserAirUpdate(String responseStr) throws Exception;
 	BaseResult parserGetUserinfo(String responseStr) throws Exception;
+	BaseResult parserGetOSS(String responseStr) throws Exception;
 
 
 }

@@ -11,6 +11,7 @@ import com.gaia.button.model.AutoplayModel;
 import com.gaia.button.model.DeviceList;
 import com.gaia.button.model.DiscoverList;
 import com.gaia.button.model.DiscoveryModel;
+import com.gaia.button.model.GetUploadTokenAliModel;
 import com.gaia.button.model.ProductModelList;
 import com.gaia.button.model.UpdateModel;
 import com.gaia.button.utils.ConstantUtil;
@@ -475,6 +476,29 @@ public class JSONParser implements JsonParserInterface {
                     res = gson.fromJson(dataStr, AccountInfo.class);
                 }
 
+                res.setErrorCode(0);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception(e);
+        }
+        return res;
+    }
+
+    @Override
+    public BaseResult parserGetOSS(String responseStr) throws Exception {
+        GetUploadTokenAliModel res = new GetUploadTokenAliModel();
+        try {
+            JSONObject obj = new JSONObject(responseStr);
+            parserHeader(obj, res);
+            int errorCode = res.getErrorCode();
+            if (errorCode == DcError.DC_OK) {
+                String dataStr = obj.optString(StringConstant.JSON_DATA);
+                if (!TextUtils.isEmpty(dataStr)) {
+                    Gson gson = new Gson();
+                    res = gson.fromJson(dataStr, GetUploadTokenAliModel.class);
+                }
+                Log.e("MMMMM","========="+res.toString());
                 res.setErrorCode(0);
             }
         } catch (Exception e) {

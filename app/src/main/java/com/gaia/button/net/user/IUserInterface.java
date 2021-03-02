@@ -49,6 +49,8 @@ public interface IUserInterface {
 	void requestGetUserInfo(IUserListener observer,String token);
 	void setNameSgin(IUserListener observer,int type,String text);
 	void setNameMobileNetwork(IUserListener observer,int type);
+	void requestGetUploadToken(IUserListener observer);
+	void requestUploadAvatar(IUserListener observer,String uploadAvatar);
 
 
 

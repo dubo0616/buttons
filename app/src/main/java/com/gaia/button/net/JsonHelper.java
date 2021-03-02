@@ -83,6 +83,13 @@ public final class JsonHelper {
 			case ConstantUtil.Net_Tag_User_GSetName:
 				res = JsonManager.getJsonParser().parserSetPwd(resData);
 				break;
+			case ConstantUtil.Net_Tag_User_GETOSS:
+				res = JsonManager.getJsonParser().parserGetOSS(resData);
+				break;
+			case ConstantUtil.Net_Tag_User_UploadAvatar:
+				res = JsonManager.getJsonParser().parserLoginout(resData);
+				break;
+
 
 			default:
 				break;

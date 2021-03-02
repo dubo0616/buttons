@@ -24,6 +24,7 @@
                 android:scrollbars="vertical" />
 
             <TextView
+                android:layout_gravity="bottom"
                 android:id="@+id/tv_add_device"
                 android:text="添加新设备"
                 android:textSize="20sp"

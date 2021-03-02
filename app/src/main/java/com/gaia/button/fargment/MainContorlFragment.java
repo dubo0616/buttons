@@ -130,27 +130,11 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
     private DevicesListAdapter mDevicesAdapter;
 
-    private  String bytetoString(byte[] bytearray) {
-        String result = "";
-        char temp;
-
-        int length = bytearray.length;
-        for (int i = 0; i < length; i++) {
-            temp = (char) bytearray[i];
-            result += temp;
-        }
-        return result;
-    }
     private final BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
         @Override
         public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-
             if (mDevicesAdapter != null && device != null
                     && device.getName() != null && device.getName().length() > 0 && device.getName().contains("BUTTONS")) {
-
-                for(int i=0;i<scanRecord.length;i++){
-                    Log.e("HHH","==========="+ scanRecord[i]);
-                }
 
                 mDevicesAdapter.add(device, rssi);
             }
@@ -213,7 +197,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         mIvSwitch = mRootView.findViewById(R.id.iv_switch);
         if(PreferenceManager.getInstance().getAccountInfo() != null && !TextUtils.isEmpty(PreferenceManager.getInstance().getAccountInfo().getAvtorURL())){
             Glide.with(this).load(PreferenceManager.getInstance().getAccountInfo().getAvtorURL()).
-                    apply(RequestOptions.bitmapTransform(new CircleCrop())).into(mPersonal);
+                    apply(RequestOptions.bitmapTransform(new CircleCrop()).error(R.drawable.icon_personal)).into(mPersonal);
         }
         mIvSwitch.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -116,8 +116,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:src="@drawable/icon_personal"
-            android:layout_width="20dp"
-            android:layout_height="23dp"/>
+            android:layout_width="23dp"
+            android:layout_height="26dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

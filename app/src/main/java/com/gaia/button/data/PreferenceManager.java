@@ -17,7 +17,7 @@ public class PreferenceManager {
     private static final String ACC_LOGIN_TYPE = "acc_login_type";
     private static final String ACC_LOGIN_MOBILE = "acc_login_mobile";
     private static final String ACC_LOGIN_INFO_TOKEN = "acc_login_info_token";
-    private static final String ACC_LOGIN_AVTOR_URL = "acc_login_avtor_url";
+    public static final String ACC_LOGIN_AVTOR_URL = "acc_login_avtor_url";
     private static final String ACC_LOGIN_USER_ID = "acc_login_user_ID";
     private static final String ACC_LOGIN_PASSWORD = "acc_login_password";
     public static final String ACC_LOGIN_PERSON_SGIN = "acc_login_person_sgin";

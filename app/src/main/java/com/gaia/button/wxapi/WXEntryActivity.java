@@ -55,24 +55,30 @@ public class WXEntryActivity extends AppCompatActivity implements IWXAPIEventHan
     @Override
     public void onResp(BaseResp baseResp) {
         String result = "";
+        Log.e("NNNNN","==============="+baseResp.errCode);
         switch (baseResp.errCode) {
             case BaseResp.ErrCode.ERR_OK:
-                String code = ((SendAuth.Resp) baseResp).code;
-                requestOtherInfo(code);
+                if(baseResp instanceof SendAuth.Resp ) {
+                    String code = ((SendAuth.Resp) baseResp).code;
+                    requestOtherInfo(code);
+                }else{
+//                    Toast.makeText(this, "分享成功", Toast.LENGTH_LONG).show();
+                    finish();
+                }
                 break;
             case BaseResp.ErrCode.ERR_USER_CANCEL:
                 result = "登录取消";
-                Toast.makeText(this, result, Toast.LENGTH_LONG).show();
+//                Toast.makeText(this, result, Toast.LENGTH_LONG).show();
                 finish();
                 break;
             case BaseResp.ErrCode.ERR_AUTH_DENIED:
                 result = "拒绝授权";
-                Toast.makeText(this, result, Toast.LENGTH_LONG).show();
+//                Toast.makeText(this, result, Toast.LENGTH_LONG).show();
                 finish();
                 break;
             default:
                 result = "登录失败";
-                Toast.makeText(this, result, Toast.LENGTH_LONG).show();
+//                Toast.makeText(this, result, Toast.LENGTH_LONG).show();
 
                 finish();
                 break;
