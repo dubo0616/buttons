@@ -123,7 +123,7 @@ public class ImageUploaderManagerAliyun implements IUserListener {
                 if (!TextUtils.isEmpty(putObjectRequest.getObjectKey())) {
                     String url = "";
                     try {
-                        url = ossClientMy.presignConstrainedObjectURL(BUCKET_NAME, putObjectRequest.getObjectKey(), 3600l* 1000*24*365 *10);
+                        url = ossClientMy.presignConstrainedObjectURL(BUCKET_NAME, putObjectRequest.getObjectKey(), 30*60);
                         if(mCallback != null) {
                             mCallback.uploadSuccess(url);
                         }

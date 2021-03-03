@@ -130,18 +130,6 @@ public class PersonnalActivity extends BaseActivity implements IUploadCallback<S
         PersonalPagerAdapter fragmentAdater = new  PersonalPagerAdapter(getSupportFragmentManager(),this,mFragmentList,mTitleList);
         viewPager.setAdapter(fragmentAdater);
         tab_layout.setupWithViewPager(viewPager);
-        AccountInfo accountInfo = PreferenceManager.getInstance().getAccountInfo();
-        if(accountInfo != null){
-            if(!TextUtils.isEmpty(accountInfo.getAvtorURL())){
-                Glide.with(this).load(accountInfo.getAvtorURL()).apply(RequestOptions.bitmapTransform(new CircleCrop()).error(R.drawable.icon_head)).into(mHead);
-            }
-            if(!TextUtils.isEmpty(accountInfo.isPerson_sign())){
-                mTvSigin.setText(accountInfo.isPerson_sign());
-            }
-            if(!TextUtils.isEmpty(accountInfo.getPerson_name())){
-                mTvName.setText(accountInfo.getPerson_name());
-            }
-        }
     }
     private void initData(){
         PersonalDeviceFragment fragment = new PersonalDeviceFragment();
@@ -154,6 +142,23 @@ public class PersonnalActivity extends BaseActivity implements IUploadCallback<S
         mTitleList.add(getString(R.string.personal_setting));
         initView();
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AccountInfo accountInfo = PreferenceManager.getInstance().getAccountInfo();
+        if(accountInfo != null){
+            if(!TextUtils.isEmpty(accountInfo.getAvtorURL())){
+                Glide.with(this).load(accountInfo.getAvtorURL()).apply(RequestOptions.bitmapTransform(new CircleCrop()).error(R.drawable.icon_head)).into(mHead);
+            }
+            if(!TextUtils.isEmpty(accountInfo.isPerson_sign())){
+                mTvSigin.setText(accountInfo.isPerson_sign());
+            }
+            if(!TextUtils.isEmpty(accountInfo.getPerson_name())){
+                mTvName.setText(accountInfo.getPerson_name());
+            }
+        }
     }
 
     @Override

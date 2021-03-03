@@ -376,7 +376,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
                 initPlayLayout(true);
             }
         }
-
+        if(PreferenceManager.getInstance().getAccountInfo() != null && !TextUtils.isEmpty(PreferenceManager.getInstance().getAccountInfo().getAvtorURL())){
+            Glide.with(this).load(PreferenceManager.getInstance().getAccountInfo().getAvtorURL()).
+                    apply(RequestOptions.bitmapTransform(new CircleCrop()).error(R.drawable.icon_personal)).into(mPersonal);
+        }
     }
 
     @Override
