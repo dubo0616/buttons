@@ -16,6 +16,7 @@ import com.alibaba.sdk.android.oss.common.OSSLog;
 import com.alibaba.sdk.android.oss.common.auth.OSSCredentialProvider;
 import com.alibaba.sdk.android.oss.common.auth.OSSStsTokenCredentialProvider;
 import com.alibaba.sdk.android.oss.internal.OSSAsyncTask;
+import com.alibaba.sdk.android.oss.model.ObjectMetadata;
 import com.alibaba.sdk.android.oss.model.PutObjectRequest;
 import com.alibaba.sdk.android.oss.model.PutObjectResult;
 import com.gaia.button.GaiaApplication;
@@ -86,10 +87,11 @@ public class ImageUploaderManagerAliyun implements IUserListener {
      * 图片处理回调
      */
     private IUploadCallback mCallback;
+
     /**
      * 第一步：获取图片上传凭证
      */
-    public void startGetUploadToken(String url,IUploadCallback callback) {
+    public void startGetUploadToken(String url, IUploadCallback callback) {
         if (isGettingToken) {
             return;
         }
@@ -110,7 +112,11 @@ public class ImageUploaderManagerAliyun implements IUserListener {
         if (TextUtils.isEmpty(url)) {
             return;
         }
-        PutObjectRequest putObjectRequest = new PutObjectRequest(BUCKET_NAME, "headimg", url);
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType("application/octet-stream"); // 设置content-type。
+        metadata.addUserMetadata("x-oss-object-acl"," public-read");
+        PutObjectRequest putObjectRequest = new PutObjectRequest(BUCKET_NAME, "userhead/headimg"+System.currentTimeMillis(), url);
+        putObjectRequest.setMetadata(metadata);
         putObjectRequest.setProgressCallback(new OSSProgressCallback<PutObjectRequest>() {
             @Override
             public void onProgress(PutObjectRequest request, long currentSize, long totalSize) {
@@ -121,21 +127,12 @@ public class ImageUploaderManagerAliyun implements IUserListener {
             @Override
             public void onSuccess(PutObjectRequest putObjectRequest, PutObjectResult result) {
                 if (!TextUtils.isEmpty(putObjectRequest.getObjectKey())) {
-                    String url = "";
-                    try {
-                        url = ossClientMy.presignConstrainedObjectURL(BUCKET_NAME, putObjectRequest.getObjectKey(), 30*60);
-                        if(mCallback != null) {
-                            mCallback.uploadSuccess(url);
-                        }
-                    } catch (ClientException e) {
-                        e.printStackTrace();
-                        if(mCallback != null) {
-                            mCallback.uploadSuccess(url);
-                        }
+                    String url = ossClientMy.presignPublicObjectURL(BUCKET_NAME, putObjectRequest.getObjectKey());
+                    if (mCallback != null) {
+                        mCallback.uploadSuccess(url);
                     }
-
-                }else{
-                    if(mCallback != null) {
+                } else {
+                    if (mCallback != null) {
                         mCallback.uploadSuccess("");
                     }
                 }
@@ -143,7 +140,7 @@ public class ImageUploaderManagerAliyun implements IUserListener {
 
             @Override
             public void onFailure(PutObjectRequest putObjectRequest, ClientException clientException, ServiceException serviceException) {
-                if(mCallback != null) {
+                if (mCallback != null) {
                     mCallback.uploadSuccess("");
                 }
                 if (clientException != null) {
