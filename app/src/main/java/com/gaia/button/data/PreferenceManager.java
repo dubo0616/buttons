@@ -126,7 +126,10 @@ public class PreferenceManager {
     }
     public  void save(AccountInfo info) {
         Log.e("MMM","=============="+info.toString());
-        if(info != null && !TextUtils.isEmpty(info.getToken())){
+        if(info != null){
+            if(TextUtils.isEmpty(info.getToken())){
+                info.setToken(getStringValue(ACC_LOGIN_INFO_TOKEN));
+            }
             setStringValue(ACC_LOGIN_TYPE,"");
             setStringValue(ACC_LOGIN_MOBILE,info.getMobile());
             setStringValue(ACC_LOGIN_INFO_TOKEN,info.getToken());
