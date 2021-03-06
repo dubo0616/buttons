@@ -192,6 +192,9 @@ public class PersonnalActivity extends BaseActivity implements IUploadCallback<S
     @Override
     public void onRequestSuccess(int requestTag, Object data) {
         hideWaitDialog();
+        if(!TextUtils.isEmpty(PreferenceManager.getInstance().getAccountInfo().getAvtorURL())){
+            Glide.with(this).load(PreferenceManager.getInstance().getAccountInfo().getAvtorURL()).apply(RequestOptions.bitmapTransform(new CircleCrop()).error(R.drawable.icon_head)).into(mHead);
+        }
         showTotast("头像上传成功");
 
     }

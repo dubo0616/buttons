@@ -2,6 +2,7 @@ package com.gaia.button.data;
 
 import android.content.SharedPreferences;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.gaia.button.GaiaApplication;
 import com.gaia.button.model.AccountInfo;

@@ -48,8 +48,7 @@ public class AccountActivity extends BaseActivity implements IUserListener {
             }
         });
         mClWeixin = findViewById(R.id.cl_account_weixin);
-        final boolean isBind = PreferenceManager.getInstance().getAccountInfo() != null &&
-                !TextUtils.isEmpty(PreferenceManager.getInstance().getAccountInfo().getOpenid());
+        final boolean isBind = PreferenceManager.getInstance().getAccountInfo() != null && PreferenceManager.getInstance().getAccountInfo().getIs_openid() ==1;
         if(isBind){
             findViewById(R.id.bind_weichat).setVisibility(View.VISIBLE);
         }else{

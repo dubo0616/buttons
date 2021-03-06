@@ -199,11 +199,6 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
          nickName = intent.getStringExtra("nickName");
          avatar = intent.getStringExtra("avatar");
          sex = intent.getStringExtra("sex");
-         Log.e("TAG","====="+sex);
-         Log.e("TAG","====="+avatar);
-         Log.e("TAG","====="+nickName);
-         Log.e("TAG","====="+openId);
-         Log.e("TAG","====="+access_token);
          UserManager.getRequestHandler().requestLoginWeixin(this, openId, access_token, nickName, avatar);
 
 

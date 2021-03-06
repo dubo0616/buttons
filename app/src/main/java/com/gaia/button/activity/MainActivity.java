@@ -387,6 +387,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
         if(requestTag == Net_Tag_User_GetUserInfo) {
             if (data != null && data instanceof AccountInfo) {
                 AccountInfo info = (AccountInfo) data;
+                Log.e("HHHXXXXH","================"+info.toString());
                 PreferenceManager.getInstance().save(info);
             }
         }

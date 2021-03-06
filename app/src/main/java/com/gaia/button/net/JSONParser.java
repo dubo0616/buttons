@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.gaia.button.GaiaApplication;
 import com.gaia.button.activity.LoginMainActivity;
+import com.gaia.button.data.PreferenceManager;
 import com.gaia.button.model.AccountInfo;
 import com.gaia.button.model.AutoplayModel;
 import com.gaia.button.model.DeviceList;
@@ -313,7 +314,7 @@ public class JSONParser implements JsonParserInterface {
         BaseResult res = new BaseResult();
         String url = "";
         try {
-
+            Log.e("HHHHHxxxx","================"+responseStr);
             JSONObject obj = new JSONObject(responseStr);
             parserHeader(obj, res);
             int errorCode = res.getErrorCode();
@@ -323,6 +324,7 @@ public class JSONParser implements JsonParserInterface {
                     if (!TextUtils.isEmpty(dataStr)) {
                         Gson gson = new Gson();
                         res = gson.fromJson(dataStr, AccountInfo.class);
+
                     }
                 }
                 res.setErrorCode(0);

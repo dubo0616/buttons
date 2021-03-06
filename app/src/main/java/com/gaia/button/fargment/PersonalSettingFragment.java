@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -136,7 +137,9 @@ public class PersonalSettingFragment extends BaseFragment implements PersonalSet
             }
         });
         mDownLoad = mRootView.findViewById(R.id.iv_download_play);
-        mDownLoad.setSelected(PreferenceManager.getInstance().getAccountInfo().getMobile_network() ==1);
+        Log.e("HHHHH","================"+PreferenceManager.getInstance().getAccountInfo().toString());
+        Log.e("HHHHH","================"+PreferenceManager.getInstance().getAccountInfo().getMobile_network());
+        mDownLoad.setSelected(PreferenceManager.getInstance().getAccountInfo().getMobile_network()==1);
         mDownLoad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

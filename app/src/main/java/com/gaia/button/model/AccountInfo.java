@@ -16,6 +16,24 @@ public class AccountInfo extends BaseResult implements Serializable {
     private String userID;
     private boolean setPassword;
     private String person_sign;
+    private int is_openid;
+    private int is_avatar;
+
+    public int getIs_openid() {
+        return is_openid;
+    }
+
+    public void setIs_openid(int is_openid) {
+        this.is_openid = is_openid;
+    }
+
+    public int getIs_avatar() {
+        return is_avatar;
+    }
+
+    public void setIs_avatar(int is_avatar) {
+        this.is_avatar = is_avatar;
+    }
 
     public String getOpenid() {
         return openid;
@@ -139,5 +157,23 @@ public class AccountInfo extends BaseResult implements Serializable {
 
         return ainfo;
 
+    }
+
+    @Override
+    public String toString() {
+        return "AccountInfo{" +
+                "token='" + token + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", avtorURL='" + avtorURL + '\'' +
+                ", userID='" + userID + '\'' +
+                ", setPassword=" + setPassword +
+                ", person_sign='" + person_sign + '\'' +
+                ", is_openid=" + is_openid +
+                ", is_avatar=" + is_avatar +
+                ", openid='" + openid + '\'' +
+                ", mobile_network=" + mobile_network +
+                ", nickname='" + nickname + '\'' +
+                ", autoplay=" + autoplay +
+                '}';
     }
 }
