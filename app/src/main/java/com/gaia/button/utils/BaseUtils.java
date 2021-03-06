@@ -21,6 +21,8 @@ import android.graphics.drawable.PaintDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.media.MediaMetadataRetriever;
 import android.media.ThumbnailUtils;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.CancellationSignal;
@@ -630,4 +632,16 @@ public class BaseUtils {
 		}
 		return color;
 	}
+
+	public static boolean isWifiConnected(Context context) {
+		ConnectivityManager connectivityManager = (ConnectivityManager) context
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo wifiNetworkInfo = connectivityManager
+				.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		if (wifiNetworkInfo.isConnected()) {
+			return true;
+		}
+		return false;
+	}
+
 }

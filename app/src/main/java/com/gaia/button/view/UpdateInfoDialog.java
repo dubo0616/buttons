@@ -78,9 +78,6 @@ public class UpdateInfoDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 dismiss();
-                if(mOnConfirmClickListener != null){
-                    mOnConfirmClickListener.onConfirm();;
-                }
             }
         });
     }

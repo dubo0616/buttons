@@ -38,9 +38,11 @@ import com.gaia.button.model.UpdateModel;
 import com.gaia.button.net.NetConfig;
 import com.gaia.button.net.user.IUserListener;
 import com.gaia.button.net.user.UserManager;
+import com.gaia.button.utils.BaseUtils;
 import com.gaia.button.utils.Config;
 import com.gaia.button.utils.ConstantUtil;
 import com.gaia.button.utils.ButtonsInstaller;
+import com.gaia.button.view.UpdateInfoDialog;
 
 public class PersonalSettingFragment extends BaseFragment implements PersonalSettingAdapter.OnItemListener, IUserListener {
     private View mRootView;
@@ -138,8 +140,8 @@ public class PersonalSettingFragment extends BaseFragment implements PersonalSet
         });
         mDownLoad = mRootView.findViewById(R.id.iv_download_play);
         Log.e("HHHHH","================"+PreferenceManager.getInstance().getAccountInfo().toString());
-        Log.e("HHHHH","================"+PreferenceManager.getInstance().getAccountInfo().getMobile_network());
-        mDownLoad.setSelected(PreferenceManager.getInstance().getAccountInfo().getMobile_network()==1);
+        Log.e("HHHHH","================"+PreferenceManager.getInstance().getIntValue(PreferenceManager.ACC_LOGIN_MOBILE_NETWORK));
+        mDownLoad.setSelected(PreferenceManager.getInstance().getIntValue(PreferenceManager.ACC_LOGIN_MOBILE_NETWORK)==1);
         mDownLoad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -163,6 +165,19 @@ public class PersonalSettingFragment extends BaseFragment implements PersonalSet
 
     }
     private void checkAPP(){
+        if(!BaseUtils.isWifiConnected(getActivity()) && (PreferenceManager.getInstance().getAccountInfo() != null && PreferenceManager.getInstance().getAccountInfo().getMobile_network() ==0)){
+            UpdateInfoDialog infoDialog = UpdateInfoDialog.getInstance(getContext(), new UpdateInfoDialog.OnConfirmClickListener() {
+                @Override
+                public void onConfirm() {
+                    if(isHasPermission()) {
+                        UserManager.getRequestHandler().requestUpdate(PersonalSettingFragment.this, getVersion());
+                    }
+                }
+            });
+            infoDialog.show();
+            infoDialog.setData("提示","当前使用移动网络,确认下载吗？","");
+          return;
+        }
         if(isHasPermission()) {
             UserManager.getRequestHandler().requestUpdate(PersonalSettingFragment.this, getVersion());
         }

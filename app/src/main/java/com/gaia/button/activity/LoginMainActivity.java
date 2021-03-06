@@ -194,6 +194,7 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
         if(intent == null){
             return;
         }
+        Log.e("MMM","11111111111111111");
          access_token = intent.getStringExtra("access_token");
          openId = intent.getStringExtra("openId");
          nickName = intent.getStringExtra("nickName");

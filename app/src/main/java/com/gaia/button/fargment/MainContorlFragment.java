@@ -61,9 +61,11 @@ import com.gaia.button.model.AccountInfo;
 import com.gaia.button.model.UpdateModel;
 import com.gaia.button.models.gatt.GATTServices;
 import com.gaia.button.net.user.IUserListener;
+import com.gaia.button.net.user.UserManager;
 import com.gaia.button.services.BluetoothService;
 import com.gaia.button.services.GAIABREDRService;
 import com.gaia.button.services.GAIAGATTBLEService;
+import com.gaia.button.utils.BaseUtils;
 import com.gaia.button.utils.Config;
 import com.gaia.button.utils.Consts;
 import com.gaia.button.utils.DensityUtil;
@@ -301,25 +303,18 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         mDeviceUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isDeviceReady()){
-                    UpdateInfoDialog infoDialog = UpdateInfoDialog.getInstance(getActivity(), new UpdateInfoDialog.OnConfirmClickListener() {
+                if(!BaseUtils.isWifiConnected(getActivity()) && (PreferenceManager.getInstance().getAccountInfo() != null && PreferenceManager.getInstance().getAccountInfo().getMobile_network() ==0)){
+                    UpdateInfoDialog infoDialog = UpdateInfoDialog.getInstance(getContext(), new UpdateInfoDialog.OnConfirmClickListener() {
                         @Override
                         public void onConfirm() {
-                            //                    UserManager.getRequestHandler().requestAirUpdate(MainContorlFragment.this,mService.getDevice().getName(),getVersion());
-//                            File file = new File("/storage/emulated/0/Download/WeiXin/ButtonsAirX_BT_FW_V1.3.1_20210204.bin");
-//                            if(file.exists()){
-//                                mService.enableUpgrade(true);
-//                                mService.startUpgrade(file);
-//                            }
-                            startActivity(new Intent(mContext, UpgradeActivity.class));
+                            download();
                         }
                     });
                     infoDialog.show();
-
-//                    startActivity(new Intent(mContext, UpgradeActivity.class));
-                }else{
-                    displayShortToast("设备未连接");
+                    infoDialog.setData("提示","当前使用移动网络,确认下载吗？","");
+                    return;
                 }
+                download();
             }
         });
         mArcSeekBarInner = mRootView.findViewById(R.id.arc_seek_bar);
@@ -399,6 +394,27 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 //        connectDevice();
         scanDevice();
 
+    }
+    private void download(){
+        if(isDeviceReady()){
+            UpdateInfoDialog infoDialog = UpdateInfoDialog.getInstance(getActivity(), new UpdateInfoDialog.OnConfirmClickListener() {
+                @Override
+                public void onConfirm() {
+                    //                    UserManager.getRequestHandler().requestAirUpdate(MainContorlFragment.this,mService.getDevice().getName(),getVersion());
+//                            File file = new File("/storage/emulated/0/Download/WeiXin/ButtonsAirX_BT_FW_V1.3.1_20210204.bin");
+//                            if(file.exists()){
+//                                mService.enableUpgrade(true);
+//                                mService.startUpgrade(file);
+//                            }
+                    startActivity(new Intent(mContext, UpgradeActivity.class));
+                }
+            });
+            infoDialog.show();
+
+//                    startActivity(new Intent(mContext, UpgradeActivity.class));
+        }else{
+            displayShortToast("设备未连接");
+        }
     }
     private boolean isDeviceReady(){
         if(mService != null && mService.isGaiaReady()) {

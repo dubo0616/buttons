@@ -125,6 +125,7 @@ public class PreferenceManager {
         return mySharedPreferences.getBoolean(key,false);
     }
     public  void save(AccountInfo info) {
+        Log.e("MMM","=============="+info.toString());
         if(info != null && !TextUtils.isEmpty(info.getToken())){
             setStringValue(ACC_LOGIN_TYPE,"");
             setStringValue(ACC_LOGIN_MOBILE,info.getMobile());
@@ -138,6 +139,7 @@ public class PreferenceManager {
             setIntValue(ACC_LOGIN_MOBILE_NETWORK,info.getMobile_network());
             setStringValue(ACC_LOGIN_OPENID,info.getOpenid() );
             mAccountInfo = info;
+            Log.e("MMM","==============ss"+mAccountInfo.toString());
         }
     }
 
