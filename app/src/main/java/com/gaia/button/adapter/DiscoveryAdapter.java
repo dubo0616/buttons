@@ -12,8 +12,13 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.gaia.button.R;
 import com.gaia.button.model.DiscoveryModel;
+import com.gaia.button.utils.DensityUtil;
 
 import java.util.List;
 
@@ -75,7 +80,8 @@ public class DiscoveryAdapter extends RecyclerView.Adapter<DiscoveryAdapter.View
                 }
             }
         });
-        Glide.with(mContext).load(model.getList_img()).into(holder.detailImg);
+        RequestOptions requestOptions = new RequestOptions().bitmapTransform(new RoundedCorners(DensityUtil.dip2px(mContext,20)));
+        Glide.with(mContext).load(model.getList_img()).apply(requestOptions).into(holder.detailImg);
         holder.detailContent.setText(model.getCate_name());
     }
 
