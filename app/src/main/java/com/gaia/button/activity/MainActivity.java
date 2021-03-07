@@ -343,7 +343,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
 
     @Override
     public boolean sendControlCommand(int comm) {
-        Log.e("JJJJ","========="+comm);
         return mainContorlFragment.sendControlCommand(comm);
     }
     private boolean hasAllow = false;

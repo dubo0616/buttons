@@ -370,9 +370,39 @@ public class MainGaiaManager extends AGaiaManager {
         if (payload.length >= PAYLOAD_MIN_LENGTH) {
             createAcknowledgmentRequest(packet, GAIA.Status.SUCCESS, null);
             boolean isCharging = packet.getPayload()[PAYLOAD_VALUE_OFFSET] == 0x01;
-            mListener.onSetAncResult(isCharging);
+            mListener.getAncResult(isCharging);
         } else {
-            mListener.onSetAncResult(false);
+            mListener.getAncResult(false);
+        }
+    }
+    public void onReceivePlayModleResult(GaiaPacket packet){
+        byte[] payload = packet.getPayload();
+        final int PAYLOAD_VALUE_OFFSET = 1;
+        final int PAYLOAD_VALUE_LENGTH = 1;
+        final int PAYLOAD_MIN_LENGTH = PAYLOAD_VALUE_LENGTH + 1; // event length is 1 in the payload
+
+        if (payload.length >= PAYLOAD_MIN_LENGTH) {
+            createAcknowledgmentRequest(packet, GAIA.Status.SUCCESS, null);
+            boolean isCharging = packet.getPayload()[PAYLOAD_VALUE_OFFSET] == 0x01;
+            Log.e("HHHHHHHH","isCharging======"+isCharging);
+            mListener.getPlayModle(packet.getPayload()[PAYLOAD_VALUE_OFFSET]);
+        } else {
+            mListener.getPlayModle(0);
+        }
+    }
+    public void onReceivePlayStatusResult(GaiaPacket packet){
+        byte[] payload = packet.getPayload();
+        final int PAYLOAD_VALUE_OFFSET = 1;
+        final int PAYLOAD_VALUE_LENGTH = 1;
+        final int PAYLOAD_MIN_LENGTH = PAYLOAD_VALUE_LENGTH + 1; // event length is 1 in the payload
+
+        if (payload.length >= PAYLOAD_MIN_LENGTH) {
+            createAcknowledgmentRequest(packet, GAIA.Status.SUCCESS, null);
+            boolean isCharging = packet.getPayload()[PAYLOAD_VALUE_OFFSET] == 0x01;
+            Log.e("HHHHHHHH","isCharging======"+isCharging);
+            mListener.getPlayStatus(isCharging);
+        } else {
+            mListener.getPlayStatus(false);
         }
     }
     public void onReceiveAmbientResult(GaiaPacket packet){
@@ -384,9 +414,9 @@ public class MainGaiaManager extends AGaiaManager {
         if (payload.length >= PAYLOAD_MIN_LENGTH) {
             createAcknowledgmentRequest(packet, GAIA.Status.SUCCESS, null);
             boolean isCharging = packet.getPayload()[PAYLOAD_VALUE_OFFSET] == 0x01;
-            mListener.onSetAmbientResult(isCharging);
+            mListener.getAmbientResult(isCharging);
         } else {
-            mListener.onSetAmbientResult(false);
+            mListener.getAmbientResult(false);
         }
     }
     // ====== PROTECTED METHODS ====================================================================
@@ -413,23 +443,17 @@ public class MainGaiaManager extends AGaiaManager {
             case GAIA.COMMAND_GET_API_VERSION:
                 receivePacketGetAPIVersionACK(packet);
                 break;
-            case SET_ANC_CONTROL:
+            case GET_ANC_CONTROL:
                 onReceiveAncResult(packet);
                 break;
-            case 0x02B1:
-                Log.e("TTTT","================"+packet.getStatus()+"==="+packet.getCommand());
-                break;
-            case SET_AMBIENT_CONTROL:
+            case GET_AMBIENT_CONTROL:
                 onReceiveAmbientResult(packet);
                 break;
-            case 0x02B3:
-                Log.e("TTTT","================"+packet.getStatus()+"==="+packet.getCommand());
-                break;
             case SET_PLAY_STATUS:
-                Log.e("GGGGG","================"+packet.getStatus()+"==="+packet.getPayload());
+                onReceivePlayStatusResult(packet);
                 break;
             case GET_PLAY_MODE:
-                Log.e("GGGGG","================www"+packet.getStatus()+"==="+packet.getPayload());
+                onReceivePlayModleResult(packet);
                 break;
             case SET_PLAY_CONTROL:
                 Log.e("TTTT","================"+packet.getStatus()+"==="+packet.getEvent());
@@ -1008,18 +1032,16 @@ public class MainGaiaManager extends AGaiaManager {
          * {@link #getSupportedFeatures() getSupportedFeatures()}.</p>
          */
         void onFeaturesDiscovered();
-        void onSetAncResult(boolean result);
-        void onSetAmbientResult(boolean result);
+        void getAncResult(boolean result);
+        void getAmbientResult(boolean result);
+        void getPlayStatus(boolean result);
+        void getPlayModle(int result);
     }
 
-    public void getANC(byte level) {
-//        final int PAYLOAD_LENGTH = 1;
-//        final int LEVEL_OFFSET = 0;
-//        byte[] payload = new byte[PAYLOAD_LENGTH];
-//        payload[LEVEL_OFFSET] = level;
-//        createRequest(createPacket(GAIA.COMMAND_FIND_MY_REMOTE, payload));
-////        int aa = 0x02B0;
-////        byte[] payload = activate ? PAYLOAD_BOOLEAN_TRUE : PAYLOAD_BOOLEAN_FALSE;
+    public void getANC() {
+        final int PAYLOAD_LENGTH = 1;
+        byte[] payload = new byte[PAYLOAD_LENGTH];
+//        payload[CONTROL_OFFSET] = (byte) control;
         GaiaPacket packet = createPacket(GET_ANC_CONTROL);
         createRequest(packet);
     }
@@ -1055,6 +1077,10 @@ public class MainGaiaManager extends AGaiaManager {
         payload[CONTROL_OFFSET] = (byte) control;
         createRequest(createPacket(SET_PLAY_CONTROL, payload));
     }
+    public void getPlayStatus() {
+        createRequest(createPacket(SET_PLAY_STATUS));
+    }
+
     //0:defualt
     //1:classic
     //2:jass
@@ -1069,19 +1095,16 @@ public class MainGaiaManager extends AGaiaManager {
         createRequest(createPacket(SET_PLAY_MODE, payload));
     }
 
-    public void getPlayModeCommand(int control) {
-        final int PAYLOAD_LENGTH = 1;
-        final int CONTROL_OFFSET = 0;
-        byte[] payload = new byte[PAYLOAD_LENGTH];
-//        payload[CONTROL_OFFSET] = (byte) control;
-        createRequest(createPacket(0x02B3, payload));
+
+    public void getPlayModeCommand() {
+        createRequest(createPacket(GET_PLAY_MODE));
     }
-    public void getControlCommand(int control) {
-        final int PAYLOAD_LENGTH = 1;
-        final int CONTROL_OFFSET = 0;
-        byte[] payload = new byte[PAYLOAD_LENGTH];
-//        payload[CONTROL_OFFSET] = (byte) control;
-        createRequest(createPacket(SET_PLAY_STATUS, payload));
+
+    /****
+     *GET_AMBIENT_CONTROL
+     */
+    public void getControlCommand() {
+        createRequest(createPacket(GET_AMBIENT_CONTROL));
     }
 
     /***

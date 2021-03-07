@@ -222,9 +222,6 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         mNoise.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mService != null && mService.getDevice() != null) {
-                    PreferenceManager.getInstance().setPlaymode(PreferenceManager.getInstance().getAccountInfo().getUserID(), 2);
-                }
                 setPlayMode("2");
             }
         });
@@ -232,9 +229,6 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         mAmbient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mService != null && mService.getDevice() != null) {
-                    PreferenceManager.getInstance().setPlaymode(PreferenceManager.getInstance().getAccountInfo().getUserID(), 3);
-                }
                 setPlayMode("3");
             }
         });
@@ -505,14 +499,16 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         mTvBatty.setVisibility(View.VISIBLE);;
         mTvScan.setVisibility(View.GONE);
         mTvConectDeviceName.setVisibility(View.VISIBLE);
-        if(isDeviceReady()) {
+        if( mService != null && mService.getDevice()!= null) {
             if (!TextUtils.isEmpty(mService.getDevice().getName()) && (mService.getDevice().getName().endsWith("X") || mService.getDevice().getName().endsWith("x"))) {
+                mRootView.findViewById(R.id.cl_center).setVisibility(View.VISIBLE);
                 mImageButtonIcon.setImageResource(R.drawable.icon_airx);
             } else {
+                mRootView.findViewById(R.id.cl_center).setVisibility(View.GONE);
                 mImageButtonIcon.setImageResource(R.drawable.icon_air);
             }
         }else{
-
+            mImageButtonIcon.setImageResource(R.drawable.icon_airx);
         }
     }
 
@@ -861,10 +857,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                 PreferenceManager.getInstance().setStringValue(PreferenceManager.CONNECT_ARRAESS,mService.getDevice().getAddress());
                 if (DEBUG) Log.d(TAG, handleMessage + "GAIA_READY");
 //                mGaiaManager.setRWCPMode(true);
-//                mGaiaManager.getInformation(MainGaiaManager.Information.BATTERY);
-//                mGaiaManager.getInformation(MainGaiaManager.Information.API_VERSION);
-                mGaiaManager.getControlCommand(1);
-                mGaiaManager.getPlayModeCommand(1);
+                getInformationFromDevice();
                 mAct.setPlayContorlLay(true);
                 AccountInfo info = PreferenceManager.getInstance().getAccountInfo();
                 if(info !=null){
@@ -994,6 +987,10 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         if (isDeviceReady()) {
             mGaiaManager.getInformation(MainGaiaManager.Information.BATTERY);
             mGaiaManager.getInformation(MainGaiaManager.Information.API_VERSION);
+            mGaiaManager.getANC();
+            mGaiaManager.getControlCommand();
+            mGaiaManager.getPlayStatus();
+            mGaiaManager.getPlayModeCommand();
         }
     }
     // ====== PRIVATE METHODS ======================================================================
@@ -1118,21 +1115,48 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
     }
 
     @Override
-    public void onSetAncResult(boolean result) {
-//        if(!result){
-//            displayShortToast("设置失败");
-//        }else{
-//            displayShortToast("设置成功");
-//        }
+    public void getAncResult(boolean result) {
+        mNoise.setSelected(result);
+        mANcResult = result;
+        onStandard();
+
+    }
+    private void onStandard(){
+        if(!mbientResult && !mANcResult){
+            mStandard.setSelected(true);
+        }
+    }
+    boolean mbientResult = true;
+    boolean mANcResult = true;
+    @Override
+    public void getAmbientResult(boolean result) {
+        mAmbient.setSelected(result);
+        mbientResult = result;
+        onStandard();
     }
 
     @Override
-    public void onSetAmbientResult(boolean result) {
-//        if(!result){
-//            displayShortToast("设置失败");
-//        }else{
-//            displayShortToast("设置成功");
-//        }
+    public void getPlayStatus(boolean result) {
+        mAct.setPlayContorl(!result);
+    }
+
+    @Override
+    public void getPlayModle(int result) {
+        Log.e("HHHHHHHHH","=========="+result);
+        switch (result){
+            case 0:
+                mTvContorlName.setText("均衡");
+                break;
+            case 1:
+                mTvContorlName.setText("爵士");
+                break;
+            case 2:
+                mTvContorlName.setText("流行");
+                break;
+            case 3:
+                mTvContorlName.setText("摇滚");
+                break;
+        }
     }
 
     private void onReceiveGattMessage(@GAIAGATTBLEService.GattMessage int gattMessage, Object content) {
