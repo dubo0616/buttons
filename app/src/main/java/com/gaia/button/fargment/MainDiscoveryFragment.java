@@ -207,7 +207,7 @@ public class MainDiscoveryFragment extends BaseFragment implements DiscoveryAdap
                 }
             }
         } else if(requestTag == Net_Tag_User_ArticleCollect){
-            Toast.makeText(getActivity(),"操作成功",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(),"收藏成功",Toast.LENGTH_SHORT).show();
         }
 
 
@@ -219,7 +219,7 @@ public class MainDiscoveryFragment extends BaseFragment implements DiscoveryAdap
         mRefreshFlag = false;
         mSwipeRefreshLayout.setRefreshing(false);
          if(requestTag == Net_Tag_User_ArticleCollect){
-            Toast.makeText(getActivity(),"失败",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(),"收藏失败",Toast.LENGTH_SHORT).show();
         }
         if(requestTag == Net_Tag_User_ArticleList){
             if(mPage == 1) {
