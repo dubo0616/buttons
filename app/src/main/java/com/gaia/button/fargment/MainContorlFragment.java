@@ -244,8 +244,6 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                         public void onItemClick(int position,String text) {
                             if(isDeviceReady()){
                                 mGaiaManager.sendPlayModeCommand(position+1);
-//                                mGaiaManager.getPlayModeCommand(position+1);
-//                                mGaiaManager.getControlCommand(position+1);
                             }
                             mTvContorlName.setText(text);
                             if(mSoundPop == null){
@@ -341,15 +339,16 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             @Override
             public void onClick(View v) {
                 isClick = true;
-                if(isDeviceReady()) {
+                if (isDeviceReady()) {
                     if (mProgress <= minVoice) {
                         mProgress = minVoice;
                     }
                     mProgress = mArcSeekBarInner.getProgress() - 1;
                     mArcSeekBarInner.setProgress(mProgress == minVoice ? minVoice : mProgress);
                     mArcSeekBarOutter.setProgress(mProgress == minVoice ? minVoice : mProgress);
-                    PreferenceManager.getInstance().setIntValue(PreferenceManager.CONNECT_VOICE,mProgress);
-                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,mProgress, 0);                }else{
+                    PreferenceManager.getInstance().setIntValue(PreferenceManager.CONNECT_VOICE, mProgress);
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mProgress, 0);
+                } else {
                     displayShortToast("设备未连接");
                 }
             }
@@ -724,9 +723,11 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 //                    currVolume = PreferenceManager.getInstance().getIntValue(PreferenceManager.CONNECT_VOICE);
 //                }
                 Log.e("UUUUU","currVolume==="+currVolume);
-                isClick = true;
-                mArcSeekBarInner.setProgress(currVolume);
-                mArcSeekBarOutter.setProgress(currVolume);
+                if(isDeviceReady()) {
+                    isClick = true;
+                    mArcSeekBarInner.setProgress(currVolume);
+                    mArcSeekBarOutter.setProgress(currVolume);
+                }
                 //int currVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
             }
         }
