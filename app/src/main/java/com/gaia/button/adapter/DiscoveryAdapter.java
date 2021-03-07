@@ -80,7 +80,7 @@ public class DiscoveryAdapter extends RecyclerView.Adapter<DiscoveryAdapter.View
                 }
             }
         });
-        RequestOptions requestOptions = new RequestOptions().bitmapTransform(new RoundedCorners(DensityUtil.dip2px(mContext,20)));
+        RequestOptions requestOptions = new RequestOptions().bitmapTransform(new RoundedCorners(DensityUtil.dip2px(mContext,15)));
         Glide.with(mContext).load(model.getList_img()).apply(requestOptions).into(holder.detailImg);
         holder.detailContent.setText(model.getCate_name());
     }

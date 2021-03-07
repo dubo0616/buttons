@@ -16,10 +16,13 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.gaia.button.R;
 
 import java.util.List;
 import com.gaia.button.model.ProductModel;
+import com.gaia.button.utils.DensityUtil;
 
 public class ProductAdater extends RecyclerView.Adapter<ProductAdater.ViewHolder> {
 
@@ -68,7 +71,8 @@ public class ProductAdater extends RecyclerView.Adapter<ProductAdater.ViewHolder
 //        });
 
 
-        Glide.with(mContext).load(model.getList_img()).into(holder.ivDetail);
+        RequestOptions requestOptions = new RequestOptions().bitmapTransform(new RoundedCorners(DensityUtil.dip2px(mContext,15)));
+        Glide.with(mContext).load(model.getList_img()).apply(requestOptions).into(holder.ivDetail);
         holder.mTvDetail.setText(model.getTitle());
         if(mType == 0) {
             holder.mTvPrice.setText("￥"+model.getPrice());
