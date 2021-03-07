@@ -78,7 +78,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    android:src="@drawable/icon_contrl_top_center"
                     android:layout_width="115dp"
                     android:layout_height="74dp"/>
 

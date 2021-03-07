@@ -51,6 +51,7 @@ public interface IUserInterface {
 	void setNameMobileNetwork(IUserListener observer,int type);
 	void requestGetUploadToken(IUserListener observer);
 	void requestUploadAvatar(IUserListener observer,String uploadAvatar);
+	void requestFeedBack(IUserListener observer,String text);
 
 
 

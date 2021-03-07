@@ -31,6 +31,7 @@ public class ConstantUtil {
 	public static final String SERVER_URL_NAME_GetCollect = "getCollect";
 	public static final String SERVER_URL_NAME_getOSSConfig = "getOSSConfig";
 	public static final String SERVER_URL_NAME_UploadAvatar = "uploadAvatar";
+	public static final String SERVER_URL_NAME_FeedBack = "feedback";
 	public static final String SERVER_URL_NAME_GetDevice = "getDevice";
 	public static final String SERVER_URL_NAME_WechatLogin = "wechatLogin";
 	public static final String SERVER_URL_NAME_WechatBindphone= "wechatBindPhone";
@@ -87,6 +88,7 @@ public class ConstantUtil {
 	public static final int Net_Tag_User_GSetName= 130;
 	public static final int Net_Tag_User_GETOSS= 131;
 	public static final int Net_Tag_User_UploadAvatar= 132;
+	public static final int Net_Tag_User_FeedBack= 133;
 
 
 

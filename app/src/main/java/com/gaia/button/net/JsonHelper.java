@@ -81,6 +81,7 @@ public final class JsonHelper {
 				break;
 			case ConstantUtil.Net_Tag_User_SetSgin:
 			case ConstantUtil.Net_Tag_User_GSetName:
+			case ConstantUtil.Net_Tag_User_FeedBack:
 				res = JsonManager.getJsonParser().parserSetPwd(resData);
 				break;
 			case ConstantUtil.Net_Tag_User_GETOSS:

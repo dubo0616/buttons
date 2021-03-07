@@ -426,7 +426,10 @@ public class MainGaiaManager extends AGaiaManager {
                 Log.e("TTTT","================"+packet.getStatus()+"==="+packet.getCommand());
                 break;
             case SET_PLAY_STATUS:
-                Log.e("TTTT","================"+packet.getStatus()+"==="+packet.getCommand());
+                Log.e("GGGGG","================"+packet.getStatus()+"==="+packet.getPayload());
+                break;
+            case GET_PLAY_MODE:
+                Log.e("GGGGG","================www"+packet.getStatus()+"==="+packet.getPayload());
                 break;
             case SET_PLAY_CONTROL:
                 Log.e("TTTT","================"+packet.getStatus()+"==="+packet.getEvent());
@@ -1058,6 +1061,7 @@ public class MainGaiaManager extends AGaiaManager {
     //3.pop
     //4.rock
     public void sendPlayModeCommand(int control) {
+        Log.e("HHHH","control====="+control);
         final int PAYLOAD_LENGTH = 1;
         final int CONTROL_OFFSET = 0;
         byte[] payload = new byte[PAYLOAD_LENGTH];
@@ -1069,14 +1073,14 @@ public class MainGaiaManager extends AGaiaManager {
         final int PAYLOAD_LENGTH = 1;
         final int CONTROL_OFFSET = 0;
         byte[] payload = new byte[PAYLOAD_LENGTH];
-        payload[CONTROL_OFFSET] = (byte) control;
-        createRequest(createPacket(GET_PLAY_MODE, payload));
+//        payload[CONTROL_OFFSET] = (byte) control;
+        createRequest(createPacket(0x02B3, payload));
     }
     public void getControlCommand(int control) {
         final int PAYLOAD_LENGTH = 1;
         final int CONTROL_OFFSET = 0;
         byte[] payload = new byte[PAYLOAD_LENGTH];
-        payload[CONTROL_OFFSET] = (byte) control;
+//        payload[CONTROL_OFFSET] = (byte) control;
         createRequest(createPacket(SET_PLAY_STATUS, payload));
     }
 

@@ -481,5 +481,20 @@ public class UserRequestProxy implements IUserInterface {
         addObserver(observer, mCurrentRequestId);
     }
 
+    @Override
+    public void requestFeedBack(IUserListener observer, String text) {
+        JSONObject mJsonObject = new JSONObject();
+        try {
+            mJsonObject.put("content",text);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mCurrentRequestId = NetManager.getHttpConnect().sendRequest(
+                ConstantUtil.NEW_BAPI_URL+ ConstantUtil.SERVER_URL_NAME_FeedBack,
+                ConstantUtil.Net_Tag_User_FeedBack, mJsonObject.toString(), iNetListener);
+        addObserver(observer, mCurrentRequestId);
+
+    }
+
 
 }

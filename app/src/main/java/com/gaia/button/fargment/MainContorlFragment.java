@@ -77,6 +77,7 @@ import com.gaia.button.view.GaiaPop;
 import com.gaia.button.view.GaiaSoundModePop;
 import com.gaia.button.view.UpdateInfoDialog;
 import com.qualcomm.qti.libraries.gaia.GAIA;
+import com.qualcomm.qti.libraries.gaia.GaiaUtils;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -135,6 +136,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
     private final BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
         @Override
         public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+            Log.e("FUCKCC", "Received potential GAIA packet: " + GaiaUtils.getHexadecimalStringFromBytes(scanRecord));
             if (mDevicesAdapter != null && device != null
                     && device.getName() != null && device.getName().length() > 0 && device.getName().contains("BUTTONS")) {
 
@@ -248,6 +250,8 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                         public void onItemClick(int position,String text) {
                             if(isDeviceReady()){
                                 mGaiaManager.sendPlayModeCommand(position+1);
+//                                mGaiaManager.getPlayModeCommand(position+1);
+//                                mGaiaManager.getControlCommand(position+1);
                             }
                             mTvContorlName.setText(text);
                             if(mSoundPop == null){
@@ -501,6 +505,15 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         mTvBatty.setVisibility(View.VISIBLE);;
         mTvScan.setVisibility(View.GONE);
         mTvConectDeviceName.setVisibility(View.VISIBLE);
+        if(isDeviceReady()) {
+            if (!TextUtils.isEmpty(mService.getDevice().getName()) && (mService.getDevice().getName().endsWith("X") || mService.getDevice().getName().endsWith("x"))) {
+                mImageButtonIcon.setImageResource(R.drawable.icon_airx);
+            } else {
+                mImageButtonIcon.setImageResource(R.drawable.icon_air);
+            }
+        }else{
+
+        }
     }
 
     private int maxVoice,minVoice;
@@ -848,8 +861,10 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                 PreferenceManager.getInstance().setStringValue(PreferenceManager.CONNECT_ARRAESS,mService.getDevice().getAddress());
                 if (DEBUG) Log.d(TAG, handleMessage + "GAIA_READY");
 //                mGaiaManager.setRWCPMode(true);
-                mGaiaManager.getInformation(MainGaiaManager.Information.BATTERY);
-                mGaiaManager.getInformation(MainGaiaManager.Information.API_VERSION);
+//                mGaiaManager.getInformation(MainGaiaManager.Information.BATTERY);
+//                mGaiaManager.getInformation(MainGaiaManager.Information.API_VERSION);
+                mGaiaManager.getControlCommand(1);
+                mGaiaManager.getPlayModeCommand(1);
                 mAct.setPlayContorlLay(true);
                 AccountInfo info = PreferenceManager.getInstance().getAccountInfo();
                 if(info !=null){
@@ -1054,6 +1069,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
     @Override
     public void onGetBatteryLevel(int level) {
+        Log.e("HHHH","======="+level);
         mBatteryLevel = level;
         refreshBatteryLevel();
     }

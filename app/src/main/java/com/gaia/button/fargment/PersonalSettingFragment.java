@@ -29,6 +29,7 @@ import com.gaia.button.R;
 import com.gaia.button.activity.AboutActivity;
 import com.gaia.button.activity.AccountActivity;
 import com.gaia.button.activity.CustomerActivity;
+import com.gaia.button.activity.FeedBackActivity;
 import com.gaia.button.activity.LoginMainActivity;
 import com.gaia.button.activity.WebViewActivity;
 import com.gaia.button.adapter.PersonalSettingAdapter;
@@ -159,7 +160,7 @@ public class PersonalSettingFragment extends BaseFragment implements PersonalSet
         mClFeedBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(getActivity(), FeedBackActivity.class));
             }
         });
 
