@@ -30,7 +30,7 @@
         <TextView
             android:id="@+id/tv_wechats"
             android:layout_marginStart="40dp"
-            android:drawableTop="@drawable/share_wechat"
+            android:drawableTop="@drawable/share_wechat_timeline"
             android:layout_width="wrap_content"
             android:text="朋友圈"
             android:drawablePadding="5dp"
