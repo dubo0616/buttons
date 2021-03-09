@@ -1146,7 +1146,7 @@ public class MainGaiaManager extends AGaiaManager {
     public static final int GET_AMBIENT_CONTROL = 0x02B3;
     public static final int SET_PLAY_CONTROL = 0x02BF;
     public static final int SET_PLAY_STATUS = 0x02C3;
-    public static final int SET_PLAY_MODE = 0x02B8;
+    public static final int SET_PLAY_MODE = 0x02C0;
     public static final int GET_PLAY_MODE = 0x02B9;
     public static final int SET_DEVICE_RESET = 0x02BE;
 }

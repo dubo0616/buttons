@@ -69,6 +69,7 @@ import com.gaia.button.utils.BaseUtils;
 import com.gaia.button.utils.Config;
 import com.gaia.button.utils.Consts;
 import com.gaia.button.utils.DensityUtil;
+import com.gaia.button.utils.ParseBluetoothAdData;
 import com.gaia.button.utils.Utils;
 import com.gaia.button.view.ArcSeekBarInner;
 import com.gaia.button.view.ArcSeekBarOutter;
@@ -136,7 +137,8 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
     private final BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
         @Override
         public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-            Log.e("FUCKCC", "Received potential GAIA packet: " + GaiaUtils.getHexadecimalStringFromBytes(scanRecord));
+            ParseBluetoothAdData.AdData adData = ParseBluetoothAdData.INSTANCE.parse(scanRecord);
+            Log.e("FUCKCC", "Received potential GAIA packet: " + GaiaUtils.getHexadecimalStringFromBytes(adData.getManufacturerByte()));
             if (mDevicesAdapter != null && device != null
                     && device.getName() != null && device.getName().length() > 0 && device.getName().contains("BUTTONS")) {
 
