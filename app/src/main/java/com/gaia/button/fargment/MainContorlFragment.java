@@ -37,29 +37,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
-import com.gaia.button.GaiaApplication;
 import com.gaia.button.R;
 import com.gaia.button.activity.DeviceDiscoveryActivity;
-import com.gaia.button.activity.InformationActivity;
 import com.gaia.button.activity.MainActivity;
 import com.gaia.button.activity.PersonnalActivity;
-import com.gaia.button.activity.ServiceActivity;
 import com.gaia.button.activity.UpgradeActivity;
 import com.gaia.button.adapter.DevicesListAdapter;
 import com.gaia.button.adapter.DevicesListTabsAdapter;
 import com.gaia.button.data.PreferenceManager;
 import com.gaia.button.gaia.MainGaiaManager;
-import com.gaia.button.gaia.RemoteGaiaManager;
 import com.gaia.button.model.AccountInfo;
 import com.gaia.button.model.UpdateModel;
-import com.gaia.button.models.gatt.GATTServices;
 import com.gaia.button.net.user.IUserListener;
 import com.gaia.button.net.user.UserManager;
 import com.gaia.button.services.BluetoothService;
@@ -81,8 +75,9 @@ import com.qualcomm.qti.libraries.gaia.GAIA;
 import com.qualcomm.qti.libraries.gaia.GaiaUtils;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Set;
 
 import static android.app.Activity.RESULT_OK;
@@ -126,22 +121,22 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
     private TextView mNoise;
     private TextView mAmbient;
     private ImageView mImageButtonIcon;
-    private ImageView mImageViewWhiteBg,mImageViewGrayBg,mPersonal;
+    private ImageView mImageViewWhiteBg,mImageViewGrayBg,mPersonal,mUpdatePoint;
     private TextView mTvBatty,mTvScan,mTvConectDeviceName;
     private ImageView mIvSwitch;
 
     private MainGaiaManager mGaiaManager;
 
     private DevicesListAdapter mDevicesAdapter;
+    private UpdateModel mUpdateModel;
 
     private final BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
         @Override
         public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
             ParseBluetoothAdData.AdData adData = ParseBluetoothAdData.INSTANCE.parse(scanRecord);
-            Log.e("FUCKCC", "Received potential GAIA packet: " + GaiaUtils.getHexadecimalStringFromBytes(adData.getManufacturerByte()));
+            Log.e("AdData", "Received potential GAIA packet: " + GaiaUtils.getHexadecimalStringFromBytes(adData.getManufacturerByte()));
             if (mDevicesAdapter != null && device != null
                     && device.getName() != null && device.getName().length() > 0 && device.getName().contains("BUTTONS")) {
-
                 mDevicesAdapter.add(device, rssi);
             }
 
@@ -158,6 +153,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
     private AudioManager mAudioManager;
     private boolean isClick =false;
     private MainActivity mAct;
+    private ConstraintLayout mDeviceFrgmentContainer;
 
 
     @Nullable
@@ -174,6 +170,9 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
     private void initView() {
 //        mScrollView = mRootView.findViewById(R.id.sl_scroll);
         mDeviceUpdate = mRootView.findViewById(R.id.cl_device_update);
+        mDeviceFrgmentContainer = mRootView.findViewById(R.id.id_device);
+        mUpdatePoint = mRootView.findViewById(R.id.iv_point);
+        mUpdatePoint.setVisibility(View.GONE);
         mDeviceInfo = mRootView.findViewById(R.id.cl_device_info);
         mDeviceContorl = mRootView.findViewById(R.id.cl_contorl_bottom);
         mDeviceReset = mRootView.findViewById(R.id.cl_device_reset);
@@ -208,7 +207,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         mIvSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(mContext, DeviceDiscoveryActivity.class),1000);
+                mDeviceFrgmentContainer.setVisibility(View.VISIBLE);
             }
         });
         mStandard.setOnClickListener(new View.OnClickListener() {
@@ -392,13 +391,24 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
 //        connectDevice();
         scanDevice();
+        initDevice();
 
     }
     private void download(){
         if(isDeviceReady()){
+            if(mUpdateModel == null){
+                displayShortToast("已经是最新版本");
+                return;
+            }
             UpdateInfoDialog infoDialog = UpdateInfoDialog.getInstance(getActivity(), new UpdateInfoDialog.OnConfirmClickListener() {
                 @Override
                 public void onConfirm() {
+                    if(mUpdateModel != null){
+                        if(mUpdateModel.getIsUpdate() == 1 && !TextUtils.isEmpty(mUpdateModel.getUrl())){
+                            checkUpdate(mUpdateModel.getUrl());
+                        }
+                    }
+
                     //                    UserManager.getRequestHandler().requestAirUpdate(MainContorlFragment.this,mService.getDevice().getName(),getVersion());
 //                            File file = new File("/storage/emulated/0/Download/WeiXin/ButtonsAirX_BT_FW_V1.3.1_20210204.bin");
 //                            if(file.exists()){
@@ -472,6 +482,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         mTvBatty.setVisibility(View.INVISIBLE);
         mTvScan.setVisibility(View.VISIBLE);
         mImageViewGrayBg.setVisibility(View.GONE);
+        mUpdatePoint.setVisibility(View.GONE);
         mTvScan.setText("设备未连接…");
         mTvConectDeviceName.setVisibility(View.INVISIBLE);
         mAct.setPlayContorlLay(false);
@@ -499,6 +510,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         mImageViewGrayBg.setVisibility(View.VISIBLE);
         mTvBatty.setVisibility(View.VISIBLE);;
         mTvScan.setVisibility(View.GONE);
+        mDeviceFrgmentContainer.setVisibility(View.GONE);
         mTvConectDeviceName.setVisibility(View.VISIBLE);
         if( mService != null && mService.getDevice()!= null) {
             if (!TextUtils.isEmpty(mService.getDevice().getName()) && (mService.getDevice().getName().endsWith("X") || mService.getDevice().getName().endsWith("x"))) {
@@ -526,38 +538,6 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         myRegisterReceiver();
         init();
     }
-
-    /****
-     * 发现新设备
-     * @param device
-     */
-    @Override
-    public void onDeviceFound(BluetoothDevice device) {
-        SharedPreferences sharedPref = mContext.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
-        // get the device Bluetooth address
-        String address = sharedPref.getString(Consts.BLUETOOTH_ADDRESS_KEY, "");
-        if(TextUtils.isEmpty(address)){
-//            initDevice();
-            return;
-        }
-        if(device != null && device.getAddress() != null && device.getAddress().startsWith("F4:0E")){
-            if(device.getBondState() == BluetoothDevice.BOND_NONE){
-                Intent intent = new Intent(mContext, DeviceDiscoveryActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivityForResult(intent,1000);
-              return;
-            }
-            showWaitDialog("正在连接设备...");
-            if (mService == null) {
-                saveDevice(device);
-                startService();
-            }
-        }
-
-
-
-
-    }
     private void saveDevice(BluetoothDevice device){
         SharedPreferences sharedPref = mContext.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -567,13 +547,13 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         editor.apply();
     }
 
-    @Override
-    public void onDeviceConnectSuccess(BluetoothDevice device) {
-//        if (mService == null) {
-//            saveDevice(device);
-//            startService();
-//        }
-    }
+//    @Override
+//    public void onDeviceConnectSuccess(BluetoothDevice device) {
+////        if (mService == null) {
+////            saveDevice(device);
+////            startService();
+////        }
+//    }
 
     @Override
     public void onBluetoothDisabled() {
@@ -583,9 +563,9 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
     @Override
     public void onBluetoothEnabled() {
         if (mService == null) {
-            startService();
+//            startService();
         }
-        scanDevices(true);
+//        scanDevices(true);
     }
 
     /****
@@ -614,25 +594,6 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                 }
                 break;
             }
-            case 1000:
-                if (resultCode == RESULT_OK) {
-                    SharedPreferences sharedPref = mContext.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
-                    // get the device Bluetooth address
-                    String address = sharedPref.getString(Consts.BLUETOOTH_ADDRESS_KEY, "");
-                    if (mService != null && mService.getDevice() != null && mService.getDevice().getAddress().equals(address)) {
-                        return;
-                    }
-                    showWaitDialog("正在连接设备...");
-                    if (mService != null && mService.getDevice() != null) {
-                        mService.disconnectDevice();
-                        mService.disconnectDevice();
-                        mService.removeHandler(mHandler);
-                        mService = null;
-                        mContext.unbindService(mServiceConnection);
-                    }
-                    startService();
-                }
-                break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
         }
@@ -643,7 +604,6 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
     public void onResume() {
         super.onResume();
         mIsPaused = false;
-        registerReceiver();
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         mContext.registerReceiver(mBluetoothStateReceiver, filter);
         if (mService != null) {
@@ -672,9 +632,9 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
     public void onRequestSuccess(int requestTag, Object data) {
         if(requestTag == Net_Tag_User_GetFirmwareVersion){
             if(data instanceof UpdateModel){
-                UpdateModel model = (UpdateModel) data;
-                if(model.getIsUpdate() == 1 && !TextUtils.isEmpty(model.getUrl())){
-                    checkUpdate(model.getUrl());
+                mUpdateModel = (UpdateModel) data;
+                if(mUpdateModel != null) {
+                    mUpdatePoint.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -699,7 +659,25 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
     @Override
     public void getBondedDevices(DevicesListAdapter mDevicesListAdapter) {
+        Set<BluetoothDevice> listDevices;
+        if (mBtAdapter != null && mBtAdapter.isEnabled()) {
+            listDevices = mBtAdapter.getBondedDevices();
+        } else {
+            listDevices = Collections.emptySet();
+        }
+        ArrayList<BluetoothDevice> listBLEDevices = new ArrayList<>();
 
+        for (BluetoothDevice device : listDevices) {
+            if(device == null || device.getAddress() == null || !device.getAddress().startsWith("F4:0E")){
+                continue;
+            }
+            if (device.getType() == BluetoothDevice.DEVICE_TYPE_DUAL
+                    || device.getType() == BluetoothDevice.DEVICE_TYPE_CLASSIC
+                    || device.getType() == BluetoothDevice.DEVICE_TYPE_LE) {
+                listBLEDevices.add(device);
+            }
+        }
+        mDevicesListAdapter.setListDevices(listBLEDevices);
     }
 
     @Override
@@ -713,7 +691,21 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
     @Override
     public void onItemSelected(boolean selected, BluetoothDevice device) {
-
+        SharedPreferences sharedPref = mContext.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
+        // get the device Bluetooth address
+        String address = sharedPref.getString(Consts.BLUETOOTH_ADDRESS_KEY, "");
+        if (isDeviceReady() &&  mService.getDevice().getAddress().equals(address)) {
+            mDeviceFrgmentContainer.setVisibility(View.GONE);
+            return;
+        }
+        showWaitDialog("正在连接设备...");
+        if (mService != null && mService.getDevice() != null) {
+            mService.disconnectDevice();
+            mService.removeHandler(mHandler);
+            mService = null;
+            mContext.unbindService(mServiceConnection);
+        }
+        startService();
     }
 
     private class MyVolumeReceiver extends BroadcastReceiver {
@@ -744,7 +736,6 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             scanDevices(false);
         }
         mContext.unregisterReceiver(mBluetoothStateReceiver);
-        unregisterReceiver();
 
     }
 
@@ -757,17 +748,14 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             boolean isScanning = mBtAdapter.startLeScan(mLeScanCallback);
             //noinspection UnusedAssignment
             boolean isDiscovering = mBtAdapter.startDiscovery();
-            if (DEBUG) Log.i(TAG, "Start scan of LE devices: " + isScanning + " - start discovery of BR/EDR devices: " +
-                    isDiscovering);
         } else if (mIsScanning) {
-//            mDevicesListFragment.stopRefreshing();
+            mDevicesListFragment.stopRefreshing();
             mIsScanning = false;
             mHandler.removeCallbacks(mStopScanRunnable);
             //noinspection deprecation
             mBtAdapter.stopLeScan(mLeScanCallback);
             //noinspection UnusedAssignment
             boolean isDiscovering = mBtAdapter.cancelDiscovery();
-            if (DEBUG) Log.i(TAG, "Stop scan of LE devices - stop discovery of BR/EDR devices: " + isDiscovering);
         }
     }
 
@@ -775,7 +763,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
      * 绑定耳机服务
      * @return
      */
-    private boolean startService() {
+    public boolean startService() {
 
         // get the bluetooth information
         SharedPreferences sharedPref = mContext.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
@@ -994,6 +982,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             mGaiaManager.getControlCommand();
             mGaiaManager.getPlayStatus();
             mGaiaManager.getPlayModeCommand();
+            mGaiaManager.getGetDeviceType();
         }
     }
     // ====== PRIVATE METHODS ======================================================================
@@ -1024,21 +1013,6 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
     private void stopScan() {
         scanDevices(false);
-    }
-
-    /**
-     * <p>To register the bond state receiver to be aware of any bond state change.</p>
-     */
-    private void registerReceiver() {
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        mContext.registerReceiver(mDiscoveryReceiver, filter);
-    }
-
-    /**
-     * <p>To unregister the bond state receiver when the application is stopped or we don't need it anymore.</p>
-     */
-    private void unregisterReceiver() {
-        mContext.unregisterReceiver(mDiscoveryReceiver);
     }
 
     @Override // MainGaiaManager.MainGaiaManagerListener
@@ -1160,6 +1134,12 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                 mTvContorlName.setText("摇滚");
                 break;
         }
+    }
+
+    @Override
+    public void getDeviceType(int type, String name) {
+        UserManager.getRequestHandler().requestAirUpdate(this,mService.getDevice().getName(),getVersion(),type);
+
     }
 
     private void onReceiveGattMessage(@GAIAGATTBLEService.GattMessage int gattMessage, Object content) {
@@ -1349,10 +1329,18 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
      * 初始化设备扫描fragment
      */
     private void initDevice(){
-        mDevicesListFragment = DevicesListFragment.newInstance(DevicesListTabsAdapter.SCANNED_LIST_TYPE);
+        mDevicesListFragment = DevicesListFragment.newInstance(DevicesListTabsAdapter.SCANNED_LIST_TYPE,this);
         FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(R.id.id_device, mDevicesListFragment);
         transaction.commitAllowingStateLoss();
     }
+    public boolean isBack(){
+        if(mDeviceFrgmentContainer.getVisibility() == View.VISIBLE){
+            mDeviceFrgmentContainer.setVisibility(View.GONE);
+            return true;
+        }
+        return false;
+    }
+
 }

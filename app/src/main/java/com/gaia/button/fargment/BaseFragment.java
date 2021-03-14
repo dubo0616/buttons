@@ -96,11 +96,6 @@ public  class BaseFragment extends Fragment  implements BREDRDiscoveryReceiver.B
     }
 
     @Override
-    public void onDeviceConnectSuccess(BluetoothDevice device) {
-
-    }
-
-    @Override
     public void onBluetoothDisabled() {
     }
 

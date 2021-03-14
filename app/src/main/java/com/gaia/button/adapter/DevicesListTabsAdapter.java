@@ -69,7 +69,7 @@ public class DevicesListTabsAdapter extends FragmentPagerAdapter {
             return null;
         }
         if (mFragments[position] == null) {
-            mFragments[position] = DevicesListFragment.newInstance(position);
+            mFragments[position] = DevicesListFragment.newInstance(position,null);
         }
         return mFragments[position];
     }

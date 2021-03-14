@@ -91,7 +91,9 @@ public class MainProductFragment extends BaseFragment implements ProductAdater.P
             return;
         }
 //        showWaitDialog();
+
         mRefreshFlag = true;
+        UserManager.getRequestHandler().requestProductTopList(this);
         UserManager.getRequestHandler().requestProductList(MainProductFragment.this, mPage,"");
 
 

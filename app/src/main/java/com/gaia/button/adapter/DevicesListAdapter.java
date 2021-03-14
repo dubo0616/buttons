@@ -107,14 +107,14 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override // DeviceViewHolder.IDeviceViewHolder
     public void onClickItem(int position,BluetoothDevice device) {
-        if (mSelectedItem == position) {
-            mSelectedItem = ITEM_NULL;
-        } else {
-            int previousItem = mSelectedItem;
-            mSelectedItem = position;
-            notifyItemChanged(previousItem);
-        }
-        notifyItemChanged(position);
+//        if (mSelectedItem == position) {
+//            mSelectedItem = ITEM_NULL;
+//        } else {
+//            int previousItem = mSelectedItem;
+//            mSelectedItem = position;
+//            notifyItemChanged(previousItem);
+//        }
+//        notifyItemChanged(position);
         mListener.onItemSelected(hasSelection(),device);
     }
 

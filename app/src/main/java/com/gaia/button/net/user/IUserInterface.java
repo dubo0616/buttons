@@ -45,13 +45,14 @@ public interface IUserInterface {
 	void requestSetAutoPlay (IUserListener observer,int auto);
 	void requestSetAllowDown (IUserListener observer,int auto);
 	void requestUpdate (IUserListener observer,String version);
-	void requestAirUpdate(IUserListener observer,String name,String version);
+	void requestAirUpdate(IUserListener observer,String name,String version,int device_id);
 	void requestGetUserInfo(IUserListener observer,String token);
 	void setNameSgin(IUserListener observer,int type,String text);
 	void setNameMobileNetwork(IUserListener observer,int type);
 	void requestGetUploadToken(IUserListener observer);
 	void requestUploadAvatar(IUserListener observer,String uploadAvatar);
 	void requestFeedBack(IUserListener observer,String text);
+	void requestProductTopList(IUserListener observer);
 
 
 

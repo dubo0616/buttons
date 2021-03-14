@@ -46,9 +46,9 @@ public class BREDRDiscoveryReceiver extends BroadcastReceiver {
                     Log.d("aaa", "BOND_BONDING 正在配对");
                     break;
                 case BluetoothDevice.BOND_BONDED:
-                    if(mListener != null){
-                        mListener.onDeviceConnectSuccess(device);
-                    }
+//                    if(mListener != null){
+//                        mListener.onDeviceConnectSuccess(device);
+//                    }
                     Log.d("aaa", "BOND_BONDED 配对成功");
                     break;
             }
@@ -71,7 +71,7 @@ public class BREDRDiscoveryReceiver extends BroadcastReceiver {
          *          The device which had been found.
          */
         void onDeviceFound(BluetoothDevice device);
-        void onDeviceConnectSuccess(BluetoothDevice device);
+//        void onDeviceConnectSuccess(BluetoothDevice device);
     }
 
 }

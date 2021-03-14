@@ -279,6 +279,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(mCurFragment == mainContorlFragment){
+            if(mainContorlFragment.isBack()){
+                return true;
+            }
+        }
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
             if ((System.currentTimeMillis() - exitTime) > 2000) {
                 Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
@@ -386,7 +391,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
         if(requestTag == Net_Tag_User_GetUserInfo) {
             if (data != null && data instanceof AccountInfo) {
                 AccountInfo info = (AccountInfo) data;
-                Log.e("HHHXXXXH","================"+info.toString());
                 PreferenceManager.getInstance().save(info);
             }
         }

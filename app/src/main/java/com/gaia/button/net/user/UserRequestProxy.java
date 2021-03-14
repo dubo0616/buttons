@@ -389,11 +389,12 @@ public class UserRequestProxy implements IUserInterface {
     }
 
     @Override
-    public void requestAirUpdate(IUserListener observer, String name, String version) {
+    public void requestAirUpdate(IUserListener observer, String name, String version,int device_id) {
         JSONObject mJsonObject = new JSONObject();
         try {
             mJsonObject.put("version",version);
             mJsonObject.put("device_name",name);
+            mJsonObject.put("device_id",name);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -494,6 +495,14 @@ public class UserRequestProxy implements IUserInterface {
                 ConstantUtil.Net_Tag_User_FeedBack, mJsonObject.toString(), iNetListener);
         addObserver(observer, mCurrentRequestId);
 
+    }
+
+    @Override
+    public void requestProductTopList(IUserListener observer) {
+        mCurrentRequestId = NetManager.getHttpConnect().sendRequest(
+                ConstantUtil.NEW_BAPI_URL+ ConstantUtil.SERVER_URL_NAME_productTopList,
+                ConstantUtil.Net_Tag_Product_TOP, "", iNetListener);
+        addObserver(observer, mCurrentRequestId);
     }
 
 

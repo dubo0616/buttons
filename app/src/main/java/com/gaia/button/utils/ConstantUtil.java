@@ -41,6 +41,7 @@ public class ConstantUtil {
 	public static final String SERVER_URL_NAME_GetFirmwareVersion= "getFirmwareVersion";
 	public static final String SERVER_URL_NAME_setPersonSign= "setPersonSign";
 	public static final String SERVER_URL_NAME_ssetNickName= "setNickname";
+	public static final String SERVER_URL_NAME_productTopList= "productTopList";
 
 	public static final String SERVER_URL_NAME_LOGINPW_UPDATE = "updatePassword";
 	public static final String SERVER_URL_NAME_GetUserInfo = "getUserInfo";
@@ -89,6 +90,7 @@ public class ConstantUtil {
 	public static final int Net_Tag_User_GETOSS= 131;
 	public static final int Net_Tag_User_UploadAvatar= 132;
 	public static final int Net_Tag_User_FeedBack= 133;
+	public static final int Net_Tag_Product_TOP= 134;
 
 
 

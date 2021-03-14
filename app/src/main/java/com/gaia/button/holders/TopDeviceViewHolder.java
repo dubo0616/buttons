@@ -78,14 +78,7 @@ public class TopDeviceViewHolder extends RecyclerView.ViewHolder{
                 h.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        SharedPreferences sharedPref = act.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putInt(Consts.TRANSPORT_KEY, device.getType());
-                        editor.putString(Consts.BLUETOOTH_NAME_KEY, device.getName());
-                        editor.putString(Consts.BLUETOOTH_ADDRESS_KEY, device.getAddress());
-                        editor.apply();
-                        act.setResult(Activity.RESULT_OK);
-                        act.finish();
+                   mListener.onClickItem(position,device);
                     }
                 });
                 h.mLL.setVisibility(View.VISIBLE);

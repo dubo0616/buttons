@@ -161,11 +161,11 @@ public class DeviceDiscoveryActivity extends BluetoothActivity implements
             mDevicesAdapter.add(device, 0);
         }
     }
-
-    @Override
-    public void onDeviceConnectSuccess(BluetoothDevice device) {
-
-    }
+//
+//    @Override
+//    public void onDeviceConnectSuccess(BluetoothDevice device) {
+//
+//    }
 
 
     // ------ ACTIVITY METHODS ----------------------------------------------------------------------------------------
@@ -234,7 +234,7 @@ public class DeviceDiscoveryActivity extends BluetoothActivity implements
                 finish();
             }
         });
-        mDevicesListFragment = DevicesListFragment.newInstance(DevicesListTabsAdapter.SCANNED_LIST_TYPE);
+        mDevicesListFragment = DevicesListFragment.newInstance(DevicesListTabsAdapter.SCANNED_LIST_TYPE,this);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(R.id.layout_container, mDevicesListFragment);

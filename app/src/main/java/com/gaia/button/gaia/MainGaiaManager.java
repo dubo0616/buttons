@@ -375,6 +375,21 @@ public class MainGaiaManager extends AGaiaManager {
             mListener.getAncResult(false);
         }
     }
+    public void onReceiveDeviceTypeResult(GaiaPacket packet){
+        byte[] payload = packet.getPayload();
+        final int PAYLOAD_VALUE_OFFSET = 1;
+        final int PAYLOAD_VALUE_LENGTH = 1;
+        final int PAYLOAD_MIN_LENGTH = PAYLOAD_VALUE_LENGTH + 1; // event length is 1 in the payload
+
+        if (payload.length >= PAYLOAD_MIN_LENGTH) {
+            createAcknowledgmentRequest(packet, GAIA.Status.SUCCESS, null);
+            boolean isCharging = packet.getPayload()[PAYLOAD_VALUE_OFFSET] == 0x01;
+            Log.e("HHHHHHHH","isCharging======"+isCharging);
+            mListener.getDeviceType(packet.getPayload()[PAYLOAD_VALUE_OFFSET],"");
+        } else {
+            mListener.getDeviceType(-1,"");
+        }
+    }
     public void onReceivePlayModleResult(GaiaPacket packet){
         byte[] payload = packet.getPayload();
         final int PAYLOAD_VALUE_OFFSET = 1;
@@ -470,7 +485,9 @@ public class MainGaiaManager extends AGaiaManager {
                     Log.e("TTTT", "================" + packet.getStatus() + "level===" + level);
                 }
                 break;
-
+            case GET_DEVICE_TYPE:
+                onReceiveDeviceTypeResult(packet);
+                break;
 
 
 
@@ -1036,6 +1053,7 @@ public class MainGaiaManager extends AGaiaManager {
         void getAmbientResult(boolean result);
         void getPlayStatus(boolean result);
         void getPlayModle(int result);
+        void getDeviceType(int type,String name);
     }
 
     public void getANC() {
@@ -1114,6 +1132,13 @@ public class MainGaiaManager extends AGaiaManager {
         byte[] payload = new byte[0];
         createRequest(createPacket(SET_DEVICE_RESET, payload));
     }
+    /***
+     * 设备重置
+     */
+    public void getGetDeviceType(){
+        byte[] payload = new byte[0];
+        createRequest(createPacket(GET_DEVICE_TYPE, payload));
+    }
 
 
     private static final class TransferModes {
@@ -1149,4 +1174,5 @@ public class MainGaiaManager extends AGaiaManager {
     public static final int SET_PLAY_MODE = 0x02C0;
     public static final int GET_PLAY_MODE = 0x02B9;
     public static final int SET_DEVICE_RESET = 0x02BE;
+    public static final int GET_DEVICE_TYPE = 0x02CE;
 }

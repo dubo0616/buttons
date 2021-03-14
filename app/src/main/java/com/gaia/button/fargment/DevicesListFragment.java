@@ -6,7 +6,12 @@ package com.gaia.button.fargment;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +22,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.gaia.button.R;
+import com.gaia.button.activity.DeviceDiscoveryActivity;
 import com.gaia.button.adapter.DevicesListAdapter;
 import com.gaia.button.adapter.DevicesListTabsAdapter;
+import com.gaia.button.utils.Consts;
 
 /**
  * A fragment to mange the display of a list of Bluetooth devices.
@@ -50,8 +57,8 @@ public class DevicesListFragment extends BaseFragment implements DevicesListAdap
     /**
      * Returns a new instance of this fragment for the given section number.
      */
-    public static DevicesListFragment newInstance(int type) {
-        DevicesListFragment fragment = new DevicesListFragment();
+    public static DevicesListFragment newInstance(int type,DevicesListFragmentListener l) {
+        DevicesListFragment fragment = new DevicesListFragment(l);
         Bundle args = new Bundle();
         args.putInt(ARG_LIST_TYPE, type);
         fragment.setArguments(args);
@@ -59,40 +66,55 @@ public class DevicesListFragment extends BaseFragment implements DevicesListAdap
     }
 
     // default empty constructor, required for Fragment.
-    public DevicesListFragment() {
+    public DevicesListFragment(DevicesListFragmentListener l) {
+        this.mListener =l ;
     }
 
     // This event fires 1st, before creation of fragment or any views
     // The onAttach method is called when the Fragment instance is associated with an Activity.
     // This does not mean the Activity is fully initialized.
-    @Override // Fragment
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof DevicesListFragmentListener) {
-            this.mListener = (DevicesListFragmentListener) context;
-        }
-    }
+
 
     @Override // Fragment
     public void onResume() {
         super.onResume();
+        registerReceiver();
         switch (mListType) {
             case DevicesListTabsAdapter.SCANNED_LIST_TYPE:
                 mRefreshLayout.setRefreshing(true);
                 mDevicesListAdapter.reset();
                 mDevicesListAdapter.add(null,0);
-                mDevicesListAdapter.add(null,0);
                 mListener.startScan(mDevicesListAdapter);
                 break;
-
-//            case DevicesListTabsAdapter.BONDED_LIST_TYPE:
-//                mDevicesListAdapter.reset();
-//                mRefreshLayout.setRefreshing(true);
-//                mListener.getBondedDevices(mDevicesListAdapter);
-//                break;
         }
+        startService();
+
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        unregisterReceiver();
+    }
+    private void startService(){
+        SharedPreferences sharedPref = mContext.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
+        // get the device Bluetooth address
+        String address = sharedPref.getString(Consts.BLUETOOTH_ADDRESS_KEY, "");
+        if(!TextUtils.isEmpty(address)) {
+            if (mListener != null && mListener instanceof MainContorlFragment) {
+                MainContorlFragment fragment = (MainContorlFragment) mListener;
+                fragment.startService();
+            }
+        }
+    }
+    /****
+     * 发现新设备
+     * @param device
+     */
+    @Override
+    public void onDeviceFound(BluetoothDevice device) {
+        startService();
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -125,13 +147,32 @@ public class DevicesListFragment extends BaseFragment implements DevicesListAdap
         // specify an adapter for the recycler view
         mDevicesListAdapter = new DevicesListAdapter(getActivity(),this);
         recyclerView.setAdapter(mDevicesListAdapter);
-
+        rootView.findViewById(R.id.iv_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getParentFragment().getView().findViewById(R.id.id_device).setVisibility(View.GONE);
+            }
+        });
         return rootView;
     }
 
     @Override // DevicesListAdapter.IDevicesListAdapterListener
     public void onItemSelected(boolean itemSelected,BluetoothDevice device) {
         mListener.onItemSelected(itemSelected,device);
+    }
+    /**
+     * <p>To register the bond state receiver to be aware of any bond state change.</p>
+     */
+    private void registerReceiver() {
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        mContext.registerReceiver(mDiscoveryReceiver, filter);
+    }
+
+    /**
+     * <p>To unregister the bond state receiver when the application is stopped or we don't need it anymore.</p>
+     */
+    private void unregisterReceiver() {
+        mContext.unregisterReceiver(mDiscoveryReceiver);
     }
 
     /**
