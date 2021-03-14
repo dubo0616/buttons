@@ -483,6 +483,13 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         mTvScan.setVisibility(View.VISIBLE);
         mImageViewGrayBg.setVisibility(View.GONE);
         mUpdatePoint.setVisibility(View.GONE);
+        mAmbient.setSelected(false);
+        mStandard.setSelected(false);
+        mNoise.setSelected(false);
+        mSoundPop.setSoundStyle(0);
+        if(mDialog != null){
+            mDialog.dismiss();
+        }
         mTvScan.setText("设备未连接…");
         mTvConectDeviceName.setVisibility(View.INVISIBLE);
         mAct.setPlayContorlLay(false);
