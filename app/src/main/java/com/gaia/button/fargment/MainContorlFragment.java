@@ -486,7 +486,9 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         mAmbient.setSelected(false);
         mStandard.setSelected(false);
         mNoise.setSelected(false);
+        if(mSoundPop !=null){
         mSoundPop.setSoundStyle(0);
+        }
         if(mDialog != null){
             mDialog.dismiss();
         }
