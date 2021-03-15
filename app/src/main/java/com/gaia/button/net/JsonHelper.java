@@ -91,7 +91,7 @@ public final class JsonHelper {
 				res = JsonManager.getJsonParser().parserLoginout(resData);
 				break;
 			case ConstantUtil.Net_Tag_Product_TOP:
-				res = JsonManager.getJsonParser().parserLoginout(resData);
+				res = JsonManager.getJsonParser().parserProductList(resData);
 				break;
 
 			default:

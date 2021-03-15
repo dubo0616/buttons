@@ -5,6 +5,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.StrikethroughSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -45,9 +47,25 @@ public class ProductAdater extends RecyclerView.Adapter<ProductAdater.ViewHolder
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_product_item, parent, false);
-        ViewHolder holder = new ViewHolder(view);
-        return holder;
+        if(viewType == 1){
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_product_item_one, parent, false);
+            ViewHolder holder = new ViewHolder(view);
+            return holder;
+        }else{
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_product_item, parent, false);
+            ViewHolder holder = new ViewHolder(view);
+            return holder;
+        }
+
+
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if(mList.get(position).getTop() ==1){
+            return 1;
+        }
+        return 0;
     }
 
     @Override
@@ -61,18 +79,12 @@ public class ProductAdater extends RecyclerView.Adapter<ProductAdater.ViewHolder
                 }
             }
         });
-//        holder.mDetailLink.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (mOnClickListener != null) {
-//                    mOnClickListener.onClickDetail(model);
-//                }
-//            }
-//        });
-
-
         RequestOptions requestOptions = new RequestOptions().bitmapTransform(new RoundedCorners(DensityUtil.dip2px(mContext,15)));
-        Glide.with(mContext).load(model.getList_img()).apply(requestOptions).into(holder.ivDetail);
+        if(model.getTop() ==1){
+            Glide.with(mContext).load(model.getBanner_img()).apply(requestOptions).into(holder.ivDetail);
+        }else{
+            Glide.with(mContext).load(model.getList_img()).apply(requestOptions).into(holder.ivDetail);
+        }
         holder.mTvDetail.setText(model.getTitle());
         if(mType == 0) {
             holder.mTvPrice.setText("￥"+model.getPrice());
@@ -121,5 +133,20 @@ public class ProductAdater extends RecyclerView.Adapter<ProductAdater.ViewHolder
 
     public interface ProductAdapterOnclickListener {
         void onClickDetail(ProductModel model);
+    }
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();
+        if(manager instanceof GridLayoutManager){   // 布局是GridLayoutManager所管理
+            final GridLayoutManager gridLayoutManager = (GridLayoutManager) manager;
+            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    // 如果是Header、Footer的对象则占据spanCount的位置，否则就只占用1个位置
+                    return mList.get(position).getTop() == 1 ? gridLayoutManager.getSpanCount() : 1;
+                }
+            });
+        }
     }
 }

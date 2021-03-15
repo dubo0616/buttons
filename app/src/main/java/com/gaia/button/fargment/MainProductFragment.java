@@ -24,6 +24,7 @@ import com.gaia.button.model.ProductModel;
 import com.gaia.button.model.ProductModelList;
 import com.gaia.button.net.user.IUserListener;
 import com.gaia.button.net.user.UserManager;
+import com.gaia.button.utils.ConstantUtil;
 import com.gaia.button.view.GridSpaceItemDecoration;
 
 import java.util.ArrayList;
@@ -93,7 +94,6 @@ public class MainProductFragment extends BaseFragment implements ProductAdater.P
 //        showWaitDialog();
 
         mRefreshFlag = true;
-        UserManager.getRequestHandler().requestProductTopList(this);
         UserManager.getRequestHandler().requestProductList(MainProductFragment.this, mPage,"");
 
 
@@ -121,6 +121,9 @@ public class MainProductFragment extends BaseFragment implements ProductAdater.P
         mRefreshFlag = false;
         mSwipeRefreshLayout.setRefreshing(false);
         if(requestTag == Net_Tag_User_ProductList){
+            if(mPage == 1) {
+                UserManager.getRequestHandler().requestProductTopList(this);
+            }
             ProductModelList list = (ProductModelList) data;
             if(list != null && list.getData() != null && list.getData().size()>0){
                 if(mPage == 1){
@@ -135,6 +138,16 @@ public class MainProductFragment extends BaseFragment implements ProductAdater.P
                     mProductAdater.notifyDataSetChanged();
                     mTvNodata.setVisibility(View.VISIBLE);
                 }
+            }
+        }else if(requestTag == ConstantUtil.Net_Tag_Product_TOP){
+            ProductModelList list = (ProductModelList) data;
+            if(list != null && list.getData() != null && list.getData().size()>0){
+                for(ProductModel topdata :list.getData()){
+                    topdata.setTop(1);
+                    mList.add(0,topdata);
+                }
+                mProductAdater.setData(mList);
+                mTvNodata.setVisibility(View.GONE);
             }
         }
 

@@ -134,7 +134,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         @Override
         public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
             ParseBluetoothAdData.AdData adData = ParseBluetoothAdData.INSTANCE.parse(scanRecord);
-            Log.e("AdData", "Received potential GAIA packet: " + GaiaUtils.getHexadecimalStringFromBytes(adData.getManufacturerByte()));
+//            Log.e("AdData", "Received potential GAIA packet: " + GaiaUtils.getHexadecimalStringFromBytes(adData.getManufacturerByte()));
             if (mDevicesAdapter != null && device != null
                     && device.getName() != null && device.getName().length() > 0 && device.getName().contains("BUTTONS")) {
                 mDevicesAdapter.add(device, rssi);

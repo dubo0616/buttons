@@ -11,6 +11,26 @@ public class ProductModel implements Serializable {
     private String is_collect;
     private String detailUrl;
 
+    public String getBanner_img() {
+        return banner_img;
+    }
+
+    public void setBanner_img(String banner_img) {
+        this.banner_img = banner_img;
+    }
+
+    private String banner_img;
+
+    public int getTop() {
+        return top;
+    }
+
+    public void setTop(int top) {
+        this.top = top;
+    }
+
+    private int top;
+
     public String getSkuid() {
         return skuid;
     }
