@@ -79,10 +79,11 @@ public class ProductAdater extends RecyclerView.Adapter<ProductAdater.ViewHolder
                 }
             }
         });
-        RequestOptions requestOptions = new RequestOptions().bitmapTransform(new RoundedCorners(DensityUtil.dip2px(mContext,15)));
+
         if(model.getTop() ==1){
-            Glide.with(mContext).load(model.getBanner_img()).apply(requestOptions).into(holder.ivDetail);
+            Glide.with(mContext).load(model.getBanner_img()).into(holder.ivDetail);
         }else{
+            RequestOptions requestOptions = new RequestOptions().bitmapTransform(new RoundedCorners(DensityUtil.dip2px(mContext,15)));
             Glide.with(mContext).load(model.getList_img()).apply(requestOptions).into(holder.ivDetail);
         }
         holder.mTvDetail.setText(model.getTitle());

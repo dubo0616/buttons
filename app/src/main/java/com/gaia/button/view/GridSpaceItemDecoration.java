@@ -30,6 +30,7 @@ public class GridSpaceItemDecoration extends RecyclerView.ItemDecoration {
 
         // 列间距
         outRect.left = mColumnSpacing;
+        outRect.right = mColumnSpacing;
 
         // 如果position > 行数，说明不是在第一行，则不指定行高，其他行的上间距为 top=mRowSpacing
         if (position >= mSpanCount) {

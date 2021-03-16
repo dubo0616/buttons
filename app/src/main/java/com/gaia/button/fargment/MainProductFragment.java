@@ -25,6 +25,7 @@ import com.gaia.button.model.ProductModelList;
 import com.gaia.button.net.user.IUserListener;
 import com.gaia.button.net.user.UserManager;
 import com.gaia.button.utils.ConstantUtil;
+import com.gaia.button.utils.DensityUtil;
 import com.gaia.button.view.GridSpaceItemDecoration;
 
 import java.util.ArrayList;
@@ -75,7 +76,7 @@ public class MainProductFragment extends BaseFragment implements ProductAdater.P
         mRecyclerView = (RecyclerView) mRootView.findViewById(R.id.list_msg);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),2));
         mRecyclerView.setItemAnimator(null);
-        mRecyclerView.addItemDecoration(new GridSpaceItemDecoration(2, 0,0));
+//        mRecyclerView.addItemDecoration(new GridSpaceItemDecoration(2, 0,0));
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
