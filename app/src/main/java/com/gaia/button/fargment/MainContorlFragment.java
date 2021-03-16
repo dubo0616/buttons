@@ -700,10 +700,11 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
     @Override
     public void onItemSelected(boolean selected, BluetoothDevice device) {
-        SharedPreferences sharedPref = mContext.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
-        // get the device Bluetooth address
-        String address = sharedPref.getString(Consts.BLUETOOTH_ADDRESS_KEY, "");
-        if (isDeviceReady() &&  mService.getDevice().getAddress().equals(address)) {
+        if(device == null){
+            return;
+        }
+        saveDevice(device);
+        if (isDeviceReady() &&  mService.getDevice().getAddress().equals(device.getAddress())) {
             mDeviceFrgmentContainer.setVisibility(View.GONE);
             return;
         }
