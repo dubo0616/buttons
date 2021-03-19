@@ -19,7 +19,7 @@ public class SpalshActivity extends BaseActivity {
         setContentView(R.layout.activity_spalsh);
         initView();
     }
-    private void startLoginMian() {
+    private void startLoginMain() {
         Intent intent = new Intent(SpalshActivity.this, LoginMainActivity.class);
         startActivity(intent);
         finish();
@@ -28,7 +28,7 @@ public class SpalshActivity extends BaseActivity {
     private void startPer() {
         if (!PreferenceManager.getInstance().getFristInstall()) {
         }else{
-            startLoginMian();
+            startLoginMain();
         }
     }
 
@@ -37,7 +37,7 @@ public class SpalshActivity extends BaseActivity {
         mTvStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startLoginMian();
+                startLoginMain();
             }
         });
         startPer();

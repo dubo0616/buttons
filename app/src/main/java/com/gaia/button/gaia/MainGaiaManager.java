@@ -383,8 +383,7 @@ public class MainGaiaManager extends AGaiaManager {
 
         if (payload.length >= PAYLOAD_MIN_LENGTH) {
             createAcknowledgmentRequest(packet, GAIA.Status.SUCCESS, null);
-            boolean isCharging = packet.getPayload()[PAYLOAD_VALUE_OFFSET] == 0x01;
-            Log.e("HHHHHHHH","isCharging======"+isCharging);
+            Log.e("HHHHHHHH","isCharging======"+  packet.getPayload()[PAYLOAD_VALUE_OFFSET]);
             mListener.getDeviceType(packet.getPayload()[PAYLOAD_VALUE_OFFSET],"");
         } else {
             mListener.getDeviceType(-1,"");
@@ -1056,6 +1055,18 @@ public class MainGaiaManager extends AGaiaManager {
         void getDeviceType(int type,String name);
     }
 
+    public static final int SET_ANC_CONTROL = 0x02B0;
+    public static final int GET_ANC_CONTROL = 0x02B1;
+    public static final int SET_AMBIENT_CONTROL = 0x02B2;
+    public static final int GET_AMBIENT_CONTROL = 0x02B3;
+    public static final int SET_PLAY_CONTROL = 0x02BF;
+    public static final int SET_PLAY_STATUS = 0x02C3;
+    public static final int SET_PLAY_MODE = 0x02B8;
+    public static final int GET_DEVICE_ID = 0x02C0;
+    public static final int GET_PLAY_MODE = 0x02B9;
+    public static final int SET_DEVICE_RESET = 0x02BE;
+    public static final int GET_DEVICE_TYPE = 0x02C0;
+
     public void getANC() {
         final int PAYLOAD_LENGTH = 1;
         byte[] payload = new byte[PAYLOAD_LENGTH];
@@ -1105,7 +1116,6 @@ public class MainGaiaManager extends AGaiaManager {
     //3.pop
     //4.rock
     public void sendPlayModeCommand(int control) {
-        Log.e("HHHH","control====="+control);
         final int PAYLOAD_LENGTH = 1;
         final int CONTROL_OFFSET = 0;
         byte[] payload = new byte[PAYLOAD_LENGTH];
@@ -1133,7 +1143,7 @@ public class MainGaiaManager extends AGaiaManager {
         createRequest(createPacket(SET_DEVICE_RESET, payload));
     }
     /***
-     * 设备重置
+     * 设备类型
      */
     public void getGetDeviceType(){
         byte[] payload = new byte[0];
@@ -1165,14 +1175,4 @@ public class MainGaiaManager extends AGaiaManager {
     public void showDebugLogs(boolean show) {
         super.showDebugLogs(show);
     }
-    public static final int SET_ANC_CONTROL = 0x02B0;
-    public static final int GET_ANC_CONTROL = 0x02B1;
-    public static final int SET_AMBIENT_CONTROL = 0x02B2;
-    public static final int GET_AMBIENT_CONTROL = 0x02B3;
-    public static final int SET_PLAY_CONTROL = 0x02BF;
-    public static final int SET_PLAY_STATUS = 0x02C3;
-    public static final int SET_PLAY_MODE = 0x02C0;
-    public static final int GET_PLAY_MODE = 0x02B9;
-    public static final int SET_DEVICE_RESET = 0x02BE;
-    public static final int GET_DEVICE_TYPE = 0x02CE;
 }

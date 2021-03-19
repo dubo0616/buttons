@@ -70,7 +70,7 @@ public class AccountActivity extends BaseActivity implements IUserListener {
         showWaitDialog();
         IWXAPI api = GaiaApplication.getWeinAPIHandler(this);
         if (!api.isWXAppInstalled()) {
-            showTotast("请安装微信客户端");
+            showTotast(getResources().getString(R.string.install_weichat));
             return;
         }
         registerReceiver();

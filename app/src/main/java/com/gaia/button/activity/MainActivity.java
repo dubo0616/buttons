@@ -40,7 +40,7 @@ import com.gaia.button.view.PlayMoveLayout;
 import static com.gaia.button.utils.ConstantUtil.Net_Tag_User_GetUserInfo;
 import static com.gaia.button.utils.ConstantUtil.Net_Tag_User_WechatLogin;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener , PlayMoveLayout.MainContorlListener, IUserListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener, PlayMoveLayout.MainContorlListener, IUserListener {
 
     public static final String FORM_KEY = "form_key";
     private static final int STATE_DISCOVERY = 0;
@@ -59,46 +59,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
     private TextView mEditText;
     private ImageView mPersonal;
     private int mTab = 0;
-    public final static String ACTION_PLAY_PAUSE = "play_pause";
-    public final static String ACTION_PLAY_PRE = "play_pre";
-    public final static String ACTION_PLAY_NEXT= "play_next";
-    public final static String ACTION_PLAY_LARGE= "play_large";
-    public final static String ACTION_PLAY_SMALLL= "play_small";
-    private BroadcastReceiver mReceiverPlayCOntorl;
     private PlayMoveLayout layout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mTab = getIntent().getIntExtra("Tab",0);
+        mTab = getIntent().getIntExtra("Tab", 0);
         initView();
-        registerReceiver();
         initData();
 
     }
-    private void initData(){
+
+    private void initData() {
         UserManager.getRequestHandler().requestGetUserInfo(this, PreferenceManager.getInstance().getAccountInfo().getToken());
 
-    }
-
-    private void registerReceiver() {
-        if (mReceiverPlayCOntorl == null) {
-            mReceiverPlayCOntorl = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    String action = intent.getAction();
-                    if (action.equals(ACTION_PLAY_PAUSE)) {
-                    }
-                }
-            };
-            final IntentFilter filter = new IntentFilter();
-            filter.addAction(ACTION_PLAY_PAUSE);
-            filter.addAction(ACTION_PLAY_PRE);
-            filter.addAction(ACTION_PLAY_NEXT);
-            filter.addAction(ACTION_PLAY_LARGE);
-            filter.addAction(ACTION_PLAY_SMALLL);
-            registerReceiver(mReceiverPlayCOntorl, filter);
-        }
     }
 
     private void initView() {
@@ -111,7 +86,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
         mSearchLayout = findViewById(R.id.layout_search);
         mEditText = findViewById(R.id.et_search);
         mPersonal = findViewById(R.id.iv_personal);
-        if(PreferenceManager.getInstance().getAccountInfo() != null && !TextUtils.isEmpty(PreferenceManager.getInstance().getAccountInfo().getAvtorURL())){
+        if (PreferenceManager.getInstance().getAccountInfo() != null && !TextUtils.isEmpty(PreferenceManager.getInstance().getAccountInfo().getAvtorURL())) {
             Glide.with(this).load(PreferenceManager.getInstance().getAccountInfo().getAvtorURL()).
                     apply(RequestOptions.bitmapTransform(new CircleCrop()).error(R.drawable.icon_personal)).into(mPersonal);
         }
@@ -127,10 +102,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
                     case MotionEvent.ACTION_UP:
 
                         Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-                        if(mCurFragment == mainDiscoveryFragment) {
-                            intent.putExtra("type",0);
-                        }else{
-                            intent.putExtra("type",1);
+                        if (mCurFragment == mainDiscoveryFragment) {
+                            intent.putExtra("type", 0);
+                        } else {
+                            intent.putExtra("type", 1);
                         }
 
                         startActivity(intent);
@@ -141,18 +116,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
                 return true;
             }
         });
-        switch (mTab){
-            case 0:
+        switch (mTab) {
+            case STATE_DISCOVERY:
                 switchToDiscovery();
                 mSearchLayout.setVisibility(View.VISIBLE);
                 mTabLeft.setSelected(true);
                 break;
-            case 1:
+            case STATE_CONTORL:
                 switchToContorl();
                 mSearchLayout.setVisibility(View.GONE);
                 mTabCenter.setSelected(true);
                 break;
-            case 2:
+            case STATE_PRODUCT:
                 switchToProduct();
                 mSearchLayout.setVisibility(View.VISIBLE);
                 mTabRight.setSelected(true);
@@ -166,6 +141,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
         mTabCenter.setSelected(false);
         mTabRight.setSelected(false);
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -180,14 +156,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
                 break;
             case R.id.iv_personal:
                 Intent intent = new Intent(this, PersonnalActivity.class);
-                if(!TextUtils.isEmpty(mainContorlFragment.getVersion())){
-                    intent.putExtra("version",mainContorlFragment.getVersion());
+                if (!TextUtils.isEmpty(mainContorlFragment.getVersion())) {
+                    intent.putExtra("version", mainContorlFragment.getVersion());
                 }
-                if(mainContorlFragment.getConnectDevice() != null){
-                    intent.putExtra("name",mainContorlFragment.getConnectDevice().getName());
-                    intent.putExtra("mac",mainContorlFragment.getConnectDevice().getAddress());
+                if (mainContorlFragment.getConnectDevice() != null) {
+                    intent.putExtra("name", mainContorlFragment.getConnectDevice().getName());
+                    intent.putExtra("mac", mainContorlFragment.getConnectDevice().getAddress());
                 }
-                startActivityForResult(intent,1000);
+                startActivityForResult(intent, 1000);
 
                 break;
         }
@@ -273,14 +249,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
             layout.destory();
         }
         super.onDestroy();
-        unregisterReceiver(mReceiverPlayCOntorl);
 
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(mCurFragment == mainContorlFragment){
-            if(mainContorlFragment.isBack()){
+        if (mCurFragment == mainContorlFragment) {
+            if (mainContorlFragment.isBack()) {
                 return true;
             }
         }
@@ -295,24 +270,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
         }
         return super.onKeyDown(keyCode, event);
     }
+
     private long exitTime = 0;
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode){
+        switch (requestCode) {
             case 1000:
                 if (resultCode == RESULT_OK && mCurFragment != mainContorlFragment) {
                     switchToContorl();
                     mainContorlFragment.onActivityResult(requestCode, resultCode, data);
                 }
-            break;
-            case 1111:
-                if(Build.VERSION.SDK_INT >= 23){
-                    if(Settings.canDrawOverlays(MainActivity.this)){
+                break;
+            case 1001:
+                if (Build.VERSION.SDK_INT >= 23) {
+                    if (Settings.canDrawOverlays(MainActivity.this)) {
                         initPlayLayout(true);
-                    }else{
+                    } else {
                         initPlayLayout(false);
                     }
                 }
@@ -322,7 +298,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
         }
 
     }
-    private void initPlayLayout(boolean pers){
+
+    private void initPlayLayout(boolean pers) {
         if (layout == null) {
             hasAllow = true;
             layout = new PlayMoveLayout(this);
@@ -331,17 +308,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
         layout.setAllow(pers);
         layout.show();
     }
-    public void setPlayContorlLay(boolean show){
-        if(show) {
+
+    public void setPlayContorlLay(boolean show) {
+        if (show) {
             requestOverlayPermission();
-        }else{
+        } else {
             if (layout != null) {
                 layout.destory();
             }
         }
     }
-    public void setPlayContorl(boolean show){
-        if(layout != null) {
+
+    public void setPlayContorl(boolean show) {
+        if (layout != null) {
             layout.setPause(show);
         }
     }
@@ -350,18 +329,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
     public boolean sendControlCommand(int comm) {
         return mainContorlFragment.sendControlCommand(comm);
     }
+
     private boolean hasAllow = false;
+
     private void requestOverlayPermission() {
         if (Build.VERSION.SDK_INT >= 23) {
             if (!Settings.canDrawOverlays(MainActivity.this)) {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                         Uri.parse("package:" + getPackageName()));
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivityForResult(intent, 1111);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivityForResult(intent, 1001);
             } else {
                 initPlayLayout(true);
             }
-        }else{
+        } else {
             initPlayLayout(true);
         }
     }
@@ -369,18 +350,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
     @Override
     protected void onResume() {
         super.onResume();
-        if(hasAllow){
+        if (hasAllow) {
             if (Build.VERSION.SDK_INT >= 23) {
                 if (!Settings.canDrawOverlays(MainActivity.this)) {
                     initPlayLayout(false);
                 } else {
                     initPlayLayout(true);
                 }
-            }else{
+            } else {
                 initPlayLayout(true);
             }
         }
-        if(PreferenceManager.getInstance().getAccountInfo() != null && !TextUtils.isEmpty(PreferenceManager.getInstance().getAccountInfo().getAvtorURL())){
+        if (PreferenceManager.getInstance().getAccountInfo() != null && !TextUtils.isEmpty(PreferenceManager.getInstance().getAccountInfo().getAvtorURL())) {
             Glide.with(this).load(PreferenceManager.getInstance().getAccountInfo().getAvtorURL()).
                     apply(RequestOptions.bitmapTransform(new CircleCrop()).error(R.drawable.icon_personal)).into(mPersonal);
         }
@@ -388,7 +369,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
 
     @Override
     public void onRequestSuccess(int requestTag, Object data) {
-        if(requestTag == Net_Tag_User_GetUserInfo) {
+        if (requestTag == Net_Tag_User_GetUserInfo) {
             if (data != null && data instanceof AccountInfo) {
                 AccountInfo info = (AccountInfo) data;
                 PreferenceManager.getInstance().save(info);

@@ -154,6 +154,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
     private boolean isClick =false;
     private MainActivity mAct;
     private ConstraintLayout mDeviceFrgmentContainer;
+    private int mDeviceType = -1;
 
 
     @Nullable
@@ -259,7 +260,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                                         mSoundPop.disMiss();
                                     }
                                 }
-                            },5000) ;
+                            },5*1000) ;
                         }
                     });
                 }
@@ -496,6 +497,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         mTvConectDeviceName.setVisibility(View.INVISIBLE);
         mAct.setPlayContorlLay(false);
         PreferenceManager.getInstance().setStringValue(PreferenceManager.CONNECT_ARRAESS,"");
+        mDeviceType = -1;
     }
 
     /****
@@ -521,8 +523,9 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         mTvScan.setVisibility(View.GONE);
         mDeviceFrgmentContainer.setVisibility(View.GONE);
         mTvConectDeviceName.setVisibility(View.VISIBLE);
-        if( mService != null && mService.getDevice()!= null) {
-            if (!TextUtils.isEmpty(mService.getDevice().getName()) && (mService.getDevice().getName().endsWith("X") || mService.getDevice().getName().endsWith("x"))) {
+        if(isDeviceReady()) {
+            //5 airx
+            if (mDeviceType == 5) {
                 mRootView.findViewById(R.id.cl_center).setVisibility(View.VISIBLE);
                 mImageButtonIcon.setImageResource(R.drawable.icon_airx);
             } else {
@@ -1148,6 +1151,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
     @Override
     public void getDeviceType(int type, String name) {
+        mDeviceType = type;
         UserManager.getRequestHandler().requestAirUpdate(this,mService.getDevice().getName(),getVersion(),type);
 
     }

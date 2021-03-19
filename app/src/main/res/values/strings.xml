@@ -165,9 +165,11 @@
     <string name="device_type_unknown">Unknown device type</string>
 
     <string name="net_error_title">网络异常，请稍后重试</string>
+    <string name="install_weichat">请安装微信客户端</string>
     <string name="net_error_local_none">网络不可用，请检查您的网络设置</string>
     <string name="server_error">服务器异常，请稍后重试</string>
     <string name="start_app">欢迎使用BUTTONS，您可以使用本应用以实现相关设备的连接、控制等功能。\n请审慎阅读并充分理解《用户协议》和
 《隐私政策》的各项说明，如您同意，请点击以阅读并同意，开始接收我们的服务，相反可点击退出，退出本应用</string>
+
 
 </resources>

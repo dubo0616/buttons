@@ -42,24 +42,26 @@ import static com.gaia.button.utils.ConstantUtil.Net_Tag_User_WechatLogin;
 /***
  * 主登录页面
  */
-public class LoginMainActivity extends BaseActivity implements View.OnClickListener,IUserListener {
+public class LoginMainActivity extends BaseActivity implements View.OnClickListener, IUserListener {
     private LoginBtn mWechatLoginBtn;
     private LoginBtn mPhoneLoginBtn;
-    private ConstraintLayout mClLayout,ClAllow;
-    private TextView mTvKnow,tv_add_allow,tv_add_exit,tv_content;
+    private ConstraintLayout mClLayout, ClAllow;
+    private TextView mTvKnow, tv_add_allow, tv_add_exit, tv_content;
     private ImageView mIvClose;
     /**
      * 微信授权结果的广播
      */
     public final static String ACTION_AUTH_WEIXIN = "action_auth_weixin";
     private BroadcastReceiver mReceiverWeixinLogin;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_main);
         initView();
     }
-    private void initView(){
+
+    private void initView() {
         mClLayout = findViewById(R.id.cl_per);
         tv_add_allow = findViewById(R.id.tv_add_allow);
         tv_content = findViewById(R.id.tv_content);
@@ -70,11 +72,11 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
         mWechatLoginBtn = findViewById(R.id.btn_login_wechat);
         mPhoneLoginBtn = findViewById(R.id.btn_login_phone);
         mPhoneLoginBtn.setBtnLoginIcon(R.drawable.icon_phone_login);
-        mPhoneLoginBtn.setBtnLoginTextStyle(Color.WHITE,R.string.login_phone);
-        mWechatLoginBtn.setBtnLoginTextStyle(Color.WHITE,R.string.login_wechat);
+        mPhoneLoginBtn.setBtnLoginTextStyle(Color.WHITE, R.string.login_phone);
+        mWechatLoginBtn.setBtnLoginTextStyle(Color.WHITE, R.string.login_wechat);
         mPhoneLoginBtn.setOnClickListener(this);
         mWechatLoginBtn.setOnClickListener(this);
-        if(PreferenceManager.getInstance().isLogin()){
+        if (PreferenceManager.getInstance().isLogin()) {
             Intent intent = new Intent(LoginMainActivity.this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("Tab", 1);
@@ -83,9 +85,9 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
             return;
         }
 
-        if(!PreferenceManager.getInstance().getFristInstall()){
+        if (!PreferenceManager.getInstance().getFristInstall()) {
             ClAllow.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             mClLayout.setVisibility(View.GONE);
             ClAllow.setVisibility(View.GONE);
         }
@@ -119,10 +121,11 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
             }
         });
     }
-    private void init(TextView textView){
+
+    private void init(TextView textView) {
         ForegroundColorSpan defaultTextColorSpan = new ForegroundColorSpan(Color.parseColor("#1E1E1E")); // 默认文本颜色
         final String termsOfUse = getResources().getString(R.string.login_server_one);
-        final String privacyPolicy =getResources().getString(R.string.login_server_two);
+        final String privacyPolicy = getResources().getString(R.string.login_server_two);
         String tips = getResources().getString(R.string.start_app);
         SpannableString spannableStr = new SpannableString(tips);
         spannableStr.setSpan(defaultTextColorSpan, 0, tips.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -136,14 +139,15 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
                     ds.setColor(Color.parseColor("#FA4421"));
                     ds.setUnderlineText(false);
                 }
+
                 @Override
                 public void onClick(View widget) {
                     Intent intent = new Intent(LoginMainActivity.this, WebViewActivity.class);
                     intent.putExtra(WebViewActivity.URL_KEY, ConstantUtil.USER_URL);
-                    intent.putExtra(WebViewActivity.TITLE_KEY,termsOfUse);
+                    intent.putExtra(WebViewActivity.TITLE_KEY, termsOfUse);
                     startActivity(intent);
                 }
-            }, indexOfTermsOfUse-1, indexOfTermsOfUse + termsOfUse.length()+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }, indexOfTermsOfUse - 1, indexOfTermsOfUse + termsOfUse.length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         int indexOfPrivacyPolicy = tips.indexOf(privacyPolicy);
         if (indexOfPrivacyPolicy >= 0) {
@@ -158,24 +162,25 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
                 @Override
                 public void onClick(View widget) {
                     Intent intent = new Intent(LoginMainActivity.this, WebViewActivity.class);
-                    intent.putExtra(WebViewActivity.URL_KEY,ConstantUtil.PRIVATE_URL);
-                    intent.putExtra(WebViewActivity.TITLE_KEY,privacyPolicy);
+                    intent.putExtra(WebViewActivity.URL_KEY, ConstantUtil.PRIVATE_URL);
+                    intent.putExtra(WebViewActivity.TITLE_KEY, privacyPolicy);
                     startActivity(intent);
                 }
-            }, indexOfPrivacyPolicy-1, indexOfPrivacyPolicy + privacyPolicy.length()+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }, indexOfPrivacyPolicy - 1, indexOfPrivacyPolicy + privacyPolicy.length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         textView.setHighlightColor(Color.TRANSPARENT);
         textView.setText(spannableStr);
     }
+
     private void registerReceiver() {
         if (mReceiverWeixinLogin == null) {
             mReceiverWeixinLogin = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     String action = intent.getAction();
-                  if (action.equals(ACTION_AUTH_WEIXIN)) {
+                    if (action.equals(ACTION_AUTH_WEIXIN)) {
                         broadcastAuthWeixin(intent);
                     }
                 }
@@ -185,28 +190,31 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
             registerReceiver(mReceiverWeixinLogin, filter);
         }
     }
+
     private String access_token;
     private String openId;
     private String nickName;
     private String avatar;
     private String sex;
+
     private void broadcastAuthWeixin(Intent intent) {
-        if(intent == null){
+        if (intent == null) {
             return;
         }
-        Log.e("MMM","11111111111111111");
-         access_token = intent.getStringExtra("access_token");
-         openId = intent.getStringExtra("openId");
-         nickName = intent.getStringExtra("nickName");
-         avatar = intent.getStringExtra("avatar");
-         sex = intent.getStringExtra("sex");
-         UserManager.getRequestHandler().requestLoginWeixin(this, openId, access_token, nickName, avatar);
+
+        access_token = intent.getStringExtra("access_token");
+        openId = intent.getStringExtra("openId");
+        nickName = intent.getStringExtra("nickName");
+        avatar = intent.getStringExtra("avatar");
+        sex = intent.getStringExtra("sex");
+        UserManager.getRequestHandler().requestLoginWeixin(this, openId, access_token, nickName, avatar);
 
 
     }
+
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_login_wechat:
                 handleWechatLogin();
                 break;
@@ -234,29 +242,29 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(mReceiverWeixinLogin != null){
+        if (mReceiverWeixinLogin != null) {
             unregisterReceiver(mReceiverWeixinLogin);
         }
     }
 
-    private void handlePhoneLogin(){
-        Intent intent = new Intent(this,PhoneLoginActivity.class);
-        startActivityForResult(intent,1000);
+    private void handlePhoneLogin() {
+        Intent intent = new Intent(this, PhoneLoginActivity.class);
+        startActivityForResult(intent, 1000);
     }
 
     @Override
     public void onRequestSuccess(int requestTag, Object data) {
         hideWaitDialog();
-        if(requestTag == Net_Tag_User_WechatLogin){
-            if(data != null && data instanceof AccountInfo) {
+        if (requestTag == Net_Tag_User_WechatLogin) {
+            if (data != null && data instanceof AccountInfo) {
                 AccountInfo info = (AccountInfo) data;
                 PreferenceManager.getInstance().save(info);
                 Intent intent = new Intent(LoginMainActivity.this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent.putExtra("Tab", 1);
                 startActivity(intent);
                 finish();
-            }else{
+            } else {
                 Intent i = new Intent(LoginMainActivity.this, BindPhoneActivity.class);
                 i.putExtra("name", nickName);
                 i.putExtra("openId", openId);
@@ -281,8 +289,8 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
     @Override
     public void onRequestError(int requestTag, int errorCode, String errorMsg, Object data) {
         hideWaitDialog();
-        if(requestTag == Net_Tag_User_WechatLogin){
-            if(errorCode == 1200){
+        if (requestTag == Net_Tag_User_WechatLogin) {
+            if (errorCode == 1200) {
                 Intent intent = new Intent(LoginMainActivity.this, BindPhoneActivity.class);
                 startActivity(intent);
                 finish();
