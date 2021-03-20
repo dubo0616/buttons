@@ -212,12 +212,19 @@ public class PersonalSettingFragment extends BaseFragment implements PersonalSet
     @Override
     public void onRequestSuccess(int requestTag, Object data) {
         if (requestTag == ConstantUtil.Net_Tag_LogOut) {
-            PreferenceManager.getInstance().setLoginOut();
-            GaiaApplication.getInstance().clearActivities();
-            Intent intent = new Intent(getActivity(), LoginMainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            getActivity().finish();
+            UpdateInfoDialog infoDialog = UpdateInfoDialog.getInstance(getContext(), new UpdateInfoDialog.OnConfirmClickListener() {
+                @Override
+                public void onConfirm() {
+                    PreferenceManager.getInstance().setLoginOut();
+                    GaiaApplication.getInstance().clearActivities();
+                    Intent intent = new Intent(getActivity(), LoginMainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    getActivity().finish();
+                }
+            });
+            infoDialog.show();
+            infoDialog.setData("提示","确定退出？","");
         }else if(requestTag == ConstantUtil.Net_Tag_User_AUTOPLAY){
             AutoplayModel model = (AutoplayModel) data;
             if(model != null){
