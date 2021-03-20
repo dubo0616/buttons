@@ -131,7 +131,6 @@ public class DevicesListFragment extends BaseFragment implements DevicesListAdap
                     case DevicesListTabsAdapter.SCANNED_LIST_TYPE:
                         mListener.startScan(mDevicesListAdapter);
                         break;
-
                     case DevicesListTabsAdapter.BONDED_LIST_TYPE:
                         mListener.getBondedDevices(mDevicesListAdapter);
                         break;

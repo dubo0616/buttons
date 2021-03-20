@@ -140,8 +140,6 @@ public class PersonalSettingFragment extends BaseFragment implements PersonalSet
             }
         });
         mDownLoad = mRootView.findViewById(R.id.iv_download_play);
-        Log.e("HHHHH","================"+PreferenceManager.getInstance().getAccountInfo().toString());
-        Log.e("HHHHH","================"+PreferenceManager.getInstance().getIntValue(PreferenceManager.ACC_LOGIN_MOBILE_NETWORK));
         mDownLoad.setSelected(PreferenceManager.getInstance().getIntValue(PreferenceManager.ACC_LOGIN_MOBILE_NETWORK)==1);
         mDownLoad.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,7 +164,9 @@ public class PersonalSettingFragment extends BaseFragment implements PersonalSet
 
     }
     private void checkAPP(){
-        if(!BaseUtils.isWifiConnected(getActivity()) && (PreferenceManager.getInstance().getAccountInfo() != null && PreferenceManager.getInstance().getAccountInfo().getMobile_network() ==0)){
+        Log.e("KKKK","================"+PreferenceManager.getInstance().getAccountInfo().getMobile_network());
+        Log.e("KKKK","================"+BaseUtils.isWifiConnected(getActivity()) );
+        if(!BaseUtils.isWifiConnected(getActivity()) && (PreferenceManager.getInstance().getAccountInfo() != null && PreferenceManager.getInstance().getAccountInfo().getMobile_network() !=1)){
             UpdateInfoDialog infoDialog = UpdateInfoDialog.getInstance(getContext(), new UpdateInfoDialog.OnConfirmClickListener() {
                 @Override
                 public void onConfirm() {
@@ -236,12 +236,27 @@ public class PersonalSettingFragment extends BaseFragment implements PersonalSet
             UpdateModel model = (UpdateModel) data;
 //            checkUpdate("http://buttons.oss-cn-zhangjiakou.aliyuncs.com/app-apk/buttons-1608556167852700.apk");
             if(model.getIsUpdate() == 1 && !TextUtils.isEmpty(model.getUrl())){
-                checkUpdate(model.getUrl());
+                showUpdateDialog(model);
             }else {
                 displayShortToast("已经是最新版本");
             }
 
         }
+    }
+    private void showUpdateDialog(UpdateModel model){
+        if(getActivity() == null || isDetached() || model == null){
+            return;
+        }
+        UpdateInfoDialog infoDialog = UpdateInfoDialog.getInstance(getActivity(), new UpdateInfoDialog.OnConfirmClickListener() {
+            @Override
+            public void onConfirm() {
+                if (isHasPermission()) {
+                    checkUpdate(model.getUrl());
+                }
+            }
+        });
+        infoDialog.show();
+        infoDialog.setData("升级提示", model.getVersion(), model.getContent());
     }
     private boolean isLoading = false;
     private boolean isHasPermission(){

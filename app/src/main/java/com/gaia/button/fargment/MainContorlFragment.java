@@ -245,7 +245,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                         @Override
                         public void onItemClick(int position,String text) {
                             if(isDeviceReady()){
-                                mGaiaManager.sendPlayModeCommand(position+1);
+                                mGaiaManager.setEQModeCommand(position+1);
                             }
                             mTvContorlName.setText(text);
                             if(mSoundPop == null){
@@ -301,7 +301,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         mDeviceUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!BaseUtils.isWifiConnected(getActivity()) && (PreferenceManager.getInstance().getAccountInfo() != null && PreferenceManager.getInstance().getAccountInfo().getMobile_network() ==0)){
+                if(!BaseUtils.isWifiConnected(getActivity()) && (PreferenceManager.getInstance().getAccountInfo() != null && PreferenceManager.getInstance().getAccountInfo().getMobile_network() !=0)){
                     UpdateInfoDialog infoDialog = UpdateInfoDialog.getInstance(getContext(), new UpdateInfoDialog.OnConfirmClickListener() {
                         @Override
                         public void onConfirm() {
@@ -729,7 +729,6 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 //                if(PreferenceManager.getInstance().getIntValue(PreferenceManager.CONNECT_VOICE) != currVolume){
 //                    currVolume = PreferenceManager.getInstance().getIntValue(PreferenceManager.CONNECT_VOICE);
 //                }
-                Log.e("UUUUU","currVolume==="+currVolume);
                 if(isDeviceReady()) {
                     isClick = true;
                     mArcSeekBarInner.setProgress(currVolume);
@@ -843,7 +842,6 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                     String address = sharedPref.getString(Consts.BLUETOOTH_ADDRESS_KEY, "");
                     String name = sharedPref.getString(Consts.BLUETOOTH_NAME_KEY, "");
                     boolean done = mService.connectToDevice(address);
-                    Log.e("VVVVV","address===sss==="+address);
                     if (mService == null) {
                         startService();
                     }
@@ -994,7 +992,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             mGaiaManager.getANC();
             mGaiaManager.getControlCommand();
             mGaiaManager.getPlayStatus();
-            mGaiaManager.getPlayModeCommand();
+            mGaiaManager.getEQModeCommand();
             mGaiaManager.getGetDeviceType();
         }
     }
@@ -1275,16 +1273,6 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             if (!activity.mIsPaused) {
                 activity.handleMessageFromService(msg);
             }
-        }
-    }
-    private int count = 0;
-    private void onConnectionStateChanged(int connectionState) {
-        if(count >=3){
-            return;
-        }
-        count++;
-        if (connectionState == BluetoothService.State.DISCONNECTED) {
-            mService.reconnectToDevice();
         }
     }
     private boolean isLoading = false;

@@ -94,20 +94,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mEditText.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        Log.v("TAG", "TextView: ACTION_DOWN" + MotionEvent.ACTION_DOWN);
                         break;
                     case MotionEvent.ACTION_UP:
-
                         Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                         if (mCurFragment == mainDiscoveryFragment) {
                             intent.putExtra("type", 0);
                         } else {
                             intent.putExtra("type", 1);
                         }
-
                         startActivity(intent);
                         break;
                     default:
@@ -298,7 +294,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
 
     }
-
     private void initPlayLayout(boolean pers) {
         if (layout == null) {
             hasAllow = true;

@@ -472,18 +472,18 @@ public class MainGaiaManager extends AGaiaManager {
             case SET_PLAY_CONTROL:
                 Log.e("TTTT","================"+packet.getStatus()+"==="+packet.getEvent());
                 break;
-            case 0x02BD:
-                byte[] payload = packet.getPayload();
-                final int PAYLOAD_VALUE_OFFSET = 1;
-                final int PAYLOAD_VALUE_LENGTH =1;
-                final int PAYLOAD_MIN_LENGTH = PAYLOAD_VALUE_LENGTH + 1; // ACK status length is 1
-
-                if (payload.length >= PAYLOAD_MIN_LENGTH) {
-                    int level = GaiaUtils.extractIntFromByteArray(packet.getPayload(), PAYLOAD_VALUE_OFFSET,
-                            PAYLOAD_VALUE_LENGTH, false);
-                    Log.e("TTTT", "================" + packet.getStatus() + "level===" + level);
-                }
-                break;
+//            case 0x02BD:
+//                byte[] payload = packet.getPayload();
+//                final int PAYLOAD_VALUE_OFFSET = 1;
+//                final int PAYLOAD_VALUE_LENGTH =1;
+//                final int PAYLOAD_MIN_LENGTH = PAYLOAD_VALUE_LENGTH + 1; // ACK status length is 1
+//
+//                if (payload.length >= PAYLOAD_MIN_LENGTH) {
+//                    int level = GaiaUtils.extractIntFromByteArray(packet.getPayload(), PAYLOAD_VALUE_OFFSET,
+//                            PAYLOAD_VALUE_LENGTH, false);
+//                    Log.e("TTTT", "================" + packet.getStatus() + "level===" + level);
+//                }
+//                break;
             case GET_DEVICE_TYPE:
                 onReceiveDeviceTypeResult(packet);
                 break;
@@ -1110,12 +1110,16 @@ public class MainGaiaManager extends AGaiaManager {
         createRequest(createPacket(SET_PLAY_STATUS));
     }
 
-    //0:defualt
-    //1:classic
-    //2:jass
-    //3.pop
-    //4.rock
-    public void sendPlayModeCommand(int control) {
+    /****
+     * 0x02B8
+     * 0:defualt
+     * 1:classic
+     * 2:jass
+     * 3.pop
+     * 4.rock
+     * @param control
+     */
+    public void setEQModeCommand(int control) {
         final int PAYLOAD_LENGTH = 1;
         final int CONTROL_OFFSET = 0;
         byte[] payload = new byte[PAYLOAD_LENGTH];
@@ -1123,8 +1127,17 @@ public class MainGaiaManager extends AGaiaManager {
         createRequest(createPacket(SET_PLAY_MODE, payload));
     }
 
+    /****
+     * 0x02B9
+     * 0:defualt
+     * 1:classic
+     * 2:jass
+     * 3.pop
+     * 4.rock
+     * 获取EQ
+     */
 
-    public void getPlayModeCommand() {
+    public void getEQModeCommand() {
         createRequest(createPacket(GET_PLAY_MODE));
     }
 
@@ -1137,13 +1150,20 @@ public class MainGaiaManager extends AGaiaManager {
 
     /***
      * 设备重置
+     * 0x02BE
      */
     public void setDeviceReset(){
         byte[] payload = new byte[0];
         createRequest(createPacket(SET_DEVICE_RESET, payload));
     }
     /***
-     * 设备类型
+     * 获取设备类型
+     * BUTTONS Classic 0
+     * BUTTONS Ceramic 1
+     * BUTTONS Blackice 2
+     * BUTTONS AIR（老ADK平台） 3
+     * BUTTONS AIR（新ADK平台） 4
+     * BUTTONS Air X 5
      */
     public void getGetDeviceType(){
         byte[] payload = new byte[0];

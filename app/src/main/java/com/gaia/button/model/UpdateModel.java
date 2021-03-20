@@ -9,6 +9,7 @@ public class UpdateModel extends BaseResult implements Serializable {
     private int isForce;
     private String version;
     private String url;
+    private String content;
 
     public String getUrl() {
         return url;
@@ -28,6 +29,14 @@ public class UpdateModel extends BaseResult implements Serializable {
 
     public int getIsForce() {
         return isForce;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public void setIsForce(int isForce) {

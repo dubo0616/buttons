@@ -20,14 +20,17 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.gaia.button.R;
+import com.gaia.button.data.PreferenceManager;
 import com.gaia.button.fargment.PersonalSettingFragment;
 import com.gaia.button.model.UpdateModel;
 import com.gaia.button.net.BaseResult;
 import com.gaia.button.net.user.IUserListener;
 import com.gaia.button.net.user.UserManager;
+import com.gaia.button.utils.BaseUtils;
 import com.gaia.button.utils.ButtonsInstaller;
 import com.gaia.button.utils.Config;
 import com.gaia.button.utils.ConstantUtil;
+import com.gaia.button.view.UpdateInfoDialog;
 
 public class AboutActivity extends BaseActivity implements IUserListener {
     public static final int UPDATE_WRITE_EXTERNAL_STORAGE_PERMISSION_CODE = 11001;
@@ -56,12 +59,21 @@ public class AboutActivity extends BaseActivity implements IUserListener {
         mBtnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(updateModel != null && updateModel.getIsUpdate() == 1 && !TextUtils.isEmpty(updateModel.getUrl())){
-                    if(isHasPermission()){
-                        checkUpdate(updateModel.getUrl());
+                if (updateModel != null && updateModel.getIsUpdate() == 1 && !TextUtils.isEmpty(updateModel.getUrl())) {
+                    if (!BaseUtils.isWifiConnected(AboutActivity.this) && (PreferenceManager.getInstance().getAccountInfo() != null && PreferenceManager.getInstance().getAccountInfo().getMobile_network() != 1)) {
+                        UpdateInfoDialog infoDialog = UpdateInfoDialog.getInstance(AboutActivity.this, new UpdateInfoDialog.OnConfirmClickListener() {
+                            @Override
+                            public void onConfirm() {
+                                if (isHasPermission()) {
+                                    checkUpdate(updateModel.getUrl());
+                                }
+                            }
+                        });
+                        infoDialog.show();
+                        infoDialog.setData("提示", "当前使用移动网络,确认下载吗？", "");
+                        return;
                     }
-
-                }else {
+                } else {
                     finish();
                 }
             }
