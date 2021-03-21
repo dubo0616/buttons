@@ -7,6 +7,7 @@ package com.gaia.button.adapter;
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +22,9 @@ import com.gaia.button.holders.TextViewHolder;
 import com.gaia.button.holders.TopDeviceViewHolder;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>This class allows management of the data set for a devices list.</p>
@@ -34,6 +37,7 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
      */
     private  List<BluetoothDevice> mDevices = new ArrayList<>();
     private  List<BluetoothDevice> mConnect = new ArrayList<>();
+    private List<BluetoothDevice> mScanList = new ArrayList<>();
     /**
      * When the list has no item selected it is identified by this value.
      */
@@ -148,7 +152,46 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }
         }
     }
+    public void addScans(BluetoothDevice device, int rssi) {
+        if(device != null) {
+            mScanList.add(device);
+        }
+    }
+    public BluetoothDevice getAirxDevice(){
+        BluetoothDevice device = null;
+       if(mScanList.size() == 0){
+           return null;
+       }
+        for (int i = 0; i < mScanList.size(); i++) {
+            BluetoothDevice mdevice = mScanList.get(i);
+            if(mdevice == null){
+                continue;
+            }
+            if (!TextUtils.isEmpty(device.getName()) && (device.getName().endsWith("X") || device.getName().endsWith("x"))) {
+                device = mdevice;
+                break;
+            }
 
+        }
+       return device;
+    }
+    public BluetoothDevice getAirDevice(){
+        BluetoothDevice device = null;
+        if(mScanList.size() == 0){
+            return null;
+        }
+        for (int i = 0; i < mScanList.size(); i++) {
+            BluetoothDevice mdevice = mScanList.get(i);
+            if(mdevice == null){
+                continue;
+            }
+            if (!TextUtils.isEmpty(device.getName()) && (!device.getName().endsWith("X") && !device.getName().endsWith("x"))) {
+                device = mdevice;
+                break;
+            }
+        }
+        return device;
+    }
     /**
      * To completely reset the data set list and clear it completely.
      */

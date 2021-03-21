@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -30,7 +31,7 @@ import com.gaia.button.utils.Consts;
 /**
  * A fragment to mange the display of a list of Bluetooth devices.
  */
-public class DevicesListFragment extends BaseFragment implements DevicesListAdapter.IDevicesListAdapterListener {
+public class DevicesListFragment extends BaseFragment implements DevicesListAdapter.IDevicesListAdapterListener,View.OnClickListener {
     /**
      * The fragment argument representing the section number for this fragment.
      */
@@ -57,6 +58,7 @@ public class DevicesListFragment extends BaseFragment implements DevicesListAdap
     /**
      * Returns a new instance of this fragment for the given section number.
      */
+    private RelativeLayout mAirx,mAir;
     public static DevicesListFragment newInstance(int type,DevicesListFragmentListener l) {
         DevicesListFragment fragment = new DevicesListFragment(l);
         Bundle args = new Bundle();
@@ -142,7 +144,10 @@ public class DevicesListFragment extends BaseFragment implements DevicesListAdap
         LinearLayoutManager devicesListLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(devicesListLayoutManager);
         recyclerView.setHasFixedSize(true);
-
+        mAirx = rootView.findViewById(R.id.rl_button_airx);
+        mAir = rootView.findViewById(R.id.rl_button_air);
+        mAirx.setOnClickListener(this);
+        mAir.setOnClickListener(this);
         // specify an adapter for the recycler view
         mDevicesListAdapter = new DevicesListAdapter(getActivity(),this);
         recyclerView.setAdapter(mDevicesListAdapter);
@@ -217,6 +222,43 @@ public class DevicesListFragment extends BaseFragment implements DevicesListAdap
      */
     @SuppressWarnings("EmptyMethod") // not need to be implemented at the moment
     public void onResumeFragment() {
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v.getId() == R.id.rl_button_air){
+            BluetoothDevice device = mDevicesListAdapter.getAirDevice();
+         if(device  == null){
+             showTotast("等图引导Air");
+         }else{
+             onConnectButtonClicked(device);
+         }
+        }else if(v.getId() == R.id.rl_button_airx){
+            BluetoothDevice device =  mDevicesListAdapter.getAirxDevice();
+            if(device == null){
+                showTotast("等图引导Airx");
+            }else{
+                onConnectButtonClicked(device);
+            }
+        }
+    }
+    private void onConnectButtonClicked(BluetoothDevice device) {
+        if(device == null){
+            return;
+        }
+        SharedPreferences sharedPref = getActivity().getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(Consts.TRANSPORT_KEY, device.getType());
+        editor.putString(Consts.BLUETOOTH_NAME_KEY, device.getName());
+        editor.putString(Consts.BLUETOOTH_ADDRESS_KEY, device.getAddress());
+        editor.putInt(Consts.BLUETOOTH_NAME_BOND_NONE, device.getBondState());
+        editor.apply();
+        if(device.getBondState() == BluetoothDevice.BOND_NONE) {
+            device.createBond();
+        }
+
+        // keep information
+
     }
 
     /**

@@ -130,7 +130,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             ParseBluetoothAdData.AdData adData = ParseBluetoothAdData.INSTANCE.parse(scanRecord);
 //            Log.e("AdData", "Received potential GAIA packet: " + GaiaUtils.getHexadecimalStringFromBytes(adData.getManufacturerByte()));
             if (mDevicesAdapter != null && BaseUtils.isButtonDevice(device)) {
-                mDevicesAdapter.add(device, rssi);
+                mDevicesAdapter.addScans(device, rssi);
             }
 
         }
