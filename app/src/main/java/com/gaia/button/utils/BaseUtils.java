@@ -1,6 +1,7 @@
 package com.gaia.button.utils;
 
 import android.app.ActivityManager;
+import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -639,6 +640,16 @@ public class BaseUtils {
 		NetworkInfo wifiNetworkInfo = connectivityManager
 				.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 		if (wifiNetworkInfo.isConnected()) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isButtonDevice(BluetoothDevice device) {
+		if(device == null || TextUtils.isEmpty(device.getAddress())){
+			return false;
+		}
+		if(device.getAddress().startsWith("F4:0E")){
 			return true;
 		}
 		return false;

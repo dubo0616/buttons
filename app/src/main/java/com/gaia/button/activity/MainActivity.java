@@ -6,16 +6,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -35,12 +31,11 @@ import com.gaia.button.fargment.MainProductFragment;
 import com.gaia.button.model.AccountInfo;
 import com.gaia.button.net.user.IUserListener;
 import com.gaia.button.net.user.UserManager;
-import com.gaia.button.view.PlayMoveLayout;
+import com.gaia.button.view.PlayContorlMoveLayout;
 
 import static com.gaia.button.utils.ConstantUtil.Net_Tag_User_GetUserInfo;
-import static com.gaia.button.utils.ConstantUtil.Net_Tag_User_WechatLogin;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener, PlayMoveLayout.MainContorlListener, IUserListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener, PlayContorlMoveLayout.MainContorlListener, IUserListener {
 
     public static final String FORM_KEY = "form_key";
     private static final int STATE_DISCOVERY = 0;
@@ -59,7 +54,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private TextView mEditText;
     private ImageView mPersonal;
     private int mTab = 0;
-    private PlayMoveLayout layout;
+    private PlayContorlMoveLayout layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -251,7 +246,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (mCurFragment == mainContorlFragment) {
-            if (mainContorlFragment.isBack()) {
+            if (mainContorlFragment.isCanBack()) {
                 return true;
             }
         }
@@ -297,7 +292,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private void initPlayLayout(boolean pers) {
         if (layout == null) {
             hasAllow = true;
-            layout = new PlayMoveLayout(this);
+            layout = new PlayContorlMoveLayout(this);
             layout.setListener(this);
         }
         layout.setAllow(pers);
@@ -321,8 +316,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     @Override
-    public boolean sendControlCommand(int comm) {
-        return mainContorlFragment.sendControlCommand(comm);
+    public boolean sendPlayControlCommand(int comm) {
+        return mainContorlFragment.sendPlayControlCommand(comm);
     }
 
     private boolean hasAllow = false;

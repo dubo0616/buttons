@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -22,6 +23,7 @@ public  class BaseFragment extends Fragment  implements BREDRDiscoveryReceiver.B
 
     protected  Context mContext;
     protected final BREDRDiscoveryReceiver mDiscoveryReceiver = new BREDRDiscoveryReceiver(this);
+    private MyVolumeReceiver mVolumeReceiver = new MyVolumeReceiver();
     protected void searchKey(String key){
 
     }
@@ -145,6 +147,30 @@ public  class BaseFragment extends Fragment  implements BREDRDiscoveryReceiver.B
             mPd.hideDialog();
         }
     }
+    private class MyVolumeReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals("android.media.VOLUME_CHANGED_ACTION")) {
+                changeVolume();
+                //int currVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+            }
+        }
+    }
+    /****
+     * 音量变化广播
+     */
+    protected void myRegisterReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.media.VOLUME_CHANGED_ACTION");
+        mContext.registerReceiver(mVolumeReceiver, filter);
+    }
+    protected  void unRegisterReceiver(){
+        mContext.unregisterReceiver(mVolumeReceiver);
+    }
+    protected void changeVolume(){
+
+    }
+
 
     // ====== PUBLIC METHODS =======================================================================
 

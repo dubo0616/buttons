@@ -1099,7 +1099,7 @@ public class MainGaiaManager extends AGaiaManager {
 //            2:forward（下一曲）
 //            3:play（播放）
 //            4:pause（暂停）
-    public void sendControlCommand(int control) {
+    public void sendPlayControlCommand(int control) {
         final int PAYLOAD_LENGTH = 1;
         final int CONTROL_OFFSET = 0;
         byte[] payload = new byte[PAYLOAD_LENGTH];

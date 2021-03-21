@@ -44,6 +44,16 @@ public class ProductAdater extends RecyclerView.Adapter<ProductAdater.ViewHolder
         notifyDataSetChanged();
     }
 
+    public void addIndexList(List<ProductModel> list) {
+        if(list == null){
+            return;
+        }
+        for(ProductModel topdata :list){
+            topdata.setTop(1);
+            mList.add(0,topdata);
+        }
+        notifyDataSetChanged();
+    }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

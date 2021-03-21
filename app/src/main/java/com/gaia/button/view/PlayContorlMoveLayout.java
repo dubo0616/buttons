@@ -3,14 +3,12 @@ package com.gaia.button.view;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,8 +16,9 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.gaia.button.R;
 import com.gaia.button.utils.DensityUtil;
+import com.gaia.button.utils.PlayControl;
 
-public class PlayMoveLayout extends ConstraintLayout {
+public class PlayContorlMoveLayout extends ConstraintLayout {
     private Context mContext;
     private ImageView iv_paly_pause, iv_pre, iv_next, iv_small;
     private ConstraintLayout play_contorl;
@@ -35,6 +34,12 @@ public class PlayMoveLayout extends ConstraintLayout {
     private int screenHeight;
     private int screenWidth;
     private boolean isSmallShow = false;
+
+    // 悬浮栏位置
+    private final static int LEFT = 0;
+    private final static int RIGHT = 1;
+    private final static int TOP = 3;
+    private final static int BUTTOM = 4;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -70,7 +75,7 @@ public class PlayMoveLayout extends ConstraintLayout {
                 float currentY = mLayoutParams.y;
                 // 拖动
                 if (isScroll) {
-                    if(isSmallShow) {
+                    if (isSmallShow) {
                         autoView();
                     }
                     // setBackgroundDrawable(closeDrawable);
@@ -85,8 +90,8 @@ public class PlayMoveLayout extends ConstraintLayout {
 
                 if (Math.abs(Math.abs(currentX) - Math.abs(mLayoutParams.x)) > 10 || (Math.abs(Math.abs(currentY) - Math.abs(mLayoutParams.y)) > 10)) {
                     isMove = true;
-                }else{
-                    if(isSmallShow) {
+                } else {
+                    if (isSmallShow) {
                         mLayoutParams.width = DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext, 90);
                         mLayoutParams.height = dpi;
                         mWindowManager.removeView(view);
@@ -114,13 +119,13 @@ public class PlayMoveLayout extends ConstraintLayout {
         int[] location = new int[2];
         getLocationOnScreen(location);
         //左侧
-        if(isSmallShow) {
+        if (isSmallShow) {
             if (location[0] < screenWidth / 2 - getWidth() / 2) {
                 updateViewPosition(LEFT);
             } else {
                 updateViewPosition(RIGHT);
             }
-        }else{
+        } else {
             updateViewPosition(RIGHT);
         }
     }
@@ -157,10 +162,12 @@ public class PlayMoveLayout extends ConstraintLayout {
     }
 
     public interface MainContorlListener {
-        boolean sendControlCommand(int comm);
+        boolean sendPlayControlCommand(int comm);
     }
+
     private boolean allow;
-    public PlayMoveLayout(@NonNull Context context) {
+
+    public PlayContorlMoveLayout(@NonNull Context context) {
         this(context, null);
     }
 
@@ -168,7 +175,7 @@ public class PlayMoveLayout extends ConstraintLayout {
         this.allow = allow;
     }
 
-    public PlayMoveLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public PlayContorlMoveLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
@@ -176,14 +183,16 @@ public class PlayMoveLayout extends ConstraintLayout {
         this.mListener = listener;
     }
 
-    public PlayMoveLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public PlayContorlMoveLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
         initView();
     }
+
     private View view;
+
     private void initView() {
-         view = LayoutInflater.from(mContext).inflate(R.layout.layout_play, this);
+        view = LayoutInflater.from(mContext).inflate(R.layout.layout_play, this);
         iv_paly_pause = findViewById(R.id.iv_paly_pause);
         iv_pre = findViewById(R.id.iv_pre);
         iv_next = findViewById(R.id.iv_next);
@@ -194,7 +203,7 @@ public class PlayMoveLayout extends ConstraintLayout {
             @Override
             public void onClick(View v) {
                 isSmallShow = true;
-                if(isSmallShow){
+                if (isSmallShow) {
                     mLayoutParams.width = DensityUtil.dip2px(mContext, 46);
                     mLayoutParams.height = DensityUtil.dip2px(mContext, 46);
                     mWindowManager.removeView(view);
@@ -209,7 +218,7 @@ public class PlayMoveLayout extends ConstraintLayout {
             @Override
             public void onClick(View v) {
                 if (mListener != null) {
-                    if (mListener.sendControlCommand(iv_paly_pause.isSelected() ? 3 : 4)) {
+                    if (mListener.sendPlayControlCommand(iv_paly_pause.isSelected() ? PlayControl.PLAY.getValue() : PlayControl.PAUSE.getValue())) {
                         iv_paly_pause.setSelected(!iv_paly_pause.isSelected());
                     }
                 }
@@ -219,7 +228,7 @@ public class PlayMoveLayout extends ConstraintLayout {
             @Override
             public void onClick(View v) {
                 if (mListener != null) {
-                    if (mListener.sendControlCommand(1)) {
+                    if (mListener.sendPlayControlCommand(PlayControl.BACKWARD.getValue())) {
                         iv_paly_pause.setSelected(false);
                     }
                 }
@@ -229,7 +238,7 @@ public class PlayMoveLayout extends ConstraintLayout {
             @Override
             public void onClick(View v) {
                 if (mListener != null) {
-                    if (mListener.sendControlCommand(2)) {
+                    if (mListener.sendPlayControlCommand(PlayControl.FORWARD.getValue())) {
                         iv_paly_pause.setSelected(false);
                     }
                 }
@@ -241,9 +250,9 @@ public class PlayMoveLayout extends ConstraintLayout {
     private void initWindow(View view) {
         mWindowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
         mLayoutParams = new WindowManager.LayoutParams();
-        if(allow) {
+        if (allow) {
             mLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        }else{
+        } else {
             mLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION;
         }
         mLayoutParams.format = PixelFormat.RGBA_8888; // 设置图片格式，效果为背景透明
@@ -256,16 +265,17 @@ public class PlayMoveLayout extends ConstraintLayout {
         //屏高
         screenHeight = DensityUtil.getScreenHeight(mContext);
         int m = DensityUtil.dip2px(mContext, 90);
-        mLayoutParams.width = DensityUtil.getScreenWidth(mContext)-m;
+        mLayoutParams.width = DensityUtil.getScreenWidth(mContext) - m;
         mLayoutParams.height = dpi;
-        try{
-            if(view.getWindowToken() != null){
+        try {
+            if (view.getWindowToken() != null) {
                 mWindowManager.removeView(view);
             }
             mWindowManager.addView(view, mLayoutParams);
-        }catch(IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
         }
     }
+
     public void setPause(boolean show) {
         iv_paly_pause.setSelected(show);
     }
@@ -282,21 +292,16 @@ public class PlayMoveLayout extends ConstraintLayout {
     public void hide() {
         setVisibility(View.GONE);
     }
+
     public void destory() {
-        try{
+        try {
             hide();
-            if(view.getWindowToken() != null){
+            if (view.getWindowToken() != null) {
                 mWindowManager.removeView(view);
             }
-        }catch(IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
         }
 
 
     }
-
-    // 悬浮栏位置
-    private final static int LEFT = 0;
-    private final static int RIGHT = 1;
-    private final static int TOP = 3;
-    private final static int BUTTOM = 4;
 }

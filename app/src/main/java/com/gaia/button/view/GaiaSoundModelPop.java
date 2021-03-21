@@ -11,11 +11,13 @@ import android.widget.PopupWindow;
 import com.gaia.button.R;
 import com.gaia.button.utils.DensityUtil;
 
-public class GaiaSoundModePop {
-
+/****
+ * 显示流行摇滚等图片
+ */
+public class GaiaSoundModelPop {
     private PopupWindow popupWindow;
     private ImageView mImageView;
-    public GaiaSoundModePop(Context context) {
+    public GaiaSoundModelPop(Context context) {
         View root = LayoutInflater.from(context).inflate(R.layout.layout_popupwindow_sound, null);
         mImageView=root.findViewById(R.id.iv_sound);
         popupWindow = new PopupWindow(context);

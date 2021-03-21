@@ -143,11 +143,7 @@ public class MainProductFragment extends BaseFragment implements ProductAdater.P
         }else if(requestTag == ConstantUtil.Net_Tag_Product_TOP){
             ProductModelList list = (ProductModelList) data;
             if(list != null && list.getData() != null && list.getData().size()>0){
-                for(ProductModel topdata :list.getData()){
-                    topdata.setTop(1);
-                    mList.add(0,topdata);
-                }
-                mProductAdater.setData(mList);
+                mProductAdater.addIndexList(list.getData());
                 mTvNodata.setVisibility(View.GONE);
             }
         }
