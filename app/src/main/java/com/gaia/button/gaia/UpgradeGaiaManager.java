@@ -350,10 +350,13 @@ public class UpgradeGaiaManager extends AGaiaManager implements UpgradeManager.U
      * @param event
      *              The event to register with.
      */
+    //todo   此处修改ota前注册notification时的verndorId
     @SuppressWarnings("SameParameterValue") // the parameter is always VMU_PACKET in this application
     private void registerNotification (@GAIA.NotificationEvents int event) {
         try {
-            GaiaPacket packet = GaiaPacketBLE.buildGaiaNotificationPacket(GAIA.VENDOR_QUALCOMM, GAIA
+//            GaiaPacket packet = GaiaPacketBLE.buildGaiaNotificationPacket(GAIA.VENDOR_QUALCOMM, GAIA
+//                    .COMMAND_REGISTER_NOTIFICATION, event, null, getTransportType());
+            GaiaPacket packet = GaiaPacketBLE.buildGaiaNotificationPacket(0x000A, GAIA
                     .COMMAND_REGISTER_NOTIFICATION, event, null, getTransportType());
             createRequest(packet);
         } catch (GaiaException e) {

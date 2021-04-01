@@ -4,10 +4,15 @@ import android.annotation.SuppressLint;
 
 import com.gaia.button.data.PreferenceManager;
 import com.gaia.button.model.AccountInfo;
+import com.gaia.button.model.UpgradeModel;
 import com.gaia.button.net.BaseResult;
 import com.gaia.button.net.INetListener;
+import com.gaia.button.net.JsonHelper;
 import com.gaia.button.net.NetManager;
 import com.gaia.button.utils.ConstantUtil;
+import com.google.gson.Gson;
+
+import java.util.Collections;
 
 
 @SuppressLint("UseSparseArrays")
@@ -32,8 +37,14 @@ public class UserImpl implements INetListener {
 	// Net listener
 	public void onNetResponse(int requestTag, BaseResult responseData,
 			int requestId, int errorCode, String responseStr) {
-		if(responseData != null && responseData.getErrorCode() == 0){
-			handleSuccessResult(requestId, requestTag, responseData, responseStr);
+		//todo   测试用的升级接口，返回code=200，在此处单独接收解析
+		if(responseData != null && responseData.getErrorCode() == 0 || responseData.getErrorCode() == 200){
+			if(responseData.getErrorCode() == 0) {
+				handleSuccessResult(requestId, requestTag, responseData, responseStr);
+			}else {
+				UpgradeModel upgradeModel = new Gson().fromJson(responseStr, UpgradeModel.class);
+				handleSuccessResult(requestId, requestTag, upgradeModel, responseStr);
+			}
 		}else{
 			handleFailedResult(requestId, requestTag, errorCode, "网络错误，请稍后重试", responseData);
 		}

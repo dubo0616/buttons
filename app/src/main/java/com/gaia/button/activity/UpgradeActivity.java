@@ -22,8 +22,18 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.downloader.Error;
+import com.downloader.OnCancelListener;
+import com.downloader.OnDownloadListener;
+import com.downloader.OnPauseListener;
+import com.downloader.OnProgressListener;
+import com.downloader.OnStartOrResumeListener;
+import com.downloader.PRDownloader;
+import com.downloader.Progress;
+import com.downloader.request.DownloadRequest;
 import com.gaia.button.R;
 import com.gaia.button.fargment.FilePickerFragment;
+import com.gaia.button.fargment.NetUpgradeFragment;
 import com.gaia.button.fargment.UpgradeOptionsFragment;
 import com.gaia.button.services.BluetoothService;
 import com.gaia.button.services.GAIAGATTBLEService;
@@ -39,7 +49,7 @@ import com.qualcomm.qti.libraries.vmupgrade.codes.ReturnCodes;
 import java.io.File;
 
 public class UpgradeActivity extends ServiceActivity implements FilePickerFragment.FilePickerFragmentListener,
-        VMUpgradeDialog.UpgradeDialogListener, UpgradeOptionsFragment.UpgradeOptionsFragmentListener {
+        VMUpgradeDialog.UpgradeDialogListener, UpgradeOptionsFragment.UpgradeOptionsFragmentListener, NetUpgradeFragment.NetUpgradeFragmentListener {
 
     // ====== CONSTS ===============================================================================
 
@@ -56,6 +66,8 @@ public class UpgradeActivity extends ServiceActivity implements FilePickerFragme
 
     // ====== PRIVATE FIELDS =======================================================================
 
+    //todo  添加可以从服务器下载并升级的fragment
+    private NetUpgradeFragment netUpgradeFragment;
     /**
      * The fragment used to display the file explorer.
      */
@@ -85,6 +97,7 @@ public class UpgradeActivity extends ServiceActivity implements FilePickerFragme
      */
     private long mStartTime = 0;
 
+    private String onLineVersion, deviceVersion, deviceName, downUrl;
 
     // ====== ACTIVITY METHODS =====================================================================
 
@@ -119,7 +132,8 @@ public class UpgradeActivity extends ServiceActivity implements FilePickerFragme
         super.onResumeFragments();
         if (mService != null) {
             Fragment fragment = mService.getTransport() == BluetoothService.Transport.BLE ? mOptionsFragment
-                    : mService.getTransport() == BluetoothService.Transport.BR_EDR ? mFilePickerFragment
+//                    : mService.getTransport() == BluetoothService.Transport.BR_EDR ? mFilePickerFragment
+                    : mService.getTransport() == BluetoothService.Transport.BR_EDR ? netUpgradeFragment
                     : null;
             displayFragment(fragment);
             mService.enableUpgrade(true);
@@ -209,7 +223,8 @@ public class UpgradeActivity extends ServiceActivity implements FilePickerFragme
         mService.enableUpgrade(true);
         mService.enableDebugLogs(Consts.DEBUG);
         Fragment fragment = mService.getTransport() == BluetoothService.Transport.BLE ? mOptionsFragment
-                : mService.getTransport() == BluetoothService.Transport.BR_EDR ? mFilePickerFragment
+//                : mService.getTransport() == BluetoothService.Transport.BR_EDR ? mFilePickerFragment
+                : mService.getTransport() == BluetoothService.Transport.BR_EDR ? netUpgradeFragment
                 : null;
         displayFragment(fragment);
 
@@ -361,9 +376,24 @@ public class UpgradeActivity extends ServiceActivity implements FilePickerFragme
             actionBar.setHomeAsUpIndicator(R.drawable.ic_back_24dp);
         }
 
+        try {
+            onLineVersion = getIntent().getStringExtra("onLineVersion");
+            deviceVersion = getIntent().getStringExtra("deviceVersion");
+            downUrl = getIntent().getStringExtra("downUrl");
+            deviceName = getIntent().getStringExtra("upgradeDevice");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         mFilePickerFragment = FilePickerFragment.newInstance();
+        netUpgradeFragment = NetUpgradeFragment.newInstance();
         mOptionsFragment = UpgradeOptionsFragment.newInstance();
 
+        Bundle bundle = new Bundle();
+        bundle.putString("onLineVersion", onLineVersion);
+        bundle.putString("deviceVersion", deviceVersion);
+        bundle.putString("downUrl", downUrl);
+        bundle.putString("upgradeDevice", deviceName);
+        netUpgradeFragment.setArguments(bundle);
         initDialog();
     }
 
@@ -736,4 +766,55 @@ public class UpgradeActivity extends ServiceActivity implements FilePickerFragme
         builder.show();
     }
 
+    @Override
+    public void onStartDownUpgrade() {
+        beginDown();
+    }
+    private File file;
+    private void beginDown(){
+            file = new File("data/data/" + getPackageName() + "/" +deviceName+ ".bin");
+            if (file.exists()) {
+                startUpgrade(file);
+                return;
+            }
+            showWaitDialog("下载中");
+            DownloadRequest request = PRDownloader.download(downUrl, "data/data/" + getPackageName(), deviceName+ ".bin")
+                    .build();
+            request.setConnectTimeout(30000);
+            request.setReadTimeout(30000);
+            int downloadId = request.setOnStartOrResumeListener(new OnStartOrResumeListener() {
+                @Override
+                public void onStartOrResume() {
+                }
+            })
+                    .setOnPauseListener(new OnPauseListener() {
+                        @Override
+                        public void onPause() {
+                        }
+                    })
+                    .setOnCancelListener(new OnCancelListener() {
+                        @Override
+                        public void onCancel() {
+                        }
+                    })
+                    .setOnProgressListener(new OnProgressListener() {
+                        @Override
+                        public void onProgress(Progress progress) {
+                        }
+                    })
+                    .start(new OnDownloadListener() {
+                        @Override
+                        public void onDownloadComplete() {
+                            hideWaitDialog();
+                            file = new File("data/data/" + getPackageName() + "/" +deviceName+ ".bin");
+                            startUpgrade(file);
+                        }
+
+                        @Override
+                        public void onError(Error error) {
+                            hideWaitDialog();
+                        }
+
+                    });
+    }
 }

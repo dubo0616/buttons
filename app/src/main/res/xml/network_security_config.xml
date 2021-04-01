@@ -4,4 +4,7 @@
         <domain includeSubdomains="true">img.lovetoshare168.com</domain>
         <domain includeSubdomains="true">buttons.oss-cn-zhangjiakou.aliyuncs.com</domain>
     </domain-config>
+
+    <base-config cleartextTrafficPermitted="true" />
+
 </network-security-config>

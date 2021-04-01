@@ -90,10 +90,10 @@ public class DeviceDiscoveryActivity extends BluetoothActivity implements
 //            mDevicesAdapter.add(null,0);
 //            hasAdd = true;
 //        }
-        if(mDevicesAdapter != null) {
-            getBondedDevices(mDevicesAdapter);
-        }
-        scanDevices(true);
+//        if(mDevicesAdapter != null) {
+//            getBondedDevices(mDevicesAdapter);
+//        }
+//        scanDevices(true);
     }
 
     @Override // DevicesListFragmentListener

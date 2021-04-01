@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.gaia.button.data.PreferenceManager;
 import com.gaia.button.net.INetListener;
+import com.gaia.button.net.NetConfig;
 import com.gaia.button.net.NetManager;
 import com.gaia.button.net.builder.HttpSubmitDataManager;
 import com.gaia.button.utils.ConstantUtil;
@@ -388,19 +389,23 @@ public class UserRequestProxy implements IUserInterface {
         addObserver(observer, mCurrentRequestId);
     }
 
+    //todo 测试ota接口，传参修改，url修改
     @Override
     public void requestAirUpdate(IUserListener observer, String name, String version,int device_id) {
         JSONObject mJsonObject = new JSONObject();
         try {
-            mJsonObject.put("version",version);
-            mJsonObject.put("device_name",name);
-            mJsonObject.put("device_id",name);
+//            mJsonObject.put("version",version);
+//            mJsonObject.put("device_name",name);
+//            mJsonObject.put("device_id",name);
+            mJsonObject.put("deviceCode", name);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        mCurrentRequestId = NetManager.getHttpConnect().sendRequest(
-                ConstantUtil.NEW_BAPI_URL+ ConstantUtil.SERVER_URL_NAME_GetFirmwareVersion,
-                ConstantUtil.Net_Tag_User_GetFirmwareVersion, mJsonObject.toString(), iNetListener);
+//        mCurrentRequestId = NetManager.getHttpConnect().sendRequest(
+//                ConstantUtil.NEW_BAPI_URL+ ConstantUtil.SERVER_URL_NAME_GetFirmwareVersion,
+//                ConstantUtil.Net_Tag_User_GetFirmwareVersion, mJsonObject.toString(), iNetListener);
+//        addObserver(observer, mCurrentRequestId);
+        mCurrentRequestId = NetManager.getHttpConnect().sendRequest(ConstantUtil.NEW_OTA_URL.replace("%s", name), ConstantUtil.Net_Tag_User_GetFirmwareVersion, mJsonObject.toString(), iNetListener);
         addObserver(observer, mCurrentRequestId);
     }
 

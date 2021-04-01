@@ -46,6 +46,8 @@ import com.gaia.button.data.PreferenceManager;
 import com.gaia.button.gaia.MainGaiaManager;
 import com.gaia.button.model.AccountInfo;
 import com.gaia.button.model.UpdateModel;
+import com.gaia.button.model.UpgradeModel;
+import com.gaia.button.net.NetConfig;
 import com.gaia.button.net.user.IUserListener;
 import com.gaia.button.net.user.UserManager;
 import com.gaia.button.services.BluetoothService;
@@ -56,6 +58,7 @@ import com.gaia.button.utils.Config;
 import com.gaia.button.utils.Consts;
 import com.gaia.button.utils.DensityUtil;
 import com.gaia.button.utils.DeviceType;
+import com.gaia.button.utils.LogUtil;
 import com.gaia.button.utils.ParseBluetoothAdData;
 import com.gaia.button.utils.PlayControl;
 import com.gaia.button.utils.PlayModel;
@@ -70,8 +73,12 @@ import com.qualcomm.qti.libraries.gaia.GAIA;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static android.app.Activity.RESULT_OK;
@@ -87,7 +94,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
     /**
      * The tag to use for the logs.
      */
-    private static final String TAG = "ServiceActivity";
+    private static final String TAG = "Service Activity";
     /**
      * The BLE service to communicate with any device.
      */
@@ -122,7 +129,8 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
     private MainGaiaManager mGaiaManager;
 
     private DevicesListAdapter mDevicesAdapter;
-    private UpdateModel mUpdateModel;
+//    private UpdateModel mUpdateModel;
+    private UpgradeModel upgradeModel;
 
     private final BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
         @Override
@@ -389,31 +397,39 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
     private void download() {
         if (isDeviceReady()) {
-            if (mUpdateModel == null || mUpdateModel.getIsUpdate() == 2) {
+//            if (mUpdateModel == null || mUpdateModel.getIsUpdate() == 2) {
+//                displayShortToast("已经是最新版本");
+//                return;
+//            }
+
+            if (upgradeModel == null || Utils.compareVersion(upgradeModel.data.binVersion, mVersion) != 1) {
                 displayShortToast("已经是最新版本");
                 return;
             }
             UpdateInfoDialog infoDialog = UpdateInfoDialog.getInstance(getActivity(), new UpdateInfoDialog.OnConfirmClickListener() {
                 @Override
                 public void onConfirm() {
-                    if (mUpdateModel != null) {
-                        if (mUpdateModel.getIsUpdate() == 1 && !TextUtils.isEmpty(mUpdateModel.getUrl())) {
-                            checkUpdate(mUpdateModel.getUrl());
+//                    if (mUpdateModel != null) {
+//                        if (mUpdateModel.getIsUpdate() == 1 && !TextUtils.isEmpty(mUpdateModel.getUrl())) {
+//                            checkUpdate(mUpdateModel.getUrl());
+//                        }
+//                    }
+                    if (upgradeModel != null) {
+                        if (Utils.compareVersion(upgradeModel.data.binVersion, mVersion) == 1 && !TextUtils.isEmpty(upgradeModel.data.binPath)) {
+//                        if (!TextUtils.isEmpty(upgradeModel.data.binPath)) {
+//                            checkUpdate(upgradeModel.data.binPath);
+//                        }
+                        Intent intent = new Intent(mContext, UpgradeActivity.class);
+                        intent.putExtra("onLineVersion", upgradeModel.data.binVersion);
+                        intent.putExtra("deviceVersion", mVersion);
+                        intent.putExtra("downUrl", upgradeModel.data.binPath);
+                        intent.putExtra("upgradeDevice", upgradeModel.data.deviceName);
+                        startActivity(intent);
                         }
                     }
-
-                    //                    UserManager.getRequestHandler().requestAirUpdate(MainContorlFragment.this,mService.getDevice().getName(),getVersion());
-//                            File file = new File("/storage/emulated/0/Download/WeiXin/ButtonsAirX_BT_FW_V1.3.1_20210204.bin");
-//                            if(file.exists()){
-//                                mService.enableUpgrade(true);
-//                                mService.startUpgrade(file);
-//                            }
-                    startActivity(new Intent(mContext, UpgradeActivity.class));
                 }
             });
             infoDialog.show();
-
-//                    startActivity(new Intent(mContext, UpgradeActivity.class));
         } else {
             displayShortToast("设备未连接");
         }
@@ -446,8 +462,6 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                     mGaiaManager.setAncControl(false);
                     mGaiaManager.setAmbientControl(false);
                 }
-
-
                 break;
             case 2:
                 mStandard.setSelected(false);
@@ -507,7 +521,6 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
     /***
      * 连接设备ui处理
      */
-
     private void connectDevice() {
         mImageButtonIcon.setVisibility(View.VISIBLE);
         mArcSeekBarInner.setVisibility(View.VISIBLE);
@@ -629,13 +642,18 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
     @Override
     public void onRequestSuccess(int requestTag, Object data) {
         if (requestTag == Net_Tag_User_GetFirmwareVersion) {
-            if (data instanceof UpdateModel) {
-                mUpdateModel = (UpdateModel) data;
-                if (mUpdateModel != null && mUpdateModel.getIsUpdate() == 1) {
+//            if (data instanceof UpdateModel) {
+//                mUpdateModel = (UpdateModel) data;
+//                if (mUpdateModel != null && mUpdateModel.getIsUpdate() == 1) {
+//                    mUpdatePoint.setVisibility(View.VISIBLE);
+//                }
+//            }
+            if(data instanceof UpgradeModel){
+                upgradeModel = (UpgradeModel) data;
+                if(upgradeModel != null && Utils.compareVersion(upgradeModel.data.binVersion, mVersion) == 1){
                     mUpdatePoint.setVisibility(View.VISIBLE);
                 }
             }
-
         }
 
     }
@@ -657,12 +675,18 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
     @Override
     public void getBondedDevices(DevicesListAdapter mDevicesListAdapter) {
-        Set<BluetoothDevice> listDevices;
-        if (mBtAdapter != null && mBtAdapter.isEnabled()) {
-            listDevices = mBtAdapter.getBondedDevices();
-        } else {
-            listDevices = Collections.emptySet();
+        Set<BluetoothDevice> listDevices = new HashSet<>();
+
+        //todo 修改顶部设备列表，只获取当前已配对的设备，不显示配对的历史设备
+        final Map<String, BluetoothDevice> audioConnected = getAudioConnectedAddress();
+        for (BluetoothDevice b:audioConnected.values()) {
+            listDevices.add(b);
         }
+//        if (mBtAdapter != null && mBtAdapter.isEnabled()) {
+//            listDevices = mBtAdapter.getBondedDevices();
+//        } else {
+//            listDevices = Collections.emptySet();
+//        }
         ArrayList<BluetoothDevice> listBLEDevices = new ArrayList<>();
 
         for (BluetoothDevice device : listDevices) {
@@ -677,7 +701,31 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         }
         mDevicesListAdapter.setListDevices(listBLEDevices);
     }
+    public Map<String, BluetoothDevice> getAudioConnectedAddress() {
+        Map<String, BluetoothDevice> result = new HashMap<>();
+        Class<BluetoothAdapter> bluetoothAdapterClass = BluetoothAdapter.class;//得到BluetoothAdapter的Class对象
+        try {
+            Method method = bluetoothAdapterClass.getDeclaredMethod("getConnectionState", (Class[]) null);
+            //打开权限
+            method.setAccessible(true);
+            int state = (int) method.invoke(mBtAdapter, (Object[]) null);
 
+            if (state == BluetoothAdapter.STATE_CONNECTED) {
+                Set<BluetoothDevice> devices = mBtAdapter.getBondedDevices();
+                for (BluetoothDevice bondedDevice : devices) {
+                    Method isConnectedMethod = BluetoothDevice.class.getDeclaredMethod("isConnected", (Class[]) null);
+                    method.setAccessible(true);
+                    boolean isConnected = (boolean) isConnectedMethod.invoke(bondedDevice, (Object[]) null);
+                    if (isConnected) {
+                        result.put(bondedDevice.getAddress(), bondedDevice);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
     @Override
     public void startScan(DevicesListAdapter mDevicesListAdapter) {
         mDevicesAdapter = mDevicesListAdapter;
@@ -694,6 +742,20 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         }
         saveDevice(device);
         if (isDeviceReady() && mService.getDevice().getAddress().equals(device.getAddress())) {
+            showTotast("设备已连接");
+            PreferenceManager.getInstance().setStringValue(PreferenceManager.CONNECT_ARRAESS, mService.getDevice().getAddress());
+            String deviceCode;
+            int type;
+            if(device.getName().contains("X")){//5
+                deviceCode = "AirX";
+                type = 5;
+            }else{
+                deviceCode = "Air_V1";
+                type = 4;
+            }
+            NetConfig.isGet = true;
+
+            UserManager.getRequestHandler().requestAirUpdate(this, deviceCode, getVersion(), type);
             mDeviceFrgmentContainer.setVisibility(View.GONE);
             return;
         }
@@ -768,15 +830,16 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             // no address, not possible to establish a connection
             return false;
         }
+        //todo   此处屏蔽设备类型判断，只用BE/EDR模式即可
         // get the transport type
-        int transport = sharedPref.getInt(Consts.TRANSPORT_KEY, BluetoothService.Transport.UNKNOWN);
-        mTransport = transport == BluetoothService.Transport.BLE ? BluetoothService.Transport.BLE :
-                transport == BluetoothService.Transport.BR_EDR ? BluetoothService.Transport.BR_EDR :
-                        BluetoothService.Transport.UNKNOWN;
-        if (mTransport == BluetoothService.Transport.UNKNOWN) {
-            // transport unknown, not possible to establish a connection
-            return false;
-        }
+//        int transport = sharedPref.getInt(Consts.TRANSPORT_KEY, BluetoothService.Transport.UNKNOWN);
+//        mTransport = transport == BluetoothService.Transport.BLE ? BluetoothService.Transport.BLE :
+//                transport == BluetoothService.Transport.BR_EDR ? BluetoothService.Transport.BR_EDR :
+//                        BluetoothService.Transport.UNKNOWN;
+//        if (mTransport == BluetoothService.Transport.UNKNOWN) {
+//            // transport unknown, not possible to establish a connection
+//            return false;
+//        }
         // get the service class to bind
         Class<?> serviceClass = mTransport == BluetoothService.Transport.BLE ? GAIAGATTBLEService.class :
                 GAIABREDRService.class; // mTransport can only be BLE or BR EDR
@@ -797,7 +860,17 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             case BluetoothService.Messages.CONNECTION_STATE_HAS_CHANGED:
                 @BluetoothService.State int connectionState = (int) msg.obj;
 //                onConnectionStateChanged(connectionState);
-                refreshConnectionState(connectionState);
+                if(connectionState == BluetoothService.State.CONNECTION_LOST){
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            conntService();
+                        }
+                    }, 2000);
+                }else {
+                    onServiceConnected();
+                    refreshConnectionState(connectionState);
+                }
                 if (DEBUG) {
                     String stateLabel = connectionState == BluetoothService.State.CONNECTED ? "CONNECTED"
                             : connectionState == BluetoothService.State.CONNECTING ? "CONNECTING"
@@ -840,7 +913,6 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                 showPlayContorl();
                 break;
             case BluetoothService.Messages.GATT_READY:
-                if (DEBUG) Log.d(TAG, handleMessage + "GATT_READY");
                 break;
             case BluetoothService.Messages.GATT_MESSAGE:
                 @GAIAGATTBLEService.GattMessage int gattMessage = msg.arg1;
@@ -894,6 +966,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         SharedPreferences sharedPref = mContext.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
 
         String name = sharedPref.getString(Consts.BLUETOOTH_NAME_KEY, "");
+        Log.d(TAG, (mService == null) + ":service的结果和获取到的状态:"+mService.getConnectionState());
         if (mService != null && mService.getConnectionState() == BluetoothService.State.CONNECTED) {
             if (mTvConectDeviceName != null) {
                 mTvConectDeviceName.setText(name);
@@ -907,7 +980,21 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                 mTvContorlName.setText(text);
             }
             connectDevice();
+            Log.d(TAG,"service连接成功--serviceCOnnected");
+            String deviceCode;
+            int type;
+            if(text.contains("X")){//5
+                deviceCode = "AirX";
+                type = 5;
+            }else{
+                deviceCode = "Air_V1";
+                type = 4;
+            }
+            NetConfig.isGet = true;
+
+            UserManager.getRequestHandler().requestAirUpdate(this, deviceCode, getVersion(), type);
         } else {
+            Log.d(TAG,"service连接失败--无设备");
             if (mTvConectDeviceName != null) {
                 mTvConectDeviceName.setText("");
             }
@@ -928,10 +1015,14 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
         String name = sharedPref.getString(Consts.BLUETOOTH_NAME_KEY, "");
 
+        mDevicesListFragment.refreshAdapter();
+
         if (state == BluetoothService.State.CONNECTED) {
             if (mTvConectDeviceName != null) {
                 mTvConectDeviceName.setText(name);
             }
+            PreferenceManager.getInstance().setStringValue(PreferenceManager.CONNECT_ARRAESS, mService.getDevice().getAddress());
+
             mArcSeekBarInner.setMaxValue(maxVoice);
             mArcSeekBarInner.setProgress(PreferenceManager.getInstance().getIntValue(PreferenceManager.CONNECT_VOICE));
             mArcSeekBarOutter.setMaxValue(maxVoice);
@@ -966,8 +1057,10 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
      */
     private void getInformationFromDevice() {
         if (isDeviceReady()) {
-            mGaiaManager.getInformation(MainGaiaManager.Information.BATTERY);
-            mGaiaManager.getInformation(MainGaiaManager.Information.API_VERSION);
+//            mGaiaManager.getInformation(MainGaiaManager.Information.BATTERY);
+//            mGaiaManager.getInformation(MainGaiaManager.Information.API_VERSION);
+            mGaiaManager.getBattery();
+            mGaiaManager.getDeviceVersion();
             mGaiaManager.getANC();
             mGaiaManager.getControlCommand();
             mGaiaManager.getPlayStatus();
@@ -1032,7 +1125,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
     @Override
     public void onGetBatteryLevel(int level) {
-        Log.e("HHHH", "=======" + level);
+        Log.d(TAG,"电量" + level);
         mBatteryLevel = level;
         refreshBatteryLevel();
     }
@@ -1044,7 +1137,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
     DeceiveInfoDialog mDialog;
     private boolean showDialog;
-    private String mVersion = "";
+    private String mVersion = "0.0.1";
 
     public String getVersion() {
         return mVersion;
@@ -1060,10 +1153,14 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
     @Override
     public void onGetAPIVersion(int versionPart1, int versionPart2, int versionPart3) {
+        String version = Utils.hex10To16(versionPart2) + Utils.hex10To16(versionPart3);
+        version = version.replace("", ".").substring(3, 8);
         StringBuilder sb = new StringBuilder(versionPart1);
-        sb.append(versionPart2);
-        sb.append(versionPart3);
-        mVersion = sb.toString();
+        sb.append(".").append(versionPart2);
+        sb.append(".").append(versionPart3);
+//        mVersion = sb.toString();
+        Log.d(TAG,"版本" + version);
+        mVersion = version;
         if (!showDialog) {
             return;
         }
@@ -1085,6 +1182,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
     @Override
     public void getAncResult(boolean result) {
+        Log.d(TAG,"anc" + result);
         mNoise.setSelected(result);
         mANcResult = result;
         onStandard();
@@ -1102,6 +1200,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
     @Override
     public void getAmbientResult(boolean result) {
+        Log.d(TAG,"amb" + result);
         mAmbient.setSelected(result);
         mbientResult = result;
         onStandard();
@@ -1134,8 +1233,16 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
     public void getDeviceType(int type, String name) {
         mDeviceType = type;
         updatePlayModelUI();
-        UserManager.getRequestHandler().requestAirUpdate(this, mService.getDevice().getName(), getVersion(), type);
+//        UserManager.getRequestHandler().requestAirUpdate(this, mService.getDevice().getName(), getVersion(), type);
+        String deviceCode;
+        if(type == DeviceType.AIRX.getType()){//5
+            deviceCode = "AirX";
+        }else{
+            deviceCode = "Air_V1";
+        }
+        NetConfig.isGet = true;
 
+        UserManager.getRequestHandler().requestAirUpdate(this, deviceCode, getVersion(), type);
     }
 
     private void onReceiveGattMessage(@GAIAGATTBLEService.GattMessage int gattMessage, Object content) {
@@ -1283,7 +1390,8 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
             request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
             request.setAllowedOverRoaming(false);
-            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName); // Environment.getExternalStoragePublicDirectory(String)
+//            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName); // Environment.getExternalStoragePublicDirectory(String)
+            request.setDestinationInExternalPublicDir("data/data/" + getActivity().getPackageName() + "/", fileName); // Environment.getExternalStoragePublicDirectory(String)
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
             // in order for this if to run, you must use the android 3.2 to
             // compile your app
@@ -1298,7 +1406,8 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             BroadcastReceiver onComplete = new BroadcastReceiver() {
                 public void onReceive(Context ctxt, Intent intent) {
                     isLoading = false;
-                    File file = new File(Environment.DIRECTORY_DOWNLOADS + "/" + fileName);
+//                    File file = new File(Environment.DIRECTORY_DOWNLOADS + "/" + fileName);
+                    File file = new File("data/data/" + getActivity().getPackageName() + "/" + fileName);
                     if (mService != null && mService.isGaiaReady()) {
                         showWaitDialog("升级中...");
                         mService.enableUpgrade(true);

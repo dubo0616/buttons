@@ -225,6 +225,10 @@ public class GaiaPacketBREDR extends GaiaPacket {
         this.mHasChecksum = hasChecksum;
         this.mBytes = null;
     }
+    public static final int REGISTER_NOTIFICATION = 0x4001;
+    public static final int CANCEL_NOTIFICATION = 0x4002;
+    public static final int EVENT_NOTIFICATION = 0x4003;
+    public static final int VMU_PACKET = 0x12;
 
     /**
      * <p>Constructor that builds a packet with the information which composed the packet.</p>
@@ -250,9 +254,11 @@ public class GaiaPacketBREDR extends GaiaPacket {
      * <p>Introduces VM Upgrade Protocol data.</p>
      */
     public static final int COMMAND_VM_UPGRADE_DATA = 0x0643;
+    //todo   此处修改ota前注册notification时的verndorId
+
     public GaiaPacketBREDR(int vendorId, int commandId, byte[] payload) {
         if ((commandId == COMMAND_VM_UPGRADE_CONNECT) || (commandId == COMMAND_VM_UPGRADE_DISCONNECT || (commandId == COMMAND_VM_UPGRADE_CONTROL) ||
-                commandId == COMMAND_VM_UPGRADE_DATA)) {
+                commandId == COMMAND_VM_UPGRADE_DATA) || (commandId == REGISTER_NOTIFICATION)) {
             this.mVendorId = 0x000A;
         } else {
             this.mVendorId = vendorId;

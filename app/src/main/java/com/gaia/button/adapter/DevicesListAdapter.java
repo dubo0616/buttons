@@ -55,6 +55,7 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
      * Default constructor to build a new instance of this adapter.
      */
     private Activity mContext;
+    private TopDeviceViewHolder topDeviceViewHolder;
     public DevicesListAdapter(Activity context,IDevicesListAdapterListener listener) {
         mListener = listener;
         mContext = context;
@@ -65,7 +66,8 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == 1) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_devices_item_top, parent, false);
-            return new TopDeviceViewHolder(view,mContext,mConnect,this);
+            topDeviceViewHolder = new TopDeviceViewHolder(view,mContext,mConnect,this);
+            return topDeviceViewHolder;
         } else if (viewType == 2) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_devices_item_text, parent, false);
             return new TextViewHolder(view);
@@ -194,11 +196,15 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
     /**
      * To completely reset the data set list and clear it completely.
+     * todo 添加已配对的设备列表的适配器的刷新，更改状态
      */
     public void reset() {
 //        mDevices.clear();
         mSelectedItem = ITEM_NULL;
         notifyDataSetChanged();
+        if(null != topDeviceViewHolder){
+            topDeviceViewHolder.mDevicesListAdapter.notifyDataSetChanged();
+        }
     }
 
     /**

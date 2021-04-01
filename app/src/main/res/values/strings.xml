@@ -171,5 +171,6 @@
     <string name="start_app">欢迎使用BUTTONS，您可以使用本应用以实现相关设备的连接、控制等功能。\n请审慎阅读并充分理解《用户协议》和
 《隐私政策》的各项说明，如您同意，请点击以阅读并同意，开始接收我们的服务，相反可点击退出，退出本应用</string>
 
-
+    <string name="onLineVersion">最新版本</string>
+    <string name="nowVersion">当前版本</string>
 </resources>

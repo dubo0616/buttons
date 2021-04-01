@@ -494,12 +494,14 @@ public class GAIABREDRService extends Service implements BluetoothService, BondS
         switch (error) {
             case BREDRProvider.Errors.CONNECTION_FAILED:
                 message = R.string.toast_connection_error_failed;
+                sendMessageToListener(Messages.CONNECTION_STATE_HAS_CHANGED,  BluetoothService.State.DISCONNECTED);
                 break;
             case BREDRProvider.Errors.CONNECTION_LOST:
                 message = R.string.toast_connection_error_lost;
+                //LOST==socketB被关闭，在页面中接收到后，再次发起重连，可以解决这个问题
+                sendMessageToListener(Messages.CONNECTION_STATE_HAS_CHANGED,  BluetoothService.State.CONNECTION_LOST);
                 break;
         }
-        sendMessageToListener(Messages.CONNECTION_STATE_HAS_CHANGED,  BluetoothService.State.DISCONNECTED);
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 

@@ -171,17 +171,19 @@ public abstract class ServiceActivity extends BluetoothActivity {
             // no address, not possible to establish a connection
             return false;
         }
+        //todo   此处屏蔽设备类型判断，只用BE/EDR模式即可
 
         // get the transport type
-        int transport = sharedPref.getInt(Consts.TRANSPORT_KEY, BluetoothService.Transport.UNKNOWN);
-        mTransport = transport == BluetoothService.Transport.BLE ? BluetoothService.Transport.BLE :
-                        transport == BluetoothService.Transport.BR_EDR ? BluetoothService.Transport.BR_EDR :
-                             BluetoothService.Transport.UNKNOWN;
-        if (mTransport == BluetoothService.Transport.UNKNOWN) {
-            // transport unknown, not possible to establish a connection
-            return false;
-        }
+//        int transport = sharedPref.getInt(Consts.TRANSPORT_KEY, BluetoothService.Transport.UNKNOWN);
+//        mTransport = transport == BluetoothService.Transport.BLE ? BluetoothService.Transport.BLE :
+//                        transport == BluetoothService.Transport.BR_EDR ? BluetoothService.Transport.BR_EDR :
+//                             BluetoothService.Transport.UNKNOWN;
+//        if (mTransport == BluetoothService.Transport.UNKNOWN) {
+//            // transport unknown, not possible to establish a connection
+//            return false;
+//        }
 
+        mTransport = BluetoothService.Transport.BR_EDR;
         // get the service class to bind
         Class<?> serviceClass = mTransport == BluetoothService.Transport.BLE ? GAIAGATTBLEService.class :
                 GAIABREDRService.class; // mTransport can only be BLE or BR EDR

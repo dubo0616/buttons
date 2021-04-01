@@ -21,6 +21,7 @@ import com.qualcomm.qti.libraries.gaia.packets.GaiaPacketBLE;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Arrays;
 
 /**
  * <p>This class follows the GAIA protocol. It manages all messages which are sent and received over the protocol for
@@ -436,7 +437,6 @@ public class MainGaiaManager extends AGaiaManager {
     // ====== PROTECTED METHODS ====================================================================
     @Override // extends GaiaManager
     protected void receiveSuccessfulAcknowledgement(GaiaPacket packet) {
-        Log.d("Command","receiveSuccessfulAcknowledgement==="+packet.getCommand()+packet.getStatus());
         onFeatureSupported(packet.getCommand());
         switch (packet.getCommand()) {
             case GAIA.COMMAND_GET_LED_CONTROL:
@@ -1066,7 +1066,15 @@ public class MainGaiaManager extends AGaiaManager {
     public static final int GET_PLAY_MODE = 0x02B9;
     public static final int SET_DEVICE_RESET = 0x02BE;
     public static final int GET_DEVICE_TYPE = 0x02C0;
+    public static final int GET_BATTERY = 0x0302;
+    public static final int GET_DEVICE_VERSION = 0x0300;
 
+    public void getBattery(){
+        final int PAYLOAD_LENGTH = 1;
+        byte[] payload = new byte[PAYLOAD_LENGTH];
+        GaiaPacket packet = createPacket(GET_BATTERY);
+        createRequest(packet);
+    }
     public void getANC() {
         final int PAYLOAD_LENGTH = 1;
         byte[] payload = new byte[PAYLOAD_LENGTH];
@@ -1074,7 +1082,12 @@ public class MainGaiaManager extends AGaiaManager {
         GaiaPacket packet = createPacket(GET_ANC_CONTROL);
         createRequest(packet);
     }
-
+    public void getDeviceVersion() {
+        final int PAYLOAD_LENGTH = 1;
+        byte[] payload = new byte[PAYLOAD_LENGTH];
+        GaiaPacket packet = createPacket(GET_DEVICE_VERSION);
+        createRequest(packet);
+    }
     /***
      *降噪0x02B0
      * @param ancControl

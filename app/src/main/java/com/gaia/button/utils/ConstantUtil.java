@@ -15,6 +15,10 @@ public class ConstantUtil {
 	public static String NEW_API_URL_SUFFIX = "v1/";
 	public static String NEW_BAPI_NAME = NEW_BAPI_NAME_DEFAULT;
 	public static String NEW_BAPI_URL = NEW_BAPI_NAME + NEW_API_URL_SUFFIX;
+//	public static String NEW_OTA_URL = "http://192.168.3.28:8095/ota/upgrade/release/getOtaUpgrade?deviceCode=%s";
+	public static String NEW_OTA_URL = "http://47.92.211.98:8095/ota/upgrade/release/getOtaUpgrade?deviceCode=%s";
+	//http://192.168.3.28:8095/ota/upgrade/release/getOtaUpgrade?deviceCode=Air_V1
+	//http://192.168.3.28:8095/ota/upgrade/release/getOtaUpgrade?deviceCode=AirX
 
 	public static final String SERVER_URL_NAME_LOGIN_SMS = "smsLogin";
 

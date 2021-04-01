@@ -58,13 +58,14 @@ public interface BluetoothService {
     /**
      * <p>The possible values for the Bluetooth connection state of this service.</p>
      */
-    @IntDef({ State.CONNECTED, State.DISCONNECTED, State.CONNECTING, State.DISCONNECTING })
+    @IntDef({ State.CONNECTED, State.DISCONNECTED, State.CONNECTING, State.DISCONNECTING, State.CONNECTION_LOST })
     @Retention(RetentionPolicy.SOURCE)
     @interface State {
         int DISCONNECTED = 0;
         int CONNECTING = 1;
         int CONNECTED = 2;
         int DISCONNECTING = 3;
+        int CONNECTION_LOST = 4;
     }
 
     /**

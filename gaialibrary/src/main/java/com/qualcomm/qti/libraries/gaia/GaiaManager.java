@@ -97,7 +97,8 @@ public abstract class GaiaManager {
      *          structure of the packet.
      */
     protected GaiaManager(@GAIA.Transport int transportType) {
-        mTransportType = transportType;
+//        mTransportType = transportType;
+        mTransportType = GAIA.Transport.BR_EDR;
     }
 
 
@@ -251,7 +252,6 @@ public abstract class GaiaManager {
                         + GaiaUtils.getGAIACommandToString(packet.getCommand())
                         + " with status: " + GAIA.getStatusToString(status));
             }
-
             if (status == GAIA.Status.SUCCESS) {
                 receiveSuccessfulAcknowledgement(packet);
             } else {
@@ -260,6 +260,7 @@ public abstract class GaiaManager {
         }
         // not an ACK packet: we have to ack it
         else {
+            Log.d(TAG, "接收指令  packet.isAcknowledgement()=false");
             if (!manageReceivedPacket(packet)) {
                 Log.i(TAG, "Packet has not been managed by application, manager sends NOT_SUPPORTED acknowledgement," +
                         " bytes: \n\t\t" + GaiaUtils.getGAIACommandToString(packet.getCommandId()));

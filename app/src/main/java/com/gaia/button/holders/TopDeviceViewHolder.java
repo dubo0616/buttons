@@ -32,7 +32,7 @@ public class TopDeviceViewHolder extends RecyclerView.ViewHolder{
 
     private RecyclerView mRecyclerView;
     private final List<BluetoothDevice> mDevices ;
-    private TDevicesListAdapter mDevicesListAdapter;
+    public TDevicesListAdapter mDevicesListAdapter;
     private  DeviceViewHolder.IDeviceViewHolder mListener;
     private String arrdess;
     private Activity act;
@@ -51,8 +51,11 @@ public class TopDeviceViewHolder extends RecyclerView.ViewHolder{
         mRecyclerView.setHasFixedSize(true);
         mDevicesListAdapter = new TDevicesListAdapter();
         mRecyclerView.setAdapter(mDevicesListAdapter);
-        arrdess = PreferenceManager.getInstance().getStringValue(PreferenceManager.CONNECT_ARRAESS);
 
+    }
+
+    public void refresh(){
+        new TDevicesListAdapter().notifyDataSetChanged();
     }
 
     public class TDevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -73,6 +76,8 @@ public class TopDeviceViewHolder extends RecyclerView.ViewHolder{
         public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
             final ItemDeviceViewHolder h = (ItemDeviceViewHolder) holder;
             final BluetoothDevice device = mDevices.get(position);
+            arrdess = PreferenceManager.getInstance().getStringValue(PreferenceManager.CONNECT_ARRAESS);
+
             Log.e("HHHHH","mDevices=="+mDevices.size() + device);
             if(device !=null) {
                 h.itemView.setOnClickListener(new View.OnClickListener() {

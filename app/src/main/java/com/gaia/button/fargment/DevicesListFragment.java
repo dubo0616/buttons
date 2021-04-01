@@ -6,7 +6,6 @@ package com.gaia.button.fargment;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,14 +15,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.gaia.button.R;
-import com.gaia.button.activity.DeviceDiscoveryActivity;
 import com.gaia.button.adapter.DevicesListAdapter;
 import com.gaia.button.adapter.DevicesListTabsAdapter;
 import com.gaia.button.utils.Consts;
@@ -117,6 +114,7 @@ public class DevicesListFragment extends BaseFragment implements DevicesListAdap
     public void onDeviceFound(BluetoothDevice device) {
         startService();
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -129,6 +127,7 @@ public class DevicesListFragment extends BaseFragment implements DevicesListAdap
             @Override
             public void onRefresh() {
 //                mDevicesListAdapter.reset();
+                mListener.getBondedDevices(mDevicesListAdapter);
                 switch (mListType) {
                     case DevicesListTabsAdapter.SCANNED_LIST_TYPE:
                         mListener.startScan(mDevicesListAdapter);
@@ -261,6 +260,10 @@ public class DevicesListFragment extends BaseFragment implements DevicesListAdap
 
     }
 
+    //todo 添加刷新适配器方法--连接后，设备列表中显示的状态不匹配
+    public void refreshAdapter(){
+        mDevicesListAdapter.reset();
+    }
     /**
      * The listener triggered by events from this fragment.
       */
