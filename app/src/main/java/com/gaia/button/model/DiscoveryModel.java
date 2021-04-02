@@ -45,6 +45,9 @@ public class DiscoveryModel  implements Serializable {
     public String getIs_collect() {
         return is_collect;
     }
+    public boolean isCollect(){
+        return "1".equals(is_collect);
+    }
 
     public void setIs_collect(String is_collect) {
         this.is_collect = is_collect;

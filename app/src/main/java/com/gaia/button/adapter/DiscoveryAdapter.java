@@ -1,10 +1,12 @@
 package com.gaia.button.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -64,6 +66,8 @@ public class DiscoveryAdapter extends RecyclerView.Adapter<DiscoveryAdapter.View
                 }
             }
         });
+
+        holder.mCollect.setVisibility(model.isCollect()?View.INVISIBLE:View.VISIBLE);
         holder.mCollect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,9 +84,15 @@ public class DiscoveryAdapter extends RecyclerView.Adapter<DiscoveryAdapter.View
                 }
             }
         });
-        RequestOptions requestOptions = new RequestOptions().bitmapTransform(new RoundedCorners(DensityUtil.dip2px(mContext,15)));
+        RequestOptions requestOptions = new RequestOptions().bitmapTransform(new RoundedCorners(DensityUtil.dip2px(mContext,20)));
         Glide.with(mContext).load(model.getList_img()).apply(requestOptions).into(holder.detailImg);
-        holder.detailContent.setText(model.getCate_name());
+        holder.detailContent.setText(model.getTitle());
+        if(!TextUtils.isEmpty(model.getCate_name())){
+            holder.mFl.setText(model.getCate_name());
+            holder.mFlL.setVisibility(View.VISIBLE);
+        }else{
+            holder.mFlL.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -96,6 +106,8 @@ public class DiscoveryAdapter extends RecyclerView.Adapter<DiscoveryAdapter.View
         private ImageView mCollect;
         private ImageView mForward;
         private TextView mDetailLink;
+        private TextView mFl;
+        private LinearLayout mFlL;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             detailImg = itemView.findViewById(R.id.iv_detail_img);
@@ -103,6 +115,8 @@ public class DiscoveryAdapter extends RecyclerView.Adapter<DiscoveryAdapter.View
             mCollect = itemView.findViewById(R.id.tv_collect);
             mForward = itemView.findViewById(R.id.tv_forward);
             mDetailLink = itemView.findViewById(R.id.tv_detail_link);
+            mFlL = itemView.findViewById(R.id.ll_fl);
+            mFl = itemView.findViewById(R.id.tv_fl);
 
         }
     }

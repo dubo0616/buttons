@@ -2,6 +2,7 @@ package com.gaia.button.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 
@@ -26,10 +27,16 @@ public class SpalshActivity extends BaseActivity {
     }
 
     private void startPer() {
-        if (!PreferenceManager.getInstance().getFristInstall()) {
-        }else{
-            startLoginMain();
-        }
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startLoginMain();
+            }
+        },1500);
+//        if (!PreferenceManager.getInstance().getFristInstall()) {
+//        }else{
+//            startLoginMain();
+//        }
     }
 
     private void initView() {
@@ -41,5 +48,10 @@ public class SpalshActivity extends BaseActivity {
             }
         });
         startPer();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }
