@@ -67,7 +67,7 @@ public class DiscoveryAdapter extends RecyclerView.Adapter<DiscoveryAdapter.View
             }
         });
 
-        holder.mCollect.setVisibility(model.isCollect()?View.INVISIBLE:View.VISIBLE);
+        holder.mCollect.setImageResource(model.isCollect()?R.drawable.icon_collected:R.drawable.icon_souchang);
         holder.mCollect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

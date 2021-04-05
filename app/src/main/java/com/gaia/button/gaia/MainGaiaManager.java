@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.IntDef;
 
+import com.gaia.button.GaiaApplication;
 import com.gaia.button.utils.Consts;
 import com.qualcomm.qti.libraries.gaia.GAIA;
 import com.qualcomm.qti.libraries.gaia.GaiaException;
@@ -437,6 +438,9 @@ public class MainGaiaManager extends AGaiaManager {
     // ====== PROTECTED METHODS ====================================================================
     @Override // extends GaiaManager
     protected void receiveSuccessfulAcknowledgement(GaiaPacket packet) {
+        Toast.makeText(GaiaApplication.getInstance(),"receiveSuccessfulAcknowledgement for command "
+                + GaiaUtils.getGAIACommandToString(packet.getCommand())
+                + " with status: " +packet.getStatus()+ GAIA.getStatusToString(packet.getStatus()),Toast.LENGTH_LONG);
         onFeatureSupported(packet.getCommand());
         switch (packet.getCommand()) {
             case GAIA.COMMAND_GET_LED_CONTROL:
@@ -498,6 +502,9 @@ public class MainGaiaManager extends AGaiaManager {
 
     @Override // extends GaiaManager
     protected void receiveUnsuccessfulAcknowledgement(GaiaPacket packet) {
+        Toast.makeText(GaiaApplication.getInstance(),"Received GAIA ACK packet for command "
+                + GaiaUtils.getGAIACommandToString(packet.getCommand())
+                + " with status: " + GAIA.getStatusToString(packet.getStatus()),Toast.LENGTH_LONG);
         int command = packet.getCommand();
         Log.d("Command","receiveUnsuccessfulAcknowledgement==="+packet.getCommand());
         if (packet.getStatus() != GAIA.Status.NOT_SUPPORTED) {

@@ -8,6 +8,7 @@ import android.os.Handler;
 import androidx.annotation.Nullable;
 import androidx.collection.ArrayMap;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.qualcomm.qti.libraries.gaia.packets.GaiaPacket;
 import com.qualcomm.qti.libraries.gaia.packets.GaiaPacketBLE;

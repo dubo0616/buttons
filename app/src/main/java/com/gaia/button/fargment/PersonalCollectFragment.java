@@ -15,6 +15,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.gaia.button.R;
 import com.gaia.button.activity.WebViewActivity;
+import com.gaia.button.adapter.CollectAdapter;
 import com.gaia.button.adapter.ProductAdater;
 import com.gaia.button.model.ProductModel;
 import com.gaia.button.model.ProductModelList;
@@ -29,12 +30,12 @@ import java.util.List;
 import static com.gaia.button.utils.ConstantUtil.Net_Tag_User_GetCollect;
 import static com.gaia.button.utils.ConstantUtil.Net_Tag_User_ProductList;
 
-public class PersonalCollectFragment extends BaseFragment implements ProductAdater.ProductAdapterOnclickListener , IUserListener {
+public class PersonalCollectFragment extends BaseFragment implements CollectAdapter.ProductAdapterOnclickListener , IUserListener {
 
     private View mRootView;
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private ProductAdater mProductAdater;
+    private CollectAdapter mProductAdater;
     private boolean mRefreshFlag = false;
     private List<ProductModel> mList = new ArrayList<>();
     private int mPage =1;
@@ -65,7 +66,7 @@ public class PersonalCollectFragment extends BaseFragment implements ProductAdat
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),2));
         mRecyclerView.setItemAnimator(null);
         mRecyclerView.addItemDecoration(new GridSpaceItemDecoration(2, 0,0));
-        mProductAdater = new ProductAdater(getActivity(),mList,this,1);
+        mProductAdater = new CollectAdapter(getActivity(),mList,this);
         mRecyclerView.setAdapter(mProductAdater);
     }
 
