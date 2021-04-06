@@ -216,9 +216,6 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         mStandard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mService != null && mService.getDevice() != null) {
-                    PreferenceManager.getInstance().setPlaymode(PreferenceManager.getInstance().getAccountInfo().getUserID(), 1);
-                }
                 setPlayMode(PlayModel.Standard.getValue());
             }
         });
@@ -1190,9 +1187,15 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
     }
 
     private void onStandard() {
-        if (!mbientResult && !mANcResult) {
-            mStandard.setSelected(true);
+        if (mbientResult && !mANcResult) {
+            setPlayMode(PlayModel.AMBIENT.getValue());
         }
+        if (!mbientResult && mANcResult) {
+            setPlayMode(PlayModel.NOISE.getValue());
+        } else {
+            setPlayMode(PlayModel.Standard.getValue());
+        }
+
     }
 
     boolean mbientResult = true;

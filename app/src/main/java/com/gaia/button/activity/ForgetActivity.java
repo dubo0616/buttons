@@ -11,6 +11,8 @@ import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -36,6 +38,7 @@ public class ForgetActivity extends BaseActivity implements View.OnClickListener
     private TextView mTvServer;
     private CheckBox mBox;
     private EditText mPassnew,mPassConfirm;
+    private View mViewPassShow,mViewPassShowTwo;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +58,10 @@ public class ForgetActivity extends BaseActivity implements View.OnClickListener
         mBox = findViewById(R.id.cb_box);
         mPassnew = findViewById(R.id.et_phone_new_pass);
         mPassConfirm = findViewById(R.id.et_phone_confir_pass);
+        mViewPassShow = findViewById(R.id.tv_pass_show);
+        mViewPassShowTwo = findViewById(R.id.tv_pass_show_two);
+        mViewPassShow.setOnClickListener(this);
+        mViewPassShowTwo.setOnClickListener(this);
         mPhoneNumber.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -130,7 +137,7 @@ public class ForgetActivity extends BaseActivity implements View.OnClickListener
             mTvLogin.setEnabled(false);
         }
     }
-
+    boolean isPassShow,isPassShowTwo;
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -142,6 +149,26 @@ public class ForgetActivity extends BaseActivity implements View.OnClickListener
                 break;
             case R.id.tv_get_code:
                 startResendCountDown();
+                break;
+            case R.id.tv_pass_show:
+                if(isPassShow){
+                    mPassnew.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    isPassShow = false;
+                }else {
+                    mPassnew.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    isPassShow = true;
+                }
+                mPassnew.setSelection(mPassnew.getText().length());
+                break;
+            case R.id.tv_pass_show_two:
+                if(isPassShowTwo){
+                    mPassConfirm.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    isPassShowTwo = false;
+                }else {
+                    mPassConfirm.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    isPassShowTwo = true;
+                }
+                mPassConfirm.setSelection(mPassConfirm.getText().length());
                 break;
         }
 

@@ -126,6 +126,13 @@ public class MainDiscoveryFragment extends BaseFragment implements DiscoveryAdap
     String type ="";
     @Override
     public void onClickCollect(DiscoveryModel model) {
+        if(model == null){
+            return;
+        }
+        if(model.isCollect()){
+            displayShortToast("已收藏");
+            return;
+        }
         type = model.getIs_collect();
         UserManager.getRequestHandler().requestCollect(MainDiscoveryFragment.this,model.getId());
 

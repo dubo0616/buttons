@@ -6,14 +6,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.LinkMovementMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -42,6 +46,7 @@ public class PhonePassLoginActivity extends BaseActivity implements View.OnClick
     private CheckBox mBox;
     private TextView mTvFoget;
     private TextView mTvPass;
+    private View mViewPassShow;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +63,9 @@ public class PhonePassLoginActivity extends BaseActivity implements View.OnClick
         mTvServer = findViewById(R.id.tv_server);
         mBox = findViewById(R.id.cb_box);
         mTvFoget = findViewById(R.id.tv_forget);
+        mViewPassShow = findViewById(R.id.tv_pass_show);
         mTvFoget.setOnClickListener(this);
+        mViewPassShow.setOnClickListener(this);
         init(mTvServer);
         mTvPass = findViewById(R.id.tv_pass_login);
         mTvPass.setOnClickListener(new View.OnClickListener() {
@@ -160,7 +167,7 @@ public class PhonePassLoginActivity extends BaseActivity implements View.OnClick
             mTvLogin.setEnabled(false);
         }
     }
-
+    boolean isPassShow;
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -172,6 +179,17 @@ public class PhonePassLoginActivity extends BaseActivity implements View.OnClick
                 break;
             case R.id.tv_forget:
                 startActivity(new Intent(PhonePassLoginActivity.this,ForgetActivity.class));
+                break;
+            case R.id.tv_pass_show:
+                Log.e("KKK","======"+isPassShow);
+                if(isPassShow){
+                    mPhoneCode.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    isPassShow = false;
+                }else {
+                    mPhoneCode.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    isPassShow = true;
+                }
+                mPhoneCode.setSelection(mPhoneCode.getText().length());
                 break;
         }
 

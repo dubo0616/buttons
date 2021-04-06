@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -20,6 +22,7 @@ import static com.gaia.button.utils.ConstantUtil.Net_Tag_User_UpdatePassword;
 public class ModPasswordActivity extends BaseActivity implements View.OnClickListener, IUserListener {
     private EditText mPassold,mPassnew,mPassConfirm;
     private TextView mTvLogin;
+    private View mViewPassShow,mViewPassShowTwo,mViewPassShowThree;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +31,12 @@ public class ModPasswordActivity extends BaseActivity implements View.OnClickLis
         mPassnew = findViewById(R.id.et_phone_new_pass_new);
         mPassConfirm = findViewById(R.id.et_phone_confir_pass);
         mTvLogin = findViewById(R.id.tv_login);
+        mViewPassShow = findViewById(R.id.tv_pass_show);
+        mViewPassShowTwo = findViewById(R.id.tv_pass_show_two);
+        mViewPassShowThree = findViewById(R.id.tv_pass_show_three);
+        mViewPassShow.setOnClickListener(this);
+        mViewPassShowTwo.setOnClickListener(this);
+        mViewPassShowThree.setOnClickListener(this);
         mTvLogin.setOnClickListener(this);
         findViewById(R.id.iv_back).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,12 +86,42 @@ public class ModPasswordActivity extends BaseActivity implements View.OnClickLis
         }
 
     }
-
+    boolean isPassShow,isPassShowTwo,isPassShowThree;
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.tv_login:
                 doLogin();
+                break;
+            case R.id.tv_pass_show:
+                if(isPassShow){
+                    mPassold.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    isPassShow = false;
+                }else {
+                    mPassold.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    isPassShow = true;
+                }
+                mPassold.setSelection(mPassold.getText().length());
+                break;
+            case R.id.tv_pass_show_two:
+                if(isPassShowTwo){
+                    mPassnew.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    isPassShowTwo = false;
+                }else {
+                    mPassnew.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    isPassShowTwo = true;
+                }
+                mPassnew.setSelection(mPassnew.getText().length());
+                break;
+            case R.id.tv_pass_show_three:
+                if(isPassShowTwo){
+                    mPassConfirm.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    isPassShowTwo = false;
+                }else {
+                    mPassConfirm.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    isPassShowTwo = true;
+                }
+                mPassConfirm.setSelection(mPassConfirm.getText().length());
                 break;
         }
     }

@@ -41,6 +41,7 @@ public class TopDeviceViewHolder extends RecyclerView.ViewHolder{
         this.act = context;
         mListener = listener;
         this.mDevices = list;
+        Log.e("ddddd","======="+mDevices.size());
         if (mDevices.size() == 0) {
             mDevices.add(null);
         }
