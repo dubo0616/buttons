@@ -80,7 +80,7 @@ public class DevicesListFragment extends BaseFragment implements DevicesListAdap
         registerReceiver();
         switch (mListType) {
             case DevicesListTabsAdapter.SCANNED_LIST_TYPE:
-                mRefreshLayout.setRefreshing(true);
+//                mRefreshLayout.setRefreshing(true);
                 mDevicesListAdapter.reset();
                 mDevicesListAdapter.add(null,0);
                 mListener.startScan(mDevicesListAdapter);
@@ -123,19 +123,21 @@ public class DevicesListFragment extends BaseFragment implements DevicesListAdap
         View rootView = inflater.inflate(R.layout.fragment_devices, container, false);
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.rv_devices_list);
         mRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.refresh_layout);
+        mRefreshLayout.setEnabled(false);
+        mRefreshLayout.setRefreshing(false);
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
 //                mDevicesListAdapter.reset();
-                mListener.getBondedDevices(mDevicesListAdapter);
-                switch (mListType) {
-                    case DevicesListTabsAdapter.SCANNED_LIST_TYPE:
-                        mListener.startScan(mDevicesListAdapter);
-                        break;
-                    case DevicesListTabsAdapter.BONDED_LIST_TYPE:
-                        mListener.getBondedDevices(mDevicesListAdapter);
-                        break;
-                }
+//                mListener.getBondedDevices(mDevicesListAdapter);
+//                switch (mListType) {
+//                    case DevicesListTabsAdapter.SCANNED_LIST_TYPE:
+//                        mListener.startScan(mDevicesListAdapter);
+//                        break;
+//                    case DevicesListTabsAdapter.BONDED_LIST_TYPE:
+//                        mListener.getBondedDevices(mDevicesListAdapter);
+//                        break;
+//                }
             }
         });
 
@@ -150,12 +152,12 @@ public class DevicesListFragment extends BaseFragment implements DevicesListAdap
         // specify an adapter for the recycler view
         mDevicesListAdapter = new DevicesListAdapter(getActivity(),this);
         recyclerView.setAdapter(mDevicesListAdapter);
-        rootView.findViewById(R.id.iv_back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getParentFragment().getView().findViewById(R.id.id_device).setVisibility(View.GONE);
-            }
-        });
+//        rootView.findViewById(R.id.iv_back).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                getParentFragment().getView().findViewById(R.id.id_device).setVisibility(View.GONE);
+//            }
+//        });
         return rootView;
     }
 

@@ -696,6 +696,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                 listBLEDevices.add(device);
             }
         }
+        Log.e("DDDD","listBLEDevices ==========" + listBLEDevices);
         mDevicesListAdapter.setListDevices(listBLEDevices);
     }
     public Map<String, BluetoothDevice> getAudioConnectedAddress() {
@@ -1430,7 +1431,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
      * 初始化设备扫描fragment
      */
     private void initDevice() {
-        mDevicesListFragment = DevicesListFragment.newInstance(DevicesListTabsAdapter.SCANNED_LIST_TYPE, this);
+        mDevicesListFragment = DevicesListFragment.newInstance(DevicesListTabsAdapter.BONDED_LIST_TYPE, this);
         FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(R.id.id_device, mDevicesListFragment);
