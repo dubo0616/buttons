@@ -153,6 +153,7 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 notifyDataSetChanged();
             }
         }
+        Log.e("LLLL","==============mDevices"+mDevices.size());
     }
     public void addScans(BluetoothDevice device, int rssi) {
         if(device != null) {
@@ -199,7 +200,8 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
      * todo 添加已配对的设备列表的适配器的刷新，更改状态
      */
     public void reset() {
-//        mDevices.clear();
+        mDevices.clear();
+        hasAdd = false;
         mSelectedItem = ITEM_NULL;
         notifyDataSetChanged();
         if(null != topDeviceViewHolder){
@@ -239,7 +241,12 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void setListDevices(ArrayList<BluetoothDevice> listDevices) {
         this.mConnect.clear();
         this.mConnect.addAll(listDevices);
-        notifyDataSetChanged();
+        if(mConnect.size() == 0){
+            mConnect.add(null);
+        }
+        if(topDeviceViewHolder != null) {
+            topDeviceViewHolder.mDevicesListAdapter.notifyDataSetChanged();
+        }
     }
 
     /**

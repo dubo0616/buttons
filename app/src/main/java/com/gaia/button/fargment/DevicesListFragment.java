@@ -78,8 +78,9 @@ public class DevicesListFragment extends BaseFragment implements DevicesListAdap
     public void onResume() {
         super.onResume();
         registerReceiver();
+        Log.e("LLLL","=============="+mListType);
         switch (mListType) {
-            case DevicesListTabsAdapter.SCANNED_LIST_TYPE:
+            case DevicesListTabsAdapter.BONDED_LIST_TYPE:
 //                mRefreshLayout.setRefreshing(true);
                 mDevicesListAdapter.reset();
                 mDevicesListAdapter.add(null,0);
