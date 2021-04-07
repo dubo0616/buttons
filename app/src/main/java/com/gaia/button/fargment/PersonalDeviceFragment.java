@@ -30,34 +30,25 @@ import com.gaia.button.R;
 import com.gaia.button.activity.MainActivity;
 import com.gaia.button.activity.WebViewActivity;
 import com.gaia.button.adapter.DevicesListAdapter;
-import com.gaia.button.model.DeviceList;
-import com.gaia.button.model.DeviceMode;
-import com.gaia.button.model.PersonalDeviceModel;
-import com.gaia.button.model.ProductModelList;
-import com.gaia.button.net.NetConfig;
-import com.gaia.button.net.user.IUserListener;
-import com.gaia.button.net.user.UserManager;
+import com.gaia.button.utils.BaseUtils;
 import com.gaia.button.utils.Consts;
 import com.gaia.button.view.DeceiveInfoDialog;
-import com.gaia.button.view.GridSpaceItemDecoration;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import static com.gaia.button.utils.ConstantUtil.Net_Tag_User_GetCollect;
-import static com.gaia.button.utils.ConstantUtil.Net_Tag_User_GetDevice;
-
-public class PersonalDeviceFragment extends BaseFragment implements DevicesListAdapter.IDevicesListAdapterListener{
+public class PersonalDeviceFragment extends BaseFragment implements DevicesListAdapter.IDevicesListAdapterListener {
     private View mRootView;
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private List<BluetoothDevice> mList = new ArrayList<>();
     private PersonalDeviceAdapter mDeviceAdapter;
     private boolean mRefreshFlag = false;
-    private TextView mTvNodata,mTvAddDevice;
-    private String mVersion,mName,mMac;
+    private TextView mTvNodata, mTvAddDevice;
+    private String mVersion, mName, mMac;
 
     @Nullable
     @Override
@@ -68,11 +59,13 @@ public class PersonalDeviceFragment extends BaseFragment implements DevicesListA
         }
         return mRootView;
     }
-    public void setData(String v,String n,String m){
+
+    public void setData(String v, String n, String m) {
         this.mVersion = v;
         this.mName = n;
         this.mMac = m;
     }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +78,7 @@ public class PersonalDeviceFragment extends BaseFragment implements DevicesListA
         initData();
     }
 
-    private void initView(){
+    private void initView() {
         mTvNodata = mRootView.findViewById(R.id.tv_nodata);
         mSwipeRefreshLayout = (SwipeRefreshLayout) mRootView.findViewById(R.id.swipe_refresh);
         mSwipeRefreshLayout.setEnabled(true);
@@ -93,7 +86,7 @@ public class PersonalDeviceFragment extends BaseFragment implements DevicesListA
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(mRefreshFlag)
+                if (mRefreshFlag)
                     return;
                 initData();
             }
@@ -103,11 +96,11 @@ public class PersonalDeviceFragment extends BaseFragment implements DevicesListA
         mTvAddDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(getActivity() != null) {
-                    Intent intent = new Intent(getActivity(),MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                if (getActivity() != null) {
+                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.putExtra("Tab", 1);
-                    intent.putExtra(MainActivity.FORM_KEY,1);
+                    intent.putExtra(MainActivity.FORM_KEY, 1);
                     startActivity(intent);
                     getActivity().finish();
                 }
@@ -125,18 +118,17 @@ public class PersonalDeviceFragment extends BaseFragment implements DevicesListA
         initData();
     }
 
-    private void initData(){
-        Set<BluetoothDevice> listDevices;
-        if (mBtAdapter != null && mBtAdapter.isEnabled()) {
-            listDevices = mBtAdapter.getBondedDevices();
-        } else {
-            listDevices = Collections.emptySet();
+    private void initData() {
+        Set<BluetoothDevice> listDevices = new HashSet<>();
+        //todo 修改顶部设备列表，只获取当前已配对的设备，不显示配对的历史设备
+        final Map<String, BluetoothDevice> audioConnected = getAudioConnectedAddress();
+        for (BluetoothDevice b : audioConnected.values()) {
+            listDevices.add(b);
         }
-
         ArrayList<BluetoothDevice> listBLEDevices = new ArrayList<>();
 
         for (BluetoothDevice device : listDevices) {
-            if(device == null || device.getAddress() == null || !device.getAddress().startsWith("F4:0E")){
+            if (!BaseUtils.isButtonDevice(device)) {
                 continue;
             }
             if (device.getType() == BluetoothDevice.DEVICE_TYPE_DUAL
@@ -153,10 +145,6 @@ public class PersonalDeviceFragment extends BaseFragment implements DevicesListA
         }
         mSwipeRefreshLayout.setRefreshing(false);
 
-
-//        NetConfig.isGet = true;
-//        UserManager.getRequestHandler().requestGetDevice(PersonalDeviceFragment.this);
-
     }
 
 
@@ -165,48 +153,19 @@ public class PersonalDeviceFragment extends BaseFragment implements DevicesListA
 
     }
 
-//    @Override
-//    public void onRequestSuccess(int requestTag, Object data) {
-//        mSwipeRefreshLayout.setRefreshing(false);
-//        mRefreshFlag = false;
-//        mSwipeRefreshLayout.setRefreshing(false);
-//        if(requestTag == Net_Tag_User_GetDevice){
-//            DeviceList list = (DeviceList) data;
-//            if(list != null && list.getData() != null && list.getData().size()>0){
-//                mDeviceAdapter.setData(list.getData());
-//                mTvNodata.setVisibility(View.GONE);
-//            }else{
-//                mTvNodata.setVisibility(View.VISIBLE);
-//            }
-//        }
-//    }
-
-//    @Override
-//    public void onRequestError(int requestTag, int errorCode, String errorMsg, Object data) {
-//        mSwipeRefreshLayout.setRefreshing(false);
-//        mRefreshFlag = false;
-//    }
-//
-//    @Override
-//    public void startProgressDialog(int requestTag) {
-//
-//    }
-//
-//    @Override
-//    public void endProgressDialog(int requestTag) {
-//
-//    }
-
-     class PersonalDeviceAdapter extends RecyclerView.Adapter<PersonalDeviceAdapter.ViewHolder>{
+    public class PersonalDeviceAdapter extends RecyclerView.Adapter<PersonalDeviceAdapter.ViewHolder> {
 
         private List<BluetoothDevice> mList;
-        public PersonalDeviceAdapter(List<BluetoothDevice> list){
+
+        public PersonalDeviceAdapter(List<BluetoothDevice> list) {
             this.mList = list;
         }
-        public void setData(List<BluetoothDevice> list){
+
+        public void setData(List<BluetoothDevice> list) {
             this.mList = list;
             notifyDataSetChanged();
         }
+
         @NonNull
         @Override
         public PersonalDeviceAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -241,41 +200,39 @@ public class PersonalDeviceFragment extends BaseFragment implements DevicesListA
             holder.mLayoutLink.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // keep information
                     holder.mLayoutLink.setSelected(!holder.mLayoutLink.isSelected());
                     holder.mLayouHardUpgrade.setSelected(false);
                     holder.mLayouProductIntro.setSelected(false);
                     holder.mLayouDeviceInfo.setSelected(false);
-//                    if(!TextUtils.isEmpty(mMac) && mMac.equals(model.getAddress())) {
-//                        getActivity().setResult(Activity.RESULT_OK);
-//                        getActivity().finish();
-//                        return;
-//                    }
                     SharedPreferences sharedPref = mContext.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPref.edit();
                     editor.putInt(Consts.TRANSPORT_KEY, model.getType());
                     editor.putString(Consts.BLUETOOTH_NAME_KEY, model.getName());
                     editor.putString(Consts.BLUETOOTH_ADDRESS_KEY, model.getAddress());
                     editor.apply();
-                    getActivity().setResult(Activity.RESULT_OK);
+                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.putExtra("Tab", 1);
+                    intent.putExtra(MainActivity.FORM_KEY, 1);
+                    startActivity(intent);
                     getActivity().finish();
                 }
             });
-            if (model.getName().endsWith("x") || model.getName().endsWith("X")){
+            if (model.getName().endsWith("x") || model.getName().endsWith("X")) {
                 holder.mDeviceIcon.setImageResource(R.drawable.icon_airx);
-        }else{
+            } else {
                 holder.mDeviceIcon.setImageResource(R.drawable.icon_air);
             }
             holder.mLayouDeviceInfo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(TextUtils.isEmpty(mMac) || !mMac.equals(model.getAddress())) {
+                    if (TextUtils.isEmpty(mMac) || !mMac.equals(model.getAddress())) {
                         displayShortToast("设备未连接");
                         return;
                     }
                     DeceiveInfoDialog dialog = new DeceiveInfoDialog(mContext);
                     dialog.show();
-                    dialog.setData(mName,mMac,mVersion);
+                    dialog.setData(mName, mMac, mVersion);
                     holder.mLayoutLink.setSelected(false);
                     holder.mLayouHardUpgrade.setSelected(false);
                     holder.mLayouProductIntro.setSelected(false);
@@ -291,11 +248,11 @@ public class PersonalDeviceFragment extends BaseFragment implements DevicesListA
                     holder.mLayouDeviceInfo.setSelected(false);
                     Intent intent = new Intent(getActivity(), WebViewActivity.class);
                     String url = "http://img.lovetoshare168.com/bz/v1/user_explain/1";
-                    if(model.getName().endsWith("x") || model.getName().endsWith("X")){
+                    if (model.getName().endsWith("x") || model.getName().endsWith("X")) {
                         url = "http://img.lovetoshare168.com/bz/v1/user_explain/4";
                     }
-                    intent.putExtra(WebViewActivity.URL_KEY,url);
-                    intent.putExtra(WebViewActivity.TITLE_KEY,"商品说明");
+                    intent.putExtra(WebViewActivity.URL_KEY, url);
+                    intent.putExtra(WebViewActivity.TITLE_KEY, "商品说明");
                     startActivity(intent);
                 }
             });
@@ -308,11 +265,11 @@ public class PersonalDeviceFragment extends BaseFragment implements DevicesListA
                     holder.mLayouDeviceInfo.setSelected(false);
                     Intent intent = new Intent(getActivity(), WebViewActivity.class);
                     String url = "http://img.lovetoshare168.com/bz/v1/user_faq/1";
-                    if(model.getName().endsWith("x") || model.getName().endsWith("X")){
+                    if (model.getName().endsWith("x") || model.getName().endsWith("X")) {
                         url = "http://img.lovetoshare168.com/bz/v1/user_faq/4";
                     }
-                    intent.putExtra(WebViewActivity.URL_KEY,url);
-                    intent.putExtra(WebViewActivity.TITLE_KEY,"商品问答");
+                    intent.putExtra(WebViewActivity.URL_KEY, url);
+                    intent.putExtra(WebViewActivity.TITLE_KEY, "商品问答");
                     startActivity(intent);
                 }
             });
@@ -336,6 +293,7 @@ public class PersonalDeviceFragment extends BaseFragment implements DevicesListA
             private TextView mDeviceName;
             private ImageView mDeviceIcon;
             private View view;
+
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 view = itemView;

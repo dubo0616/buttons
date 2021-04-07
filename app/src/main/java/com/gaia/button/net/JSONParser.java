@@ -215,6 +215,8 @@ public class JSONParser implements JsonParserInterface {
             int errorCode = res.getErrorCode();
             if (errorCode == DcError.DC_OK) {
                 res.setErrorCode(0);
+                JSONObject jsonObject = obj.optJSONObject("data");
+                res.setOther(jsonObject.optInt("collect"));
             }
         } catch (Exception e) {
             e.printStackTrace();

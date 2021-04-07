@@ -156,7 +156,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
     private MainActivity mAct;
     private ConstraintLayout mDeviceFrgmentContainer;
     private int mDeviceType = DeviceType.DEFAULT.getType();
-    private int maxVoice, minVoice;
+    private int maxVoice, minVoice,mCurrentVoice;
 
     @Nullable
     @Override
@@ -366,7 +366,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                 if (mProgress >= maxVoice) {
                     mProgress = maxVoice;
                 }
-                if (mProgress <= minVoice) {
+                if (mProgress < minVoice) {
                     mProgress = minVoice;
                 }
                 if (mArcSeekBarOutter != null) {
@@ -385,8 +385,6 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
                 mArcSeekBarOutter.setProgress(mArcSeekBarInner.getProgress());
             }
         });
-
-//        connectDevice();
         scanDevice();
         initDevice();
 
@@ -481,10 +479,10 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
      */
     private void hasNoDevice() {
         mImageButtonIcon.setVisibility(View.INVISIBLE);
-        mArcSeekBarInner.setVisibility(View.INVISIBLE);
+//        mArcSeekBarInner.setVisibility(View.INVISIBLE);
         mImageViewWhiteBg.setVisibility(View.INVISIBLE);
-        mArcSeekBarInner.setProgress(0);
-        mArcSeekBarOutter.setProgress(0);
+        mArcSeekBarInner.setProgress(mProgress);
+        mArcSeekBarOutter.setProgress(mProgress);
         mTvBatty.setVisibility(View.INVISIBLE);
         mTvScan.setVisibility(View.VISIBLE);
         mImageViewGrayBg.setVisibility(View.GONE);
@@ -557,6 +555,8 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             minVoice = mAudioManager.getStreamMinVolume(AudioManager.STREAM_MUSIC);
         }
+        mProgress = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        Log.e("ddddfff","==========="+mProgress);
         myRegisterReceiver();
         init();
     }
@@ -635,6 +635,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             Glide.with(this).load(PreferenceManager.getInstance().getAccountInfo().getAvtorURL()).
                     apply(RequestOptions.bitmapTransform(new CircleCrop()).error(R.drawable.icon_personal)).into(mPersonal);
         }
+        mProgress = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
     }
     @Override
     public void onRequestSuccess(int requestTag, Object data) {
@@ -699,31 +700,6 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         Log.e("DDDD","listBLEDevices ==========" + listBLEDevices);
         mDevicesListAdapter.setListDevices(listBLEDevices);
     }
-    public Map<String, BluetoothDevice> getAudioConnectedAddress() {
-        Map<String, BluetoothDevice> result = new HashMap<>();
-        Class<BluetoothAdapter> bluetoothAdapterClass = BluetoothAdapter.class;//得到BluetoothAdapter的Class对象
-        try {
-            Method method = bluetoothAdapterClass.getDeclaredMethod("getConnectionState", (Class[]) null);
-            //打开权限
-            method.setAccessible(true);
-            int state = (int) method.invoke(mBtAdapter, (Object[]) null);
-
-            if (state == BluetoothAdapter.STATE_CONNECTED) {
-                Set<BluetoothDevice> devices = mBtAdapter.getBondedDevices();
-                for (BluetoothDevice bondedDevice : devices) {
-                    Method isConnectedMethod = BluetoothDevice.class.getDeclaredMethod("isConnected", (Class[]) null);
-                    method.setAccessible(true);
-                    boolean isConnected = (boolean) isConnectedMethod.invoke(bondedDevice, (Object[]) null);
-                    if (isConnected) {
-                        result.put(bondedDevice.getAddress(), bondedDevice);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
     @Override
     public void startScan(DevicesListAdapter mDevicesListAdapter) {
         mDevicesAdapter = mDevicesListAdapter;
@@ -770,14 +746,11 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
     @Override
     protected void changeVolume() {
         int currVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-//                if(PreferenceManager.getInstance().getIntValue(PreferenceManager.CONNECT_VOICE) != currVolume){
-//                    currVolume = PreferenceManager.getInstance().getIntValue(PreferenceManager.CONNECT_VOICE);
-//                }
-        if (isDeviceReady()) {
+//        if (isDeviceReady()) {
             isClick = true;
             mArcSeekBarInner.setProgress(currVolume);
             mArcSeekBarOutter.setProgress(currVolume);
-        }
+//        }
         super.changeVolume();
     }
 
@@ -818,7 +791,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
      * @return
      */
     public boolean startService() {
-
+        Log.e("KKKKK","11111111111111111111111111111");
         // get the bluetooth information
         SharedPreferences sharedPref = mContext.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
 
@@ -937,7 +910,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             boolean autoplay = info.getAutoplay() == 1;
             mAct.setPlayContorl(autoplay);
             mGaiaManager.sendPlayControlCommand(autoplay ? PlayControl.PLAY.getValue() : PlayControl.PAUSE.getValue());
-            mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mProgress, 0);
+//            mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mProgress, 0);
         }
     }
     /****
@@ -998,8 +971,8 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             }
             mArcSeekBarInner.setMaxValue(maxVoice);
             mArcSeekBarOutter.setMaxValue(maxVoice);
-            mArcSeekBarInner.setProgress(0);
-            mArcSeekBarOutter.setProgress(0);
+            mArcSeekBarInner.setProgress(mProgress);
+            mArcSeekBarOutter.setProgress(mProgress);
 //            connectDevice();
             hasNoDevice();
         }
@@ -1022,9 +995,8 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             PreferenceManager.getInstance().setStringValue(PreferenceManager.CONNECT_ARRAESS, mService.getDevice().getAddress());
 
             mArcSeekBarInner.setMaxValue(maxVoice);
-            mArcSeekBarInner.setProgress(PreferenceManager.getInstance().getIntValue(PreferenceManager.CONNECT_VOICE));
             mArcSeekBarOutter.setMaxValue(maxVoice);
-            mArcSeekBarOutter.setProgress(PreferenceManager.getInstance().getIntValue(PreferenceManager.CONNECT_VOICE));
+//            mArcSeekBarOutter.setProgress(PreferenceManager.getInstance().getIntValue(PreferenceManager.CONNECT_VOICE));
             String text = PreferenceManager.getInstance().getPlaySoundMode(PreferenceManager.getInstance().getAccountInfo().getUserID() + mService.getDevice().getAddress());
             if (!TextUtils.isEmpty(text)) {
                 mTvContorlName.setText(text);
@@ -1037,8 +1009,8 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             }
             mArcSeekBarInner.setMaxValue(maxVoice);
             mArcSeekBarOutter.setMaxValue(maxVoice);
-            mArcSeekBarInner.setProgress(0);
-            mArcSeekBarOutter.setProgress(0);
+            mArcSeekBarInner.setProgress(mProgress);
+            mArcSeekBarOutter.setProgress(mProgress);
             hasNoDevice();
         }
     }

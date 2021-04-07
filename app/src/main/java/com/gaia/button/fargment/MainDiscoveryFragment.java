@@ -35,6 +35,7 @@ import com.gaia.button.adapter.DiscoveryAdapter;
 import com.gaia.button.data.PreferenceManager;
 import com.gaia.button.model.DiscoverList;
 import com.gaia.button.model.DiscoveryModel;
+import com.gaia.button.net.BaseResult;
 import com.gaia.button.net.user.IUserListener;
 import com.gaia.button.net.user.UserManager;
 import com.gaia.button.view.ShareDialog;
@@ -124,15 +125,13 @@ public class MainDiscoveryFragment extends BaseFragment implements DiscoveryAdap
         startActivity(intent);
     }
     String type ="";
+    private DiscoveryModel mDiscoveryModel;
     @Override
     public void onClickCollect(DiscoveryModel model) {
         if(model == null){
             return;
         }
-        if(model.isCollect()){
-            displayShortToast("已收藏");
-            return;
-        }
+        mDiscoveryModel = model;
         type = model.getIs_collect();
         UserManager.getRequestHandler().requestCollect(MainDiscoveryFragment.this,model.getId());
 
@@ -214,7 +213,20 @@ public class MainDiscoveryFragment extends BaseFragment implements DiscoveryAdap
                 }
             }
         } else if(requestTag == Net_Tag_User_ArticleCollect){
-            Toast.makeText(getActivity(),"收藏成功",Toast.LENGTH_SHORT).show();
+            BaseResult result = (BaseResult) data;
+            if(result != null){
+                int collect = (int) result.getOther();
+                if(collect == 1){
+                    Toast.makeText(getActivity(),"收藏成功",Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(getActivity(),"已取消",Toast.LENGTH_SHORT).show();
+                }
+                if(mDiscoveryModel != null){
+                    mDiscoveryModel.setIs_collect(""+collect);
+                    mDiscoveryAdapter.notifyDataSetChanged();
+                }
+            }
+
         }
 
 

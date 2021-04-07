@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -18,6 +19,11 @@ import com.gaia.button.receivers.BREDRDiscoveryReceiver;
 import com.gaia.button.receivers.BluetoothStateReceiver;
 import com.gaia.button.utils.Consts;
 import com.gaia.button.view.ProgressDialogUtil;
+
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public  class BaseFragment extends Fragment  implements BREDRDiscoveryReceiver.BREDRDiscoveryListener, BluetoothStateReceiver.BroadcastReceiverListener{
 
@@ -152,6 +158,7 @@ public  class BaseFragment extends Fragment  implements BREDRDiscoveryReceiver.B
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals("android.media.VOLUME_CHANGED_ACTION")) {
                 changeVolume();
+                Log.e("HHH","111111111111111");
                 //int currVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
             }
         }
@@ -170,7 +177,31 @@ public  class BaseFragment extends Fragment  implements BREDRDiscoveryReceiver.B
     protected void changeVolume(){
 
     }
+    protected Map<String, BluetoothDevice> getAudioConnectedAddress() {
+        Map<String, BluetoothDevice> result = new HashMap<>();
+        Class<BluetoothAdapter> bluetoothAdapterClass = BluetoothAdapter.class;//得到BluetoothAdapter的Class对象
+        try {
+            Method method = bluetoothAdapterClass.getDeclaredMethod("getConnectionState", (Class[]) null);
+            //打开权限
+            method.setAccessible(true);
+            int state = (int) method.invoke(mBtAdapter, (Object[]) null);
 
+            if (state == BluetoothAdapter.STATE_CONNECTED) {
+                Set<BluetoothDevice> devices = mBtAdapter.getBondedDevices();
+                for (BluetoothDevice bondedDevice : devices) {
+                    Method isConnectedMethod = BluetoothDevice.class.getDeclaredMethod("isConnected", (Class[]) null);
+                    method.setAccessible(true);
+                    boolean isConnected = (boolean) isConnectedMethod.invoke(bondedDevice, (Object[]) null);
+                    if (isConnected) {
+                        result.put(bondedDevice.getAddress(), bondedDevice);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 
     // ====== PUBLIC METHODS =======================================================================
 

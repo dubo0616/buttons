@@ -50,7 +50,7 @@ public class ArcSeekBarInner extends View {
     private static final int THUMB_MODE_FILL = 1;                   // 拖动按钮模式 - 填充
     private static final int THUMB_MODE_FILL_STROKE = 2;            // 拖动按钮模式 - 填充+描边
 
-    private static final int DEFAULT_MAX_VALUE = 100;               // 默认最大数值
+    private static final int DEFAULT_MAX_VALUE = 15;               // 默认最大数值
     private static final int DEFAULT_MIN_VALUE = 0;                 // 默认最小数值
 
     private static final String KEY_PROGRESS_PRESENT = "PRESENT";   // 用于存储和获取当前百分比
