@@ -438,9 +438,6 @@ public class MainGaiaManager extends AGaiaManager {
     // ====== PROTECTED METHODS ====================================================================
     @Override // extends GaiaManager
     protected void receiveSuccessfulAcknowledgement(GaiaPacket packet) {
-        Toast.makeText(GaiaApplication.getInstance(),"receiveSuccessfulAcknowledgement for command "
-                + GaiaUtils.getGAIACommandToString(packet.getCommand())
-                + " with status: " +packet.getStatus()+ GAIA.getStatusToString(packet.getStatus()),Toast.LENGTH_LONG);
         onFeatureSupported(packet.getCommand());
         switch (packet.getCommand()) {
             case GAIA.COMMAND_GET_LED_CONTROL:

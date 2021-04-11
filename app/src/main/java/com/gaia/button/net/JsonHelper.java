@@ -31,7 +31,7 @@ public final class JsonHelper {
 				res = JsonManager.getJsonParser().parserLoginPwd(resData);
 				break;
 			case ConstantUtil.Net_Tag_User_Login_FORGETPASS:
-				res = JsonManager.getJsonParser().parserLoginPwd(resData);
+				res = JsonManager.getJsonParser().parserForgetPwd(resData);
 				break;
 			case ConstantUtil.Net_Tag_User_Login_SETPASS:
 				res = JsonManager.getJsonParser().parserSetPwd(resData);

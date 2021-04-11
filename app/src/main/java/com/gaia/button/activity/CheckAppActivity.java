@@ -21,9 +21,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.gaia.button.R;
 import com.gaia.button.data.PreferenceManager;
-import com.gaia.button.fargment.PersonalSettingFragment;
 import com.gaia.button.model.UpdateModel;
-import com.gaia.button.net.BaseResult;
 import com.gaia.button.net.user.IUserListener;
 import com.gaia.button.net.user.UserManager;
 import com.gaia.button.utils.BaseUtils;
@@ -32,7 +30,7 @@ import com.gaia.button.utils.Config;
 import com.gaia.button.utils.ConstantUtil;
 import com.gaia.button.view.UpdateInfoDialog;
 
-public class AboutActivity extends BaseActivity implements IUserListener {
+public class CheckAppActivity extends BaseActivity implements IUserListener {
     public static final int UPDATE_WRITE_EXTERNAL_STORAGE_PERMISSION_CODE = 11001;
     public static final int UPDATE_INSTALL_THIRD_PLATFORM_APK_PERMISSION_CODE = 11002;
     private TextView mTvVersion,mTvNewVersion;
@@ -60,8 +58,8 @@ public class AboutActivity extends BaseActivity implements IUserListener {
             @Override
             public void onClick(View v) {
                 if (updateModel != null && updateModel.getIsUpdate() == 1 && !TextUtils.isEmpty(updateModel.getUrl())) {
-                    if (!BaseUtils.isWifiConnected(AboutActivity.this) && (PreferenceManager.getInstance().getAccountInfo() != null && PreferenceManager.getInstance().getAccountInfo().getMobile_network() != 1)) {
-                        UpdateInfoDialog infoDialog = UpdateInfoDialog.getInstance(AboutActivity.this, new UpdateInfoDialog.OnConfirmClickListener() {
+                    if (!BaseUtils.isWifiConnected(CheckAppActivity.this) && (PreferenceManager.getInstance().getAccountInfo() != null && PreferenceManager.getInstance().getAccountInfo().getMobile_network() != 1)) {
+                        UpdateInfoDialog infoDialog = UpdateInfoDialog.getInstance(CheckAppActivity.this, new UpdateInfoDialog.OnConfirmClickListener() {
                             @Override
                             public void onConfirm() {
                                 if (isHasPermission()) {
@@ -72,6 +70,9 @@ public class AboutActivity extends BaseActivity implements IUserListener {
                         infoDialog.show();
                         infoDialog.setData("提示", "当前使用移动网络,确认下载吗？", "");
                         return;
+                    }
+                    if (isHasPermission()) {
+                        checkUpdate(updateModel.getUrl());
                     }
                 } else {
                     finish();
@@ -129,7 +130,7 @@ public class AboutActivity extends BaseActivity implements IUserListener {
             BroadcastReceiver onComplete = new BroadcastReceiver() {
                 public void onReceive(Context ctxt, Intent intent) {
                     isLoading = false;
-                    int result = ButtonsInstaller.installApk(AboutActivity.this, fileName, UPDATE_WRITE_EXTERNAL_STORAGE_PERMISSION_CODE, UPDATE_INSTALL_THIRD_PLATFORM_APK_PERMISSION_CODE);
+                    int result = ButtonsInstaller.installApk(CheckAppActivity.this, fileName, UPDATE_WRITE_EXTERNAL_STORAGE_PERMISSION_CODE, UPDATE_INSTALL_THIRD_PLATFORM_APK_PERMISSION_CODE);
                     if (0 != result) {
                         showTotast("安装失败");
                     }

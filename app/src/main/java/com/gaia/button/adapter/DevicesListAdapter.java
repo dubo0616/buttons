@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Handler;
 
 /**
  * <p>This class allows management of the data set for a devices list.</p>
@@ -56,17 +57,20 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
      */
     private Activity mContext;
     private TopDeviceViewHolder topDeviceViewHolder;
+    private android.os.Handler mHandler;
     public DevicesListAdapter(Activity context,IDevicesListAdapterListener listener) {
         mListener = listener;
         mContext = context;
+        mHandler = new android.os.Handler();
     }
 
 
     @Override // RecyclerView.Adapter<DeviceViewHolder>
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.e("OOOOO","1111111+viewType"+viewType);
         if (viewType == 1) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_devices_item_top, parent, false);
-            topDeviceViewHolder = new TopDeviceViewHolder(view,mContext,mConnect,this);
+            topDeviceViewHolder = new TopDeviceViewHolder(view,mContext,mConnect,this,this);
             return topDeviceViewHolder;
         } else if (viewType == 2) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_devices_item_text, parent, false);
@@ -97,13 +101,16 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemViewType(int position) {
-        if(position == 0){
+        Log.e("BBBBB","======"+position);
+//        Log.e("BBBBB","======"+mDevices.size());
+        if (mDevices.size() < position) {
+            return super.getItemViewType(position);
+        }
+        if (mDevices.get(position) != null) {
             return 1;
-        }else if(position == 1){
+        } else {
             return 2;
         }
-
-        return super.getItemViewType(position);
     }
 
     @Override // RecyclerView.Adapter<DeviceViewHolder>
@@ -238,15 +245,24 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
      * @param listDevices
      *            The list of devices to put on the RecyclerView.
      */
+
     public void setListDevices(ArrayList<BluetoothDevice> listDevices) {
         this.mConnect.clear();
         this.mConnect.addAll(listDevices);
         if(mConnect.size() == 0){
             mConnect.add(null);
         }
-        if(topDeviceViewHolder != null) {
-            topDeviceViewHolder.mDevicesListAdapter.notifyDataSetChanged();
-        }
+//        mHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                Log.e("OOOOO","========="+topDeviceViewHolder);
+////                if(topDeviceViewHolder != null) {
+////                    topDeviceViewHolder.mDevicesListAdapter.notifyDataSetChanged();
+////                }
+//                notifyDataSetChanged();
+//            }
+//        },2000);
+
     }
 
     /**

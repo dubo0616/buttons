@@ -36,7 +36,8 @@ public class CustomerActivity extends BaseActivity  {
         findViewById(R.id.cl_auto_paly).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                requestPermissions(mPermissions,false);
+                checkPermissions(mPermissions);
+//                requestPermissions(mPermissions,true);
             }
         });
         findViewById(R.id.cl_auto_paly_one).setOnClickListener(new View.OnClickListener() {
@@ -60,6 +61,8 @@ public class CustomerActivity extends BaseActivity  {
             Uri data = Uri.parse("tel:" + "4006008802");
             intent.setData(data);
             startActivity(intent);
+        }else{
+            showTotast("没有拨打电话权限");
         }
 
     }

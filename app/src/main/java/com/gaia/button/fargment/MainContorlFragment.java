@@ -670,7 +670,8 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
     public void endProgressDialog(int requestTag) {
 
     }
-
+    boolean isAddAirx = false;
+    boolean isAddAir = false;
     @Override
     public void getBondedDevices(DevicesListAdapter mDevicesListAdapter) {
         Set<BluetoothDevice> listDevices = new HashSet<>();
@@ -678,6 +679,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         //todo 修改顶部设备列表，只获取当前已配对的设备，不显示配对的历史设备
         final Map<String, BluetoothDevice> audioConnected = getAudioConnectedAddress();
         for (BluetoothDevice b:audioConnected.values()) {
+            Log.e("NNNN",b.getName());
             listDevices.add(b);
         }
 //        if (mBtAdapter != null && mBtAdapter.isEnabled()) {
@@ -691,14 +693,30 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             if (!BaseUtils.isButtonDevice(device)) {
                 continue;
             }
+            if(isAddAir&& isAddAirx){
+                break;
+            }
+            Log.e("NNNN","111111111");
             if (device.getType() == BluetoothDevice.DEVICE_TYPE_DUAL
                     || device.getType() == BluetoothDevice.DEVICE_TYPE_CLASSIC
                     || device.getType() == BluetoothDevice.DEVICE_TYPE_LE) {
-                listBLEDevices.add(device);
+                if(!isAddAirx) {
+                    if (device.getName().endsWith("X") || device.getName().endsWith("x")) {
+                        listBLEDevices.add(device);
+                        isAddAirx = true;
+                    }
+                }
+                if(!isAddAir) {
+                    if (device.getName().endsWith("air") || device.getName().endsWith("Air")) {
+                        listBLEDevices.add(device);
+                        isAddAir = true;
+                    }
+                }
             }
+
         }
         Log.e("DDDD","listBLEDevices ==========" + listBLEDevices);
-        mDevicesListAdapter.setListDevices(listBLEDevices);
+//        mDevicesListAdapter.setListDevices(listBLEDevices);
     }
     @Override
     public void startScan(DevicesListAdapter mDevicesListAdapter) {
@@ -791,27 +809,23 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
      * @return
      */
     public boolean startService() {
-        Log.e("KKKKK","11111111111111111111111111111");
         // get the bluetooth information
         SharedPreferences sharedPref = mContext.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
-
         // get the device Bluetooth address
         String address = sharedPref.getString(Consts.BLUETOOTH_ADDRESS_KEY, "");
+        Log.e("KKKKK","address"+address+mService);
+
+        if(isDeviceReady()){
+            Log.e("KKKKK","addressssss"+mService.getDevice().getAddress());
+           if(mService.getDevice().getAddress().equals(address)){
+               mDeviceFrgmentContainer.setVisibility(View.GONE);
+               return true;
+            }
+        }
         if (address.length() == 0 || !BluetoothAdapter.checkBluetoothAddress(address)) {
             // no address, not possible to establish a connection
             return false;
         }
-        //todo   此处屏蔽设备类型判断，只用BE/EDR模式即可
-        // get the transport type
-//        int transport = sharedPref.getInt(Consts.TRANSPORT_KEY, BluetoothService.Transport.UNKNOWN);
-//        mTransport = transport == BluetoothService.Transport.BLE ? BluetoothService.Transport.BLE :
-//                transport == BluetoothService.Transport.BR_EDR ? BluetoothService.Transport.BR_EDR :
-//                        BluetoothService.Transport.UNKNOWN;
-//        if (mTransport == BluetoothService.Transport.UNKNOWN) {
-//            // transport unknown, not possible to establish a connection
-//            return false;
-//        }
-        // get the service class to bind
         Class<?> serviceClass = mTransport == BluetoothService.Transport.BLE ? GAIAGATTBLEService.class :
                 GAIABREDRService.class; // mTransport can only be BLE or BR EDR
         // bind the service
@@ -1412,7 +1426,7 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
 
     public boolean isCanBack() {
         if (mDeviceFrgmentContainer.getVisibility() == View.VISIBLE) {
-            mDeviceFrgmentContainer.setVisibility(View.GONE);
+//            mDeviceFrgmentContainer.setVisibility(View.GONE);
             return true;
         }
         return false;

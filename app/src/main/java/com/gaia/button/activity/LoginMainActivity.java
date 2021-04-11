@@ -213,6 +213,9 @@ public class LoginMainActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
+        if(mClLayout.getVisibility() == View.VISIBLE){
+            return;
+        }
         switch (v.getId()) {
             case R.id.btn_login_wechat:
                 handleWechatLogin();

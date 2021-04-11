@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,7 +101,7 @@ public class PersonalDeviceFragment extends BaseFragment implements DevicesListA
                     Intent intent = new Intent(getActivity(), MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.putExtra("Tab", 1);
-                    intent.putExtra(MainActivity.FORM_KEY, 1);
+                    intent.putExtra(MainActivity.FORM_KEY, 1000);
                     startActivity(intent);
                     getActivity().finish();
                 }
@@ -117,12 +118,14 @@ public class PersonalDeviceFragment extends BaseFragment implements DevicesListA
         super.onBluetoothEnabled();
         initData();
     }
-
+    boolean isAddAirx = false;
+    boolean isAddAir = false;
     private void initData() {
         Set<BluetoothDevice> listDevices = new HashSet<>();
         //todo 修改顶部设备列表，只获取当前已配对的设备，不显示配对的历史设备
         final Map<String, BluetoothDevice> audioConnected = getAudioConnectedAddress();
         for (BluetoothDevice b : audioConnected.values()) {
+            Log.e("KKK","======"+b.getName());
             listDevices.add(b);
         }
         ArrayList<BluetoothDevice> listBLEDevices = new ArrayList<>();
@@ -131,10 +134,24 @@ public class PersonalDeviceFragment extends BaseFragment implements DevicesListA
             if (!BaseUtils.isButtonDevice(device)) {
                 continue;
             }
+            if(isAddAir&& isAddAirx){
+                break;
+            }
             if (device.getType() == BluetoothDevice.DEVICE_TYPE_DUAL
                     || device.getType() == BluetoothDevice.DEVICE_TYPE_CLASSIC
                     || device.getType() == BluetoothDevice.DEVICE_TYPE_LE) {
-                listBLEDevices.add(device);
+                if(!isAddAirx) {
+                    if (device.getName().endsWith("X") || device.getName().endsWith("x")) {
+                        listBLEDevices.add(device);
+                        isAddAirx = true;
+                    }
+                }
+                if(!isAddAir) {
+                    if (device.getName().endsWith("air") || device.getName().endsWith("Air")) {
+                        listBLEDevices.add(device);
+                        isAddAir = true;
+                    }
+                }
             }
         }
         if (listBLEDevices != null && listBLEDevices.size() > 0) {
@@ -213,7 +230,7 @@ public class PersonalDeviceFragment extends BaseFragment implements DevicesListA
                     Intent intent = new Intent(getActivity(), MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.putExtra("Tab", 1);
-                    intent.putExtra(MainActivity.FORM_KEY, 1);
+                    intent.putExtra(MainActivity.FORM_KEY, 1000);
                     startActivity(intent);
                     getActivity().finish();
                 }

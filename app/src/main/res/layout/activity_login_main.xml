@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/login_main_bg"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -52,6 +53,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_per"
         android:visibility="gone"
+        tools:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#ffffffff">
@@ -72,6 +74,7 @@
                 android:layout_marginStart="46dp"
                 android:layout_marginEnd="46dp"
                 android:minHeight="300dp"
+                tools:visibility="visible"
                 android:paddingBottom="20dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/cl_bg_white">

@@ -13,7 +13,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +25,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.gaia.button.GaiaApplication;
 import com.gaia.button.R;
-import com.gaia.button.activity.AboutActivity;
+import com.gaia.button.activity.CheckAppActivity;
 import com.gaia.button.activity.AccountActivity;
 import com.gaia.button.activity.CustomerActivity;
 import com.gaia.button.activity.FeedBackActivity;
@@ -78,7 +77,7 @@ public class PersonalSettingFragment extends BaseFragment implements PersonalSet
         mCLAbout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), AboutActivity.class));
+//                startActivity(new Intent(getActivity(), CheckAppActivity.class));
             }
         });
         mClCustomer = mRootView.findViewById(R.id.cl_kehu);
@@ -101,7 +100,9 @@ public class PersonalSettingFragment extends BaseFragment implements PersonalSet
         mClUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkAPP();
+//                checkAPP();
+                startActivity(new Intent(getActivity(), CheckAppActivity.class));
+
             }
         });
         mAutoPlay = mRootView.findViewById(R.id.iv_auto_play);
@@ -163,46 +164,44 @@ public class PersonalSettingFragment extends BaseFragment implements PersonalSet
         });
 
     }
-    private void checkAPP(){
-        Log.e("KKKK","================"+PreferenceManager.getInstance().getAccountInfo().getMobile_network());
-        Log.e("KKKK","================"+BaseUtils.isWifiConnected(getActivity()) );
-        if(!BaseUtils.isWifiConnected(getActivity()) && (PreferenceManager.getInstance().getAccountInfo() != null && PreferenceManager.getInstance().getAccountInfo().getMobile_network() !=1)){
-            UpdateInfoDialog infoDialog = UpdateInfoDialog.getInstance(getContext(), new UpdateInfoDialog.OnConfirmClickListener() {
-                @Override
-                public void onConfirm() {
-                    if(isHasPermission()) {
-                        UserManager.getRequestHandler().requestUpdate(PersonalSettingFragment.this, getVersion());
-                    }
-                }
-            });
-            infoDialog.show();
-            infoDialog.setData("提示","当前使用移动网络,确认下载吗？","");
-          return;
-        }
-        if(isHasPermission()) {
-            UserManager.getRequestHandler().requestUpdate(PersonalSettingFragment.this, getVersion());
-        }
-    }
-    /**
-     * 获取版本号
-     *
-     * @return 当前应用的版本号
-     */
-    private String getVersion() {
-        if(getActivity() == null){
-            return "1.0";
-        }
-        try {
-            PackageManager manager = getActivity().getPackageManager();
-            PackageInfo info = manager.getPackageInfo(getActivity().getPackageName(), 0);
-            String version = info.versionName;
-            return version;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "1.0";
-        }
-
-    }
+//    private void checkAPP(){
+//        if(!BaseUtils.isWifiConnected(getActivity()) && (PreferenceManager.getInstance().getAccountInfo() != null && PreferenceManager.getInstance().getAccountInfo().getMobile_network() !=1)){
+//            UpdateInfoDialog infoDialog = UpdateInfoDialog.getInstance(getContext(), new UpdateInfoDialog.OnConfirmClickListener() {
+//                @Override
+//                public void onConfirm() {
+//                    if(isHasPermission()) {
+//                        UserManager.getRequestHandler().requestUpdate(PersonalSettingFragment.this, getVersion());
+//                    }
+//                }
+//            });
+//            infoDialog.show();
+//            infoDialog.setData("提示","当前使用移动网络,确认下载吗？","");
+//          return;
+//        }
+//        if(isHasPermission()) {
+//            UserManager.getRequestHandler().requestUpdate(PersonalSettingFragment.this, getVersion());
+//        }
+//    }
+//    /**
+//     * 获取版本号
+//     *
+//     * @return 当前应用的版本号
+//     */
+//    private String getVersion() {
+//        if(getActivity() == null){
+//            return "1.0";
+//        }
+//        try {
+//            PackageManager manager = getActivity().getPackageManager();
+//            PackageInfo info = manager.getPackageInfo(getActivity().getPackageName(), 0);
+//            String version = info.versionName;
+//            return version;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return "1.0";
+//        }
+//
+//    }
 
     @Override
     public void onItemClick(int pos) {
@@ -336,7 +335,7 @@ public class PersonalSettingFragment extends BaseFragment implements PersonalSet
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 hasInstallPermission = pm.canRequestPackageInstalls();
                 if (hasInstallPermission) {
-                    checkAPP();
+//                    checkAPP();
                 } else {
                   displayLongToast("没有开放第三方应用安装权限");
                 }
@@ -355,7 +354,7 @@ public class PersonalSettingFragment extends BaseFragment implements PersonalSet
         if (UPDATE_WRITE_EXTERNAL_STORAGE_PERMISSION_CODE == requestCode) {
             if (permissions[0].contentEquals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    checkAPP();
+//                    checkAPP();
                 } else {
                  displayLongToast("没有存储权限");
                 }

@@ -50,6 +50,7 @@ public class PersonnalActivity extends BaseActivity implements IUploadCallback<S
     private ImageView mHead,mIvSigin;
     private TextView mTvSigin,mTvName;
     private String mVersion,mName,mMac;
+    private int mTab = 0;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +58,7 @@ public class PersonnalActivity extends BaseActivity implements IUploadCallback<S
         mVersion = getIntent().getStringExtra("version");
         mName =  getIntent().getStringExtra("name");
         mMac =  getIntent().getStringExtra("mac");
+        mTab =  getIntent().getIntExtra("tab",0);
         initData();
     }
     private void choosePhoto() {
@@ -129,6 +131,7 @@ public class PersonnalActivity extends BaseActivity implements IUploadCallback<S
         ViewPager viewPager = findViewById(R.id.viewPager);
         PersonalPagerAdapter fragmentAdater = new  PersonalPagerAdapter(getSupportFragmentManager(),this,mFragmentList,mTitleList);
         viewPager.setAdapter(fragmentAdater);
+        viewPager.setCurrentItem(mTab);
         tab_layout.setupWithViewPager(viewPager);
     }
     private void initData(){

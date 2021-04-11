@@ -646,10 +646,11 @@ public class BaseUtils {
 	}
 
 	public static boolean isButtonDevice(BluetoothDevice device) {
-		if(device == null || TextUtils.isEmpty(device.getAddress())){
+		if(device == null || TextUtils.isEmpty(device.getAddress()) || TextUtils.isEmpty(device.getName())){
 			return false;
 		}
-		if(device.getAddress().startsWith("F4:0E")){
+		if(device.getAddress().startsWith("F4:0E") && (device.getName().contains("Buttons") ||
+				device.getName().contains("BUTTONS")) || device.getName().contains("buttons")){
 			return true;
 		}
 		return false;

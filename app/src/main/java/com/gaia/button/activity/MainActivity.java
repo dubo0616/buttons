@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -55,15 +56,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private ImageView mPersonal;
     private int mTab = 0;
     private PlayContorlMoveLayout layout;
+    private int formKey= -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mTab = getIntent().getIntExtra("Tab", 0);
+        formKey = getIntent().getIntExtra(FORM_KEY, -1);
         initView();
         initData();
 
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        mTab = getIntent().getIntExtra("Tab", 0);
+        formKey = getIntent().getIntExtra(FORM_KEY, -1);
+        initView();
     }
 
     private void initData() {
@@ -150,12 +161,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 if (!TextUtils.isEmpty(mainContorlFragment.getVersion())) {
                     intent.putExtra("version", mainContorlFragment.getVersion());
                 }
+                if(formKey == 1000){
+                    intent.putExtra("tab", 1);
+                }else{
+                    intent.putExtra("tab", 0);
+                }
                 if (mainContorlFragment.getConnectDevice() != null) {
                     intent.putExtra("name", mainContorlFragment.getConnectDevice().getName());
                     intent.putExtra("mac", mainContorlFragment.getConnectDevice().getAddress());
                 }
                 startActivityForResult(intent, 1000);
-
+                formKey = -1;
                 break;
         }
     }
@@ -247,6 +263,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (mCurFragment == mainContorlFragment) {
             if (mainContorlFragment.isCanBack()) {
+                if(formKey == 1000){
+                    mPersonal.performClick();
+                }
                 return true;
             }
         }

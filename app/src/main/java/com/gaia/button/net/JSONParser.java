@@ -130,11 +130,6 @@ public class JSONParser implements JsonParserInterface {
             parserHeader(obj, res);
             int errorCode = res.getErrorCode();
             if (errorCode == DcError.DC_OK) {
-                String dataStr = obj.optString(StringConstant.JSON_DATA);
-                if (!TextUtils.isEmpty(dataStr)) {
-                    Gson gson = new Gson();
-                    res = gson.fromJson(dataStr, AccountInfo.class);
-                }
                 res.setErrorCode(0);
             }
         } catch (Exception e) {
