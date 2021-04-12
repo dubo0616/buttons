@@ -696,27 +696,29 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
             if(isAddAir&& isAddAirx){
                 break;
             }
-            Log.e("NNNN","111111111");
             if (device.getType() == BluetoothDevice.DEVICE_TYPE_DUAL
                     || device.getType() == BluetoothDevice.DEVICE_TYPE_CLASSIC
                     || device.getType() == BluetoothDevice.DEVICE_TYPE_LE) {
                 if(!isAddAirx) {
                     if (device.getName().endsWith("X") || device.getName().endsWith("x")) {
-                        listBLEDevices.add(device);
+                        mDevicesListAdapter.add(device,0);
                         isAddAirx = true;
                     }
                 }
                 if(!isAddAir) {
                     if (device.getName().endsWith("air") || device.getName().endsWith("Air")) {
-                        listBLEDevices.add(device);
+                        mDevicesListAdapter.add(device,0);
                         isAddAir = true;
                     }
                 }
             }
 
+
+        }
+        if(listBLEDevices.size() == 0){
+            mDevicesListAdapter.add(null,0);
         }
         Log.e("DDDD","listBLEDevices ==========" + listBLEDevices);
-//        mDevicesListAdapter.setListDevices(listBLEDevices);
     }
     @Override
     public void startScan(DevicesListAdapter mDevicesListAdapter) {
@@ -813,10 +815,8 @@ public class MainContorlFragment extends BaseFragment implements MainGaiaManager
         SharedPreferences sharedPref = mContext.getSharedPreferences(Consts.PREFERENCES_FILE, Context.MODE_PRIVATE);
         // get the device Bluetooth address
         String address = sharedPref.getString(Consts.BLUETOOTH_ADDRESS_KEY, "");
-        Log.e("KKKKK","address"+address+mService);
 
         if(isDeviceReady()){
-            Log.e("KKKKK","addressssss"+mService.getDevice().getAddress());
            if(mService.getDevice().getAddress().equals(address)){
                mDeviceFrgmentContainer.setVisibility(View.GONE);
                return true;

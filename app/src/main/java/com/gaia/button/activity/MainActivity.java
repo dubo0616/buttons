@@ -72,9 +72,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        mTab = getIntent().getIntExtra("Tab", 0);
-        formKey = getIntent().getIntExtra(FORM_KEY, -1);
-        initView();
+        Bundle bundle = intent.getExtras();
+        if(bundle != null) {
+            mTab = bundle.getInt("Tab", 0);
+            formKey = bundle.getInt(FORM_KEY, -1);
+            Log.e("FORM_KEY", "FORM_KEY==========" + formKey);
+            Log.e("FORM_KEY", "mTab==========" + mTab);
+            initView();
+        }
     }
 
     private void initData() {

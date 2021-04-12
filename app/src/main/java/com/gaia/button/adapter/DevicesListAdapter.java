@@ -7,6 +7,8 @@ package com.gaia.button.adapter;
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.content.Intent;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ import android.view.ViewGroup;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gaia.button.R;
+import com.gaia.button.data.PreferenceManager;
 import com.gaia.button.holders.DeviceViewHolder;
 import com.gaia.button.holders.TextViewHolder;
 import com.gaia.button.holders.TopDeviceViewHolder;
@@ -56,63 +59,63 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
      * Default constructor to build a new instance of this adapter.
      */
     private Activity mContext;
-    private TopDeviceViewHolder topDeviceViewHolder;
-    private android.os.Handler mHandler;
     public DevicesListAdapter(Activity context,IDevicesListAdapterListener listener) {
         mListener = listener;
         mContext = context;
-        mHandler = new android.os.Handler();
     }
 
 
     @Override // RecyclerView.Adapter<DeviceViewHolder>
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.e("OOOOO","1111111+viewType"+viewType);
-        if (viewType == 1) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_devices_item_top, parent, false);
-            topDeviceViewHolder = new TopDeviceViewHolder(view,mContext,mConnect,this,this);
-            return topDeviceViewHolder;
-        } else if (viewType == 2) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_devices_item_text, parent, false);
-            return new TextViewHolder(view);
-        } else {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_devices_item, parent, false);
-            return new DeviceViewHolder(view, this,mDevices);
-        }
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_devices_item_item, parent, false);
+        return new TopDeviceViewHolder(view);
 
     }
 
-
+    private String arrdess;
     @Override // RecyclerView.Adapter<DeviceViewHolder>
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         BluetoothDevice device = mDevices.get(position);
-        if (holder instanceof DeviceViewHolder) {
-            DeviceViewHolder h = (DeviceViewHolder) holder;
-            String deviceName = device.getName();
-            deviceName = (deviceName == null || deviceName.length() < 1) ? "Unknown" : deviceName;
-            boolean isSelected = mSelectedItem == position;
-            h.refreshValues(deviceName, device.getAddress(), isSelected, mListener.getContext(),position);
-        }else if(holder instanceof TextViewHolder){
-            TextViewHolder h = (TextViewHolder) holder;
-        }else{
+        if (holder instanceof TopDeviceViewHolder) {
+            TopDeviceViewHolder h = (TopDeviceViewHolder) holder;
+            arrdess = PreferenceManager.getInstance().getStringValue(PreferenceManager.CONNECT_ARRAESS);
+            Log.e("HHHHH","mDevices=="+mDevices.size() + device);
+            if(device !=null) {
+                h.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mListener.onItemSelected(true,device);
+                    }
+                });
+                h.mLL.setVisibility(View.VISIBLE);
+                h.mNodata.setVisibility(View.GONE);
+                h.textViewDeviceName.setText(device.getName());
+                if (!TextUtils.isEmpty(device.getName())&&(device.getName().endsWith("X") || device.getName().endsWith("x"))) {
+                    h.imageView.setBackgroundResource(R.drawable.icon_airx);
+                }else{
+                    h.imageView.setBackgroundResource(R.drawable.icon_air);
+                }
+                if(device.getAddress().equals(arrdess)){
+                    h.connect.setText("已连接");
+                    h.connect.setSelected(true);
+                }else{
+                    h.connect.setText("未连接");
+                    h.connect.setSelected(false);
+                }
 
+            }else{
+                h.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent =  new Intent(Settings.ACTION_BLUETOOTH_SETTINGS);
+                        mContext.startActivity(intent);
+                    }
+                });
+                h.mNodata.setVisibility(View.VISIBLE);
+                h.mLL.setVisibility(View.GONE);
+            }
         }
     }
-
-    @Override
-    public int getItemViewType(int position) {
-        Log.e("BBBBB","======"+position);
-//        Log.e("BBBBB","======"+mDevices.size());
-        if (mDevices.size() < position) {
-            return super.getItemViewType(position);
-        }
-        if (mDevices.get(position) != null) {
-            return 1;
-        } else {
-            return 2;
-        }
-    }
-
     @Override // RecyclerView.Adapter<DeviceViewHolder>
     public int getItemCount() {
         return mDevices.size();
@@ -120,14 +123,6 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override // DeviceViewHolder.IDeviceViewHolder
     public void onClickItem(int position,BluetoothDevice device) {
-//        if (mSelectedItem == position) {
-//            mSelectedItem = ITEM_NULL;
-//        } else {
-//            int previousItem = mSelectedItem;
-//            mSelectedItem = position;
-//            notifyItemChanged(previousItem);
-//        }
-//        notifyItemChanged(position);
         mListener.onItemSelected(hasSelection(),device);
     }
 
@@ -141,8 +136,7 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
      */
     boolean hasAdd = false;
     public void add(BluetoothDevice device, int rssi) {
-        if(!hasAdd) {
-            mDevices.add(null);
+        if(!hasAdd){
             mDevices.add(null);
             hasAdd = true;
         }
@@ -160,7 +154,6 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 notifyDataSetChanged();
             }
         }
-        Log.e("LLLL","==============mDevices"+mDevices.size());
     }
     public void addScans(BluetoothDevice device, int rssi) {
         if(device != null) {
@@ -211,9 +204,6 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         hasAdd = false;
         mSelectedItem = ITEM_NULL;
         notifyDataSetChanged();
-        if(null != topDeviceViewHolder){
-            topDeviceViewHolder.mDevicesListAdapter.notifyDataSetChanged();
-        }
     }
 
     /**
@@ -252,16 +242,6 @@ public class DevicesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         if(mConnect.size() == 0){
             mConnect.add(null);
         }
-//        mHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                Log.e("OOOOO","========="+topDeviceViewHolder);
-////                if(topDeviceViewHolder != null) {
-////                    topDeviceViewHolder.mDevicesListAdapter.notifyDataSetChanged();
-////                }
-//                notifyDataSetChanged();
-//            }
-//        },2000);
 
     }
 

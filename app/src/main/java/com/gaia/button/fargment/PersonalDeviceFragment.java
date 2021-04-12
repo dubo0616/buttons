@@ -99,7 +99,7 @@ public class PersonalDeviceFragment extends BaseFragment implements DevicesListA
             public void onClick(View v) {
                 if (getActivity() != null) {
                     Intent intent = new Intent(getActivity(), MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.putExtra("Tab", 1);
                     intent.putExtra(MainActivity.FORM_KEY, 1000);
                     startActivity(intent);
@@ -227,10 +227,12 @@ public class PersonalDeviceFragment extends BaseFragment implements DevicesListA
                     editor.putString(Consts.BLUETOOTH_NAME_KEY, model.getName());
                     editor.putString(Consts.BLUETOOTH_ADDRESS_KEY, model.getAddress());
                     editor.apply();
+                    Bundle bundle = new Bundle();
                     Intent intent = new Intent(getActivity(), MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.putExtra("Tab", 1);
                     intent.putExtra(MainActivity.FORM_KEY, 1000);
+                    intent.putExtras(bundle);
                     startActivity(intent);
                     getActivity().finish();
                 }

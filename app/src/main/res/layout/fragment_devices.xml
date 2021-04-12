@@ -33,13 +33,29 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="45dp"
+                    android:layout_marginEnd="20dp"
+                    android:text="请选择您要连接的设备"
+                    android:textColor="#ff1e1e1e"
+                    android:textSize="20sp" />
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_devices_list"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="10dp" />
-
+                <TextView
+                    android:gravity="start|center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:text="添加新设备"
+                    android:textColor="#ff1e1e1e"
+                    android:textSize="20sp" />
                 <RelativeLayout
                     android:id="@+id/rl_button_airx"
                     android:layout_width="match_parent"

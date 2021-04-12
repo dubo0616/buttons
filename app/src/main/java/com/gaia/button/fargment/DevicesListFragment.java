@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -83,7 +84,6 @@ public class DevicesListFragment extends BaseFragment implements DevicesListAdap
             case DevicesListTabsAdapter.BONDED_LIST_TYPE:
 //                mRefreshLayout.setRefreshing(true);
                 mDevicesListAdapter.reset();
-                mDevicesListAdapter.add(null,0);
                 mListener.startScan(mDevicesListAdapter);
                 break;
         }
@@ -143,8 +143,8 @@ public class DevicesListFragment extends BaseFragment implements DevicesListAdap
         });
 
         // use a linear layout manager for the recycler view
-        LinearLayoutManager devicesListLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(devicesListLayoutManager);
+        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(),2);
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         mAirx = rootView.findViewById(R.id.rl_button_airx);
         mAir = rootView.findViewById(R.id.rl_button_air);
