@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -20,7 +21,8 @@ import com.gaia.button.utils.PlayControl;
 
 public class PlayContorlMoveLayout extends ConstraintLayout {
     private Context mContext;
-    private ImageView iv_paly_pause, iv_pre, iv_next, iv_small;
+    private ImageView iv_paly_pause, iv_pre, iv_next;
+    private Button iv_small;
     private ConstraintLayout play_contorl;
     private ImageView play_contorl_small;
     private WindowManager mWindowManager;
@@ -264,7 +266,7 @@ public class PlayContorlMoveLayout extends ConstraintLayout {
         screenWidth = DensityUtil.getScreenWidth(mContext);
         //屏高
         screenHeight = DensityUtil.getScreenHeight(mContext);
-        int m = DensityUtil.dip2px(mContext, 90);
+        int m = DensityUtil.dip2px(mContext, 70);
         mLayoutParams.width = DensityUtil.getScreenWidth(mContext) - m;
         mLayoutParams.height = dpi;
         try {

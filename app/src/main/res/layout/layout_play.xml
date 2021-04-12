@@ -43,11 +43,16 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_width="24dp"
             android:layout_height="24dp"/>
-        <ImageView
+        <Button
             android:id="@+id/iv_small"
             android:alpha="0.7"
-            android:src="@drawable/icon_play_close"
-            android:padding="3dp"
+            android:text="———"
+            android:textColor="@color/white"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp"
+            android:gravity="center"
+            android:src="@drawable/bg_line"
+            android:background="@drawable/bg_small"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_width="20dp"
