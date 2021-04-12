@@ -47,7 +47,6 @@
             android:id="@+id/iv_small"
             android:alpha="0.7"
             android:src="@drawable/icon_play_close"
-            android:layout_marginEnd="15dp"
             android:padding="3dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
